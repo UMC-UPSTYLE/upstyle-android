@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- 뒤로가기 버튼 -->
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/arrow_left"
+        android:contentDescription="뒤로가기" />
+
+
+    <!-- 필터 버튼 -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="11dp"
+        android:layout_toEndOf="@id/backButton"
+        android:fontFamily="@font/pretendard_medium"
+        android:text=""
+        android:textColor="#FFF5B1"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/filterButton"
+        android:layout_width="60dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/filter_search"
+        android:contentDescription="필터 버튼" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/backButton"
+        android:layout_alignTop="@id/filterButton"
+        android:layout_marginTop="12dp"
+        android:padding="12dp" />
+</RelativeLayout>
+

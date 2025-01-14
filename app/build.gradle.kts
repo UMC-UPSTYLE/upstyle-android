@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id ("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin") //Safe args 추가
     id("kotlin-kapt") // KAPT 플러그인 추가
 }
@@ -54,6 +55,7 @@ android {
         }
 
     }
+
 }
 
 
@@ -91,9 +93,9 @@ dependencies {
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     implementation("com.google.android.flexbox:flexbox:3.0.0")
+
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
-
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:2.8.5")
