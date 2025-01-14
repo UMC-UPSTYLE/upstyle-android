@@ -1,0 +1,278 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:amdroid="http://schemas.android.com/apk/res-auto"
+    android:background="#000000">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000">
+
+        <!-- 뒤로가기 버튼 -->
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="11dp"
+            android:src="@drawable/arrow_left"
+            android:contentDescription="뒤로가기" />
+
+        <!-- 상단 텍스트 -->
+        <LinearLayout
+            android:id="@+id/top_text_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/backButton"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <!-- "강빈 님의" 텍스트 -->
+
+            <!-- "옷장" 텍스트 및 이미지 -->
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="강빈 님의"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="옷장"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/img_closet_yellow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/closet_yellow"
+                    android:contentDescription="옷장 이미지" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- GridLayout for 옷장 아이템 -->
+        <GridLayout
+            android:id="@+id/grid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/top_text_container"
+            android:layout_marginTop="24dp"
+            android:columnCount="2"
+            android:padding="16dp">
+
+            <!-- OUTER -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1">
+
+                <ImageView
+                    android:id="@+id/btn_go_outer"
+                    android:layout_width="match_parent"
+                    android:layout_height="130.61dp"
+                    android:background="@drawable/round_background"
+                    android:contentDescription="OUTER" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="OUTER"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/arrow_round_black"
+                    android:contentDescription="OUTER 화살표" />
+            </FrameLayout>
+
+            <!-- TOP -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1">
+
+                <ImageView
+                    android:id="@+id/btn_go_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="130.61dp"
+                    android:background="@drawable/round_background"
+                    android:contentDescription="TOP" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TOP"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/arrow_round_black"
+                    android:contentDescription="TOP 화살표" />
+            </FrameLayout>
+
+            <!-- BOTTOM -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1">
+
+                <ImageView
+                    android:id="@+id/btn_go_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="130.61dp"
+                    android:background="@drawable/round_background"
+                    android:contentDescription="BOTTOM" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="BOTTOM"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/arrow_round_black"
+                    android:contentDescription="BOTTOM 화살표" />
+            </FrameLayout>
+
+            <!-- SHOES -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1">
+
+                <ImageView
+                    android:id="@+id/btn_go_shoes"
+                    android:layout_width="match_parent"
+                    android:layout_height="130.61dp"
+                    android:background="@drawable/round_background"
+                    android:contentDescription="SHOES" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="SHOES"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/arrow_round_black"
+                    android:contentDescription="SHOES 화살표" />
+            </FrameLayout>
+
+            <!-- BAG -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1">
+
+                <ImageView
+                    android:id="@+id/btn_go_bag"
+                    android:layout_width="match_parent"
+                    android:layout_height="130.61dp"
+                    android:background="@drawable/round_background"
+                    android:contentDescription="BAG" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="BAG"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/arrow_round_black"
+                    android:contentDescription="BAG 화살표" />
+            </FrameLayout>
+
+            <!-- OTHERS -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1">
+
+                <ImageView
+                    android:id="@+id/btn_go_other"
+                    android:layout_width="match_parent"
+                    android:layout_height="130.61dp"
+                    android:background="@drawable/round_background"
+                    android:contentDescription="OTHER" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="OTHERS"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/arrow_round_black"
+                    android:contentDescription="OTHERS 화살표" />
+            </FrameLayout>
+        </GridLayout>
+    </RelativeLayout>
+</ScrollView>

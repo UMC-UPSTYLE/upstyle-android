@@ -1,12 +1,10 @@
 package com.umc.upstyle
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -129,7 +127,7 @@ class ColorFragment : Fragment() {
                 layoutParams = LinearLayout.LayoutParams(40, 40).apply {
                     setMargins(0, 9, 20, 0) // 텍스트와 간격 설정
                 }
-                background = ContextCompat.getDrawable(requireContext(), R.drawable.circle_background)
+                background = ContextCompat.getDrawable(requireContext(), R.drawable.circle_background_bk)
                 background.setTint(ContextCompat.getColor(requireContext(), option.second)) // 색상 설정
             }
 

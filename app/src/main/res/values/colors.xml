@@ -45,5 +45,6 @@
     <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
     <color name="othercolor">#FFFFFFFF</color>
     <color name="selectYellow">#FFFFF5B1</color>
+    <color name="lightgray">#FFD9D9D9</color>
 
 </resources>

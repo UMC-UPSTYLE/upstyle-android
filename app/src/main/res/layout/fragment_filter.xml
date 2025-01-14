@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:padding="16dp"
+    tools:context=".FilterFragment">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_left"
+        android:background="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/mainTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="필터"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/login_yellow"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton"
+        android:layout_marginStart="8dp" />
+
+    <!-- 컬러 텍스트 1 -->
+    <TextView
+        android:id="@+id/subTitleTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="컬러"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/login_yellow"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/topDivider"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="40dp" />
+
+
+    <!-- 상단 노란 선분 -->
+    <View
+        android:id="@+id/topDivider"
+        android:layout_width="420dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/login_yellow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mainTitleTextView" />
+
+    <!-- 컬러 텍스트 2 -->
+    <TextView
+        android:id="@+id/subTitleTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="컬러"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/login_yellow"
+        app:layout_constraintTop_toTopOf="@id/topDivider"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        android:layout_marginStart="-40dp"
+        android:layout_marginTop="30dp" />
+
+    <!-- 중간 노란 선분 -->
+    <View
+        android:id="@+id/midDivider"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/login_yellow"
+        app:layout_constraintTop_toBottomOf="@id/topDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="220dp" />
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/optionsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/pretendard_medium"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start"
+        app:layout_constraintBottom_toTopOf="@id/resetOffButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topDivider"
+        android:layout_marginLeft="100dp"/>
+
+    <ImageButton
+        android:id="@+id/resetOffButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="94dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/reset_off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/compOffButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/comp_off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

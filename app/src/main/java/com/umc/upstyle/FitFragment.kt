@@ -27,7 +27,7 @@ class FitFragment : Fragment(R.layout.activity_fit) {
 
         val goBackButton = binding.backButton
         goBackButton.setOnClickListener {
-            requireActivity().onBackPressed()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         // 이전 액티비티에서 전달된 데이터 수신
@@ -38,7 +38,7 @@ class FitFragment : Fragment(R.layout.activity_fit) {
         binding.mainTitleTextView.text = selectedCategory
 
         // Title 설정
-        binding.titleTextView.text = "핏을 선택해주세요!"
+        binding.titleTextView.text = "핏/사이즈를 선택해주세요!"
 
         // 핏 선택 옵션 설정
         setupFitOptions()

@@ -8,6 +8,11 @@
     android:background="#1C1C1C"
     tools:context=".MainActivity">
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <!-- 스크롤을 위한 ScrollView -->
     <ScrollView
         android:id="@+id/scrollView"
@@ -37,9 +42,9 @@
 
             <!-- 사용자 정보 섹션 (A) -->
             <LinearLayout
-                android:id="@+id/userInfoSection"
+                android:id="@+id/closetSection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="130dp"
                 android:orientation="vertical"
                 android:background="@drawable/round_background"
                 android:padding="16dp"
@@ -47,14 +52,6 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp">
 
-                <TextView
-                    android:id="@+id/userName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="강빈 님"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:fontFamily="sans-serif-medium"/>
 
                 <TextView
                     android:id="@+id/wardrobeText"
@@ -72,7 +69,9 @@
                     android:id="@+id/wardrobeButton"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_gravity="end" />
+                    android:layout_gravity="end"
+                    android:contentDescription="Closet icon"
+                    android:src="@drawable/closet_yellow" />
             </LinearLayout>
 
             <!-- 이 달의 OOTD 캘린더 섹션 -->
@@ -161,16 +160,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- 프래그먼트 컨테이너 -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

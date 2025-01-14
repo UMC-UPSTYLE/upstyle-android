@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 class MainActivity : AppCompatActivity() {
 
   // ViewBinding 객체 선언
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
   
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

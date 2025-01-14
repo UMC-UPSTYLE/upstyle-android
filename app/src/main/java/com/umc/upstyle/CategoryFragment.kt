@@ -23,6 +23,17 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
 
         _binding = ActivityCategoryBinding.bind(view)  // 바인딩 초기화
 
+        // 삭제하기
+        val test = binding.test
+        test.setOnClickListener {
+            val filterFragment = FilterFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, filterFragment) // fragment_container는 해당 Fragment를 포함할 컨테이너의 ID
+                .addToBackStack(null) // 백 스택에 추가하여 뒤로 가기 가능
+                .commit()
+        }
+
+
         val goBackButton = binding.backButton
         goBackButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()  // 이전 화면으로 돌아가기
@@ -54,10 +65,10 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
 
     private fun getCategoryOptions(category: String): List<String> {
         return when (category) {
-            "OUTER" -> listOf("레더", "무스탕", "가디건", "코트", "숏패딩", "롱패딩", "블레이저", "트러커 재킷", "후드집업", "트레이닝 재킷")
+            "OUTER" -> listOf("레더", "무스탕", "가디건", "코트", "숏패딩", "롱패딩", "블레이저", "트러커 재킷", "후드집업", "트레이닝 재킷", "기타")
             "TOP" -> listOf("셔츠", "맨투맨", "블라우스", "니트", "후드티", "카라 티셔츠", "긴소매 티셔츠", "반소매 티셔츠", "민소매 티셔츠", "기타")
             "BOTTOM" -> listOf("숏팬츠", "데님팬츠", "코튼팬츠", "레깅스", "트레이닝", "미니스커트", "미디스커트", "롱스커트", "롱원피스", "미니원피스", "미디원피스", "기타")
-            "SHOES" -> listOf("구두", "스니커즈", "스포츠화", "샌들/슬리퍼", "패딩/퍼 신발", "부츠/워커")
+            "SHOES" -> listOf("구두", "스니커즈", "스포츠화", "샌들/슬리퍼", "패딩/퍼 신발", "부츠/워커", "기타")
             "BAG" -> listOf("백팩", "크로스백", "숄더백", "핸드백", "웨이스트백", "기타")
             "OTHER" -> listOf("모자", "머플러", "액세서리", "시계", "벨트", "양말", "선글라스/안경", "기타")
             else -> emptyList()
