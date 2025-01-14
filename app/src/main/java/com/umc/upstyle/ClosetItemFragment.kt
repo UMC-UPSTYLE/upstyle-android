@@ -56,7 +56,6 @@ class ClosetItemFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
 
-
     }
 
 
