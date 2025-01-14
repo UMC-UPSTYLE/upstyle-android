@@ -7,29 +7,10 @@
 
 
     <fragment
-        android:id="@+id/closetResultFragment"
-        android:name="com.umc.upstyle.ClosetResultFragment"
-        android:label="fragment_closet_result"
-        tools:layout="@layout/fragment_closet_result" >
-        <action
-            android:id="@+id/action_closetResultFragment_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/searchResultFragment"
-        android:name="com.umc.upstyle.SearchResultFragment"
-        android:label="fragment_search_result"
-        tools:layout="@layout/fragment_search_result" />
-    <fragment
         android:id="@+id/searchFragment"
         android:name="com.umc.upstyle.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
-        <action
-            android:id="@+id/action_searchFragment_to_closetResultFragment"
-            app:destination="@id/closetResultFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_search" />
 
     <activity
         android:id="@+id/mainActivity"
