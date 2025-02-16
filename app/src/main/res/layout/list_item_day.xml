@@ -28,6 +28,8 @@
         android:layout_height="30dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        android:clipToOutline="true"
+        android:background="@drawable/bg_sub_color_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_day_text"

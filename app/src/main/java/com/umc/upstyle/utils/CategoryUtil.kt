@@ -41,6 +41,20 @@ object CategoryUtil {
         "샌들/슬리퍼" to Pair(37, 4),
         "패딩/퍼 신발" to Pair(38, 4),
         "부츠/워커" to Pair(39, 4),
+        "백팩" to Pair(40, 5),
+        "크로스백" to Pair(41, 5),
+        "숄더백" to Pair(42, 5),
+        "핸드백" to Pair(43, 5),
+        "웨이스트백" to Pair(44, 5),
+        "기타" to Pair(45, 5),
+        "모자" to Pair(46, 6),
+        "머플러" to Pair(47, 6),
+        "액세서리" to Pair(48, 6),
+        "시계" to Pair(49, 6),
+        "벨트" to Pair(50, 6),
+        "양말" to Pair(51, 6),
+        "선글라스/안경" to Pair(52, 6),
+        "기타" to Pair(53, 6),
     )
 
     fun getCategoryIds(subCategory: String): Pair<Int, Int>? {

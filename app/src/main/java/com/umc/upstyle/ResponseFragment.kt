@@ -126,6 +126,7 @@ class ResponseFragment : Fragment() {
             "SELECTED_ITEM_ID", selectedItemID ?: mutableListOf()
         )
 
+        responseViewModel.clearData() // 필요한 메서드를 호출해서 ViewModel의 데이터를 초기화
         findNavController().popBackStack()
     }
 

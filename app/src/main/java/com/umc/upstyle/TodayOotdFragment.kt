@@ -250,15 +250,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val selectedColor = arguments?.getString("COLOR")
         val selectedEtc = arguments?.getString("ETC")
 
-
         val clothId = arguments?.getInt("CLOTH_ID") ?:0
         val kindId = arguments?.getInt("KIND_ID") ?:0
         val categoryId = arguments?.getInt("CATEGORY_ID") ?:0
         val fitId = arguments?.getInt("FIT_ID") ?:0
         val colorId = arguments?.getInt("COLOR_ID") ?:0
         val addInfo = arguments?.getString("ADD_INFO") ?:""
-
-        Toast.makeText(requireContext(), "clothId: $clothId", Toast.LENGTH_SHORT).show()
 
 
         // 새로 받아온 아이템 정보가 있다면
@@ -354,9 +351,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     }
 
 
-
-
-
     private fun updateUIWithViewModel() {
         // 카테고리 UI 업데이트
         clothViewModel.categoryData.observe(viewLifecycleOwner) { categoryData ->
@@ -411,13 +405,11 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 binding.photoImageView.visibility = View.VISIBLE
                 binding.photoImageView.setImageURI(Uri.parse(savedPath))
                 binding.uploadText.visibility = View.GONE // "사진 등록" 텍스트 숨김
-                saveImagePath(savedPath)
                 clothViewModel.addImage(savedPath)
-                Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
             }
-        } ?: Toast.makeText(requireContext(), "사진 선택 취소", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showPhotoOptions() {
@@ -454,7 +446,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
             clothViewModel.addImage(photoUri.toString())
             preferences.edit().putString("SAVED_IMAGE_PATH", photoUri.toString()).apply()
-            Toast.makeText(requireContext(), "이미지 경로가 저장되었습니다.", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "이미지 경로 저장 실패: URI가 null입니다.", Toast.LENGTH_SHORT).show()
         }
@@ -490,12 +481,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     }
 
 
-    private fun saveImagePath(path: String) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-
-        preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
-    }
-
     private fun fetchClosetItems(categoryId: Int, category: String) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
@@ -529,9 +514,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 }
             })
     }
-
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

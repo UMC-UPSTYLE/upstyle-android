@@ -1,7 +1,5 @@
 package com.umc.upstyle
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +17,6 @@ import com.umc.upstyle.utils.Item_load
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 
 class LoadItemFragment : Fragment() {
 
@@ -94,7 +91,6 @@ class LoadItemFragment : Fragment() {
                     additionalInfo = selectedItem!!.addInfo,
                     ootd = if (selectedItem!!.imageUrl.isNotEmpty()) ClothPreview.Ootd(selectedItem!!.imageUrl) else null
                 )
-                Toast.makeText(requireContext(), "선택된 아이템 clothId:${clothPreviewItem.id}", Toast.LENGTH_SHORT).show()
                 sendSelectedItemToPreviousFragment(clothPreviewItem)
             } else {
                 Toast.makeText(requireContext(), "아이템을 선택해주세요", Toast.LENGTH_SHORT).show()

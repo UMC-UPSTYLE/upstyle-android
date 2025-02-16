@@ -61,6 +61,17 @@ class BottomSheetViewFragment : BottomSheetDialogFragment() {
     private fun updateUI(response: ResponseDetailResponse) {
         binding.tvUsername.text = response.user.nickname
         binding.addInfo.text = response.body
+
+        for (cloth in response.clothResponseList)
+            when (cloth.kindId) {
+                1 -> binding.tvOuter.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                2 -> binding.tvTop.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                3 -> binding.tvBottom.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                4 -> binding.tvShoes.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                5 -> binding.tvBag.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                6 -> binding.tvOther.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+            }
+
     }
 
     override fun onDestroyView() {

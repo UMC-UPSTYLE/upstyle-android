@@ -40,19 +40,6 @@ class LoadCategoryFragment : Fragment() {
                     // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
                     val item = Item_load(description, imageUrl,false, clothId, kindId, categoryId, fitId, colorId, addInfo) // 아이템 객체 생성
 
-                    // 이미지 로드 처리
-                Glide.with(requireContext())
-                    .load(item.imageUrl)
-                    .into(binding.ivTest)
-
-                // CATEGORY 데이터 처리
-                binding.tvDescription.text = category
-                Toast.makeText(requireContext(), "선택된 카테고리: $category", Toast.LENGTH_SHORT).show()
-
-                binding.tvDescription.text = item.description
-
-                Toast.makeText(requireContext(), "선택된 사진: $item.description", Toast.LENGTH_SHORT).show()
-
                 // 직전 프래그먼트로 데이터 전달하면서 navigateUp
                 findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM", description)
                     findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM_IMAGE_URL", imageUrl)
@@ -69,20 +56,6 @@ class LoadCategoryFragment : Fragment() {
             findNavController().previousBackStackEntry?.savedStateHandle?.remove<String>(it)
         }
 
-//        // 전달받은 데이터 확인
-//        val selectedItem = arguments?.getString("SELECTED_ITEM")
-//        val category = arguments?.getString("CATEGORY")
-//
-//
-//        if (arguments != null) {
-//
-//        }
-
-//        // 만약 데이터가 전달되었다면
-//        if (!selectedItem.isNullOrEmpty() || !category.isNullOrEmpty()) {
-//
-//
-//        }
 
         binding.backButton.setOnClickListener {
             findNavController().navigateUp() // 이전 Fragment로 이동

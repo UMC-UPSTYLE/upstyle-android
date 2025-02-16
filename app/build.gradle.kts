@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.androidx.swiperefreshlayout)
 
 
     /*implementation(libs.androidx-navigation-fragment-ktx)

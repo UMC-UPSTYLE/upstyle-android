@@ -85,7 +85,6 @@ class CreateVoteFragment : Fragment() {
                             binding.imgSelected.visibility = View.VISIBLE
                             binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
                             binding.btnImageUpload.visibility = View.INVISIBLE
-                            saveImageUri(Uri.parse(item.imageUrl)) // ✅ photoUri가 null이 아닐 때 저장
 
                             Glide.with(requireContext())
                                 .load(item.imageUrl)
@@ -114,7 +113,6 @@ class CreateVoteFragment : Fragment() {
 
             // 사진 URI도 초기화
             photoUri = null
-            Toast.makeText(requireContext(), "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -162,14 +160,13 @@ class CreateVoteFragment : Fragment() {
             binding.imgSelected.setImageURI(photoUri) // 촬영한 사진 표시
             binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
             binding.btnImageUpload.visibility = View.INVISIBLE
-            saveImageUri(photoUri!!) // ✅ photoUri가 null이 아닐 때 저장
             Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "사진 촬영 실패", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // ✅ 이미지 선택 시 photoUri를 사용하지 않고 직접 적용
+    // ✅ 이미지 선택
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val savedPath = saveImageToInternalStorage(it)
@@ -180,11 +177,10 @@ class CreateVoteFragment : Fragment() {
                 binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
                 binding.btnImageUpload.visibility = View.INVISIBLE
                 saveImagePath(savedPath)
-                Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
             }
-        } ?: Toast.makeText(requireContext(), "사진 선택 취소", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showPhotoOptions() {
@@ -255,11 +251,6 @@ class CreateVoteFragment : Fragment() {
         }
     }
 
-    private fun saveImageUri(uri: Uri) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-        preferences.edit().putString("SAVED_IMAGE_PATH", uri.toString()).apply()
-        Toast.makeText(requireContext(), "이미지 경로가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-    }
 
     private fun selectImageFromGallery() {
         pickImageLauncher.launch("image/*")
