@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kakao.sdk.user.UserApiClient
@@ -41,57 +42,37 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
 
         binding.myProfileBtn.setOnClickListener { findNavController().navigate(R.id.myProfileFragment) }
         binding.privacyPolicy.setOnClickListener {
-            val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380acb266cd73c4ab72ed")  } // URL을 전달
+            val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380acb266cd73c4ab72ed") } // URL을 전달
             findNavController().navigate(R.id.webViewFragment, bundle)
         }
         binding.termsOfService.setOnClickListener {
-            val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380d68eeedc8911eb1af0")  } // URL을 전달
+            val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380d68eeedc8911eb1af0") } // URL을 전달
             findNavController().navigate(R.id.webViewFragment, bundle)
         }
 
-        binding.logoutBtn.setOnClickListener {
-            showLoadItemPopupDialog()
-        }
+        binding.logoutBtn.setOnClickListener { showLoadItemPopupDialog() }
 
         fetchUserNickname()
     }
 
-    // ✅ JWT로 닉네임, 이메일 가져오기
+    // JWT로 닉네임, 이메일 가져오기
     private fun fetchUserNickname() {
         val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
         val jwtToken = sharedPref.getString("jwt_token", null)
-        val isGuest = sharedPref.getBoolean("is_guest", false)  // 비회원 여부 확인
 
-//        if (jwtToken.isNullOrEmpty()) {
-//            Log.e("Account", "JWT 없음 → 로그인 화면 이동")
-//            Log.e("Account", "$jwtToken")
-//            Log.d("Account", "현재 is_guest 값: $isGuest")
-//            return
-//        }
+        userApiService.getUserInfo("Bearer $jwtToken")
+            .enqueue(object : Callback<ApiResponse<AccountInfoDTO>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<AccountInfoDTO>>,
+                    response: Response<ApiResponse<AccountInfoDTO>>
+                ) {
+                    binding.userNickname.text = response.body()?.result?.nickname ?: "닉네임을 불러올 수 없음"
+                    binding.userEmail.text = response.body()?.result?.email ?: "이메일을 불러올 수 없음"
+                }
 
-        Log.d("Account", "JWT 있음 → 사용자 정보 요청 시작, JWT: $jwtToken")
+                override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {}
+            })
 
-        if (isGuest) { // 비회원 모드
-            Log.d("Account", "비회원 모드 활성화됨")
-            binding.userNickname.text = "비회원"
-            binding.userEmail.text = "이메일을 불러올 수 없음"
-        } else { // 회원 모드
-            userApiService.getUserInfo("Bearer $jwtToken")
-                .enqueue(object : Callback<ApiResponse<AccountInfoDTO>> {
-                    override fun onResponse(
-                        call: Call<ApiResponse<AccountInfoDTO>>,
-                        response: Response<ApiResponse<AccountInfoDTO>>
-                    ) {
-                        Log.d("Account", "서버 응답 코드: ${response.code()}")
-                        binding.userNickname.text = response.body()?.result?.nickname ?: "닉네임을 불러올 수 없음"
-                        binding.userEmail.text = response.body()?.result?.email ?: "이메일을 불러올 수 없음"
-                    }
-
-                    override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
-                        Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
-                    }
-                })
-        }
     }
 
 
@@ -111,25 +92,32 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private fun logout() {
         UserApiClient.instance.logout { error ->
             if (error != null) {
-                Log.e("Logout", "❌ 카카오 로그아웃 실패", error)
+                unlinkKakaoAccount() // 로그아웃 실패 시, 강제 연결 해제 (unlink)
             } else {
-                Log.d("Logout", "✅ 카카오 로그아웃 성공")
+                clearJwtAndNavigateToLogin() // 로그아웃 후 JWT 삭제 및 로그인 화면 이동
             }
-            // ✅ 로그아웃 실패해도 JWT 삭제 및 로그인 화면으로 이동
-            clearJwt()
         }
     }
 
-    private fun clearJwt() {
+    // 카카오 계정 강제 연결 해제
+    private fun unlinkKakaoAccount() {
+        UserApiClient.instance.unlink { error ->
+            if (error != null) {
+            } else {
+                clearJwtAndNavigateToLogin() // 계정 연결 해제 후 JWT 삭제 및 로그인 화면 이동
+            }
+        }
+    }
+
+    // JWT 삭제 후 로그인 화면으로 이동
+    private fun clearJwtAndNavigateToLogin() {
         val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
         sharedPref.edit().remove("jwt_token").apply()
-
-        Log.d("Logout", "✅ JWT 삭제 완료, 로그인 화면으로 이동")
 
         // 로그인 화면으로 이동
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
-//        requireActivity().finish() // 현재 액티비티 종료
+        requireActivity().finish() // 현재 액티비티 종료
     }
 
 
@@ -140,8 +128,3 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     }
 
 }
-
-
-
-
-

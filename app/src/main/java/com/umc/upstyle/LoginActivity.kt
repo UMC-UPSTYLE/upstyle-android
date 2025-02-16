@@ -26,24 +26,28 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ 비회원으로 둘러보기
-        binding.tvNonMember.setOnClickListener {
-            val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
-            sharedPref.edit().remove("jwt_token").apply()
-            sharedPref.edit().putBoolean("is_guest", true).apply()
-            Log.d("JWT", "✅ 기존 JWT 삭제 완료")
-
-            startActivity(Intent(this, MainActivity::class.java))
-            // Bodyinfo로 이동 + 로직 구현하기
-        }
+        // ✅ 자동 로그인 확인
+        checkAutoLogin()
 
         // ✅ 카카오 로그인 버튼 클릭 시 로그인 시작
         binding.btKakaoLogin.setOnClickListener {
-            val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
-            sharedPref.edit().remove("is_guest").apply()
             logoutAndStartKakaoLogin() // ✅ 기존 JWT 삭제 후 로그인 시작
         }
     }
+
+    // ✅ 자동 로그인 확인
+    private fun checkAutoLogin() {
+        val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
+        val jwtToken = sharedPref.getString("jwt_token", null)
+
+        if (!jwtToken.isNullOrEmpty()) {
+            Log.d("AutoLogin", "✅ 자동 로그인 진행: JWT 존재")
+            navigateToMainActivity() // 토큰이 있으면 바로 메인 화면으로 이동
+        } else {
+            Log.d("AutoLogin", "❌ 자동 로그인 불가: JWT 없음")
+        }
+    }
+
 
     // ✅ 기존 JWT 삭제 후 카카오 로그인 시작
     private fun logoutAndStartKakaoLogin() {
