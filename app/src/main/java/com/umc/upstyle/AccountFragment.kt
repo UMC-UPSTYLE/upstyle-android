@@ -104,7 +104,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         UserApiClient.instance.unlink { error ->
             if (error != null) {
             } else {
-                clearJwtAndNavigateToLogin() // 계정 연결 해제 후 JWT 삭제 및 로그인 화면 이동
+                clearJwtAndNavigateToLogin() // ✅ 계정 연결 해제 후 JWT 삭제 및 로그인 화면 이동
             }
         }
     }

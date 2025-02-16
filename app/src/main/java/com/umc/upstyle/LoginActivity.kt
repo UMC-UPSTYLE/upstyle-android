@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (!jwtToken.isNullOrEmpty()) {
             Log.d("AutoLogin", "✅ 자동 로그인 진행: JWT 존재")
-            navigateToMainActivity() // 토큰이 있으면 바로 메인 화면으로 이동
+            navigateToMainActivity() // ✅ 토큰이 있으면 바로 메인 화면으로 이동
         } else {
             Log.d("AutoLogin", "❌ 자동 로그인 불가: JWT 없음")
         }

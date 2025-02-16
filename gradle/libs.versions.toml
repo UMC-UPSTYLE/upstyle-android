@@ -16,6 +16,7 @@ activityKtx = "1.7.0"
 navigationSafeArgsGradlePlugin = "2.8.5"
 firebaseStorageKtx = "21.0.1"
 firebaseAppcheckPlayintegrity = "18.0.0"
+activity = "1.10.0"
 
 
 [libraries]
@@ -43,6 +44,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity", version.ref = "firebaseAppcheckPlayintegrity" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 
 [plugins]
