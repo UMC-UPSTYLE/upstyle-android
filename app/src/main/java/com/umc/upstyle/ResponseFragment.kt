@@ -139,7 +139,6 @@ class ResponseFragment : Fragment() {
             val category = navBackStackEntry.savedStateHandle.get<String>("CATEGORY")
 //
             // ViewModel에 데이터 추가
-            responseViewModel.updateCategory(category ?: "OTHER", selectedItem)
             val clothId = navBackStackEntry.savedStateHandle.get<Int>("CLOTH_ID") ?: 0
             val kindId = navBackStackEntry.savedStateHandle.get<Int>("KIND_ID") ?: 0
             val categoryId = navBackStackEntry.savedStateHandle.get<Int>("CATEGORY_ID") ?: 0

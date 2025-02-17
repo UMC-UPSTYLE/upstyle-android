@@ -373,7 +373,12 @@
         tools:layout="@layout/fragment_create_vote">
         <action
             android:id="@+id/action_createVoteFragment_to_loadCategoryFragment"
-            app:destination="@id/loadCategoryFragment" />
+            app:destination="@id/loadCategoryFragment">
+            <argument
+                android:name="position"
+                app:argType="integer"
+                android:defaultValue="-1"/>
+        </action>
     </fragment>
 
     <fragment
@@ -489,7 +494,12 @@
         android:label="LoadCategoryFragment" >
         <argument
             android:name="category"
-            app:argType="string"/>
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="position"
+            app:argType="integer"
+            android:defaultValue="-1"/>
         <action
             android:id="@+id/action_loadCategoryFragment_to_loadItemFragment"
             app:destination="@id/loadItemFragment">

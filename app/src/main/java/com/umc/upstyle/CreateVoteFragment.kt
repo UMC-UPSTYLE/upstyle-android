@@ -1,37 +1,49 @@
 package com.umc.upstyle
 
 import com.umc.upstyle.utils.Item_load
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.umc.upstyle.adapter.VoteItemAdapter
+import com.google.firebase.storage.FirebaseStorage
+import com.umc.upstyle.VoteItemAdapter
 import com.umc.upstyle.data.viewmodel.PostViewModel
 import com.umc.upstyle.databinding.FragmentCreateVoteBinding
-import com.umc.upstyle.model.VoteItem
+import com.umc.upstyle.data.model.VoteItem
+import com.umc.upstyle.data.model.VoteRequest
+import com.umc.upstyle.data.network.RequestService
+import com.umc.upstyle.data.network.RetrofitClient
+import com.umc.upstyle.data.network.VoteService
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class CreateVoteFragment : Fragment() {
     private var _binding: FragmentCreateVoteBinding? = null
     private val binding get() = _binding!!
 
     private var photoUri: Uri? = null // ✅ lateinit 제거 및 nullable 변경
+
+    private var currentPosition: Int = -1  // position 값을 저장할 변수
 
     private lateinit var viewModel: PostViewModel
     private lateinit var editTextTitle: EditText
@@ -46,6 +58,13 @@ class CreateVoteFragment : Fragment() {
         editTextTitle = binding.etTitle
         editTextContent = binding.etContent
 
+        setupRecyclerView()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         // ViewModel 가져오기
         viewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
 
@@ -53,12 +72,18 @@ class CreateVoteFragment : Fragment() {
         editTextTitle.setText(viewModel.postTitle)
         editTextContent.setText(viewModel.postContent)
 
-        setupRecyclerView()
-        return binding.root
-    }
+        val imageUrl = viewModel.imageUrl
+        // Glide로 이미지를 로드
+        if (imageUrl.isNotEmpty()) {
+            Glide.with(requireContext())
+                .load(imageUrl)  // viewModel에서 가져온 이미지 URL
+                .into(binding.imgSelected)  // 이미지 뷰에 로드
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+            binding.imageContainer.visibility = View.VISIBLE
+            binding.imgSelected.visibility = View.VISIBLE
+            binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
+            binding.btnImageUpload.visibility = View.INVISIBLE
+        }
 
         binding.backButton.setOnClickListener {
             findNavController().navigateUp() // 이전 Fragment로 이동
@@ -67,40 +92,74 @@ class CreateVoteFragment : Fragment() {
         findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("SELECTED_ITEM")?.let { description ->
             findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("SELECTED_ITEM_IMAGE_URL")
                 ?.let { imageUrl ->
-                    findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
-                        ?.let { category ->
-                            val clothId = arguments?.getInt("CLOTH_ID") ?:0
-                            val kindId = arguments?.getInt("KIND_ID") ?:0
-                            val categoryId = arguments?.getInt("CATEGORY_ID") ?:0
-                            val fitId = arguments?.getInt("FIT_ID") ?:0
-                            val colorId = arguments?.getInt("COLOR_ID") ?:0
-                            val addInfo = arguments?.getString("ADD_INFO") ?:""
+                    findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("POSITION")
+                        ?.let { position ->
+                            findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("CLOTH_ID")
+                                ?.let { clothId ->
+                                    Toast.makeText(
+                                        context,
+                                        "받아온 clothId: $clothId",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    // 이미지 로드 처리
+                                    if (position == -1) {
+                                        // 그냥 사진 등록
+                                        binding.imageContainer.visibility = View.VISIBLE
+                                        binding.imgSelected.visibility = View.VISIBLE
+                                        binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
+                                        binding.btnImageUpload.visibility = View.INVISIBLE
 
-                            // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
-                            val item = Item_load(description, imageUrl,false, clothId, kindId, categoryId, fitId, colorId, addInfo) // 아이템 객체 생성
+                                        viewModel.imageUrl = imageUrl
 
-                            // 이미지 로드 처리
+                                        Glide.with(requireContext())
+                                            .load(viewModel.imageUrl)
+                                            .into(binding.imgSelected)
 
-                            binding.imageContainer.visibility = View.VISIBLE
-                            binding.imgSelected.visibility = View.VISIBLE
-                            binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
-                            binding.btnImageUpload.visibility = View.INVISIBLE
+                                        viewModel.imageUrl = imageUrl
 
-                            Glide.with(requireContext())
-                                .load(item.imageUrl)
-                                .into(binding.imgSelected)
+
+                                    } else if (position in 0..3) { // position이 0, 1, 2, 3일 경우, 해당하는 아이템의 ImageView에 이미지 세팅
+                                        // voteItemList에서 해당하는 position의 아이템 가져오기
+                                        val selectedItem = voteItemList.getOrNull(position)
+
+                                        // 해당 아이템이 존재하면, 그 아이템의 이미지 URL 업데이트
+                                        selectedItem?.let { item ->
+                                            Log.d("check", "${position}의 아이템 존재")
+                                            // 어댑터의 updateImageAtPosition 호출하여 해당 아이템의 이미지 URL을 업데이트
+                                            voteItemAdapter.updateImageAtPosition(
+                                                position,
+                                                imageUrl,
+                                                clothId
+                                            )
+                                            Toast.makeText(
+                                                context,
+                                                "업데이트된 이미지 clothId${voteItemList[position].clothId}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                    }
+                                }
 
                         }
                 }
         }
 
         // 날려버리기
-        findNavController().previousBackStackEntry?.savedStateHandle?.keys()?.forEach {
-            findNavController().previousBackStackEntry?.savedStateHandle?.remove<String>(it)
+        findNavController().previousBackStackEntry?.savedStateHandle?.keys()?.forEach { key ->
+            val value = findNavController().previousBackStackEntry?.savedStateHandle?.get<Any>(key)
+            when (value) {
+                is String -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<String>(key)
+                is Int -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<Int>(key)
+                is Boolean -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<Boolean>(key)
+                is Float -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<Float>(key)
+                is Double -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<Double>(key)
+                else -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<Any>(key)
+            }
         }
 
         // 사진 등록 버튼 이벤트
-        binding.btnImageUpload.setOnClickListener { showPhotoOptions() }
+        binding.btnImageUpload.setOnClickListener { showPhotoOptions(-1) }
 
         // 사진 삭제 버튼 이벤트
         binding.btnRemoveImage.setOnClickListener {
@@ -113,21 +172,122 @@ class CreateVoteFragment : Fragment() {
 
             // 사진 URI도 초기화
             photoUri = null
+            viewModel.imageUrl = ""
+        }
+
+        binding.btnUpload.setOnClickListener{
+            lifecycleScope.launch { sendToServerWithFirebaseUpload() }
+        }
+    }
+
+    private suspend fun uploadImageWithOverlay(uri: Uri): String? {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val fileName = "images/${System.currentTimeMillis()}.jpg"
+        val imageRef = storageRef.child(fileName)
+
+        binding.overlayProgress.visibility = View.VISIBLE
+
+        return suspendCoroutine { continuation ->
+            val uploadTask = imageRef.putFile(uri)
+
+            uploadTask.addOnProgressListener { taskSnapshot ->
+                if (isAdded && view != null) {
+                    val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
+                    val progressBar = binding.overlayProgress.findViewById<ProgressBar>(R.id.overlayProgressBar)
+                    progressBar?.progress = progress
+                    binding.tvOverlayProgress.text = "${progress}%"
+                }
+            }
+
+            uploadTask.addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    binding.overlayProgress.visibility = View.GONE
+                    continuation.resume(downloadUri.toString())
+                }.addOnFailureListener { continuation.resume(null) }
+            }.addOnFailureListener {
+                binding.overlayProgress.visibility = View.GONE
+                continuation.resume(null)
+            }
+        }
+    }
+
+    private suspend fun updateVoteItemImageUrls() {
+        // ViewModel에서 nameList 가져오기
+        val voteItemList = viewModel.nameList.value
+
+        // 각 voteItem의 이미지 URL을 확인하고, http로 시작하지 않으면 Firebase에 업로드
+        voteItemList?.forEachIndexed { position, voteItem ->
+            if (voteItem.imageUrl.isNotEmpty() && !voteItem.imageUrl.startsWith("http")) {
+                // Firebase에 이미지 업로드
+                val newImageUrl = uploadImageWithOverlay(Uri.parse(voteItem.imageUrl))
+                if (newImageUrl != null) {
+                    // 이미지 URL 업데이트
+                    viewModel.updateImageAtPosition(position, newImageUrl)
+                } else {
+                    Log.e("CreateVoteFragment", "Firebase 이미지 업로드 실패")
+                }
+            }
+        }
+
+        // viewModel.imageUrl 확인하고, http로 시작하지 않으면 Firebase에 업로드
+        if (viewModel.imageUrl.isNotEmpty() && !viewModel.imageUrl.startsWith("http")) {
+            // Firebase에 이미지 업로드
+            val newImageUrl = uploadImageWithOverlay(Uri.parse(viewModel.imageUrl))
+            if (newImageUrl != null) {
+                // viewModel의 imageUrl 업데이트
+                viewModel.imageUrl = newImageUrl
+                Log.d("CreateVoteFragment", "viewModel.imageUrl 업데이트 완료: $newImageUrl")
+            } else {
+                Log.e("CreateVoteFragment", "Firebase 이미지 업로드 실패: viewModel.imageUrl")
+            }
+        }
+    }
+
+    private suspend fun sendToServerWithFirebaseUpload() {
+        // nameList에서 각 VoteItem에 대해 이미지 URL이 http로 시작하지 않으면 Firebase에 업로드
+        updateVoteItemImageUrls()
+
+        // 서버로 요청 보낼 준비
+        val voteItems = viewModel.nameList.value ?: return
+        val voteRequest= VoteRequest(
+            userId = 1,
+            title = binding.etTitle.text.toString(),
+            body = binding.etContent.text.toString(),
+            imageUrl = viewModel.imageUrl,
+            optionList = voteItems
+        )
+
+        val voteService = RetrofitClient.createService(VoteService::class.java)
+        try {
+            // 서버 요청 보내기
+            val response = voteService.createVote(voteRequest)
+            if (response.isSuccessful) {
+                findNavController().navigate(R.id.chatFragment)
+                Log.d("CreateVoteFragment", "업로드 성공")
+            } else {
+                Log.e("CreateVoteFragment", "업로드 실패: ${response.code()} - ${response.errorBody()?.string()}")
+            }
+        } catch (e: Exception) {
+            Log.e("CreateVoteFragment", "서버 요청 중 예외 발생: ${e.message}", e)
         }
     }
 
 
     private fun setupRecyclerView() {
         if (voteItemList.isEmpty()) {
-            voteItemList.add(VoteItem(id = 1, imageUrl = "", name = "항목 입력"))
+            voteItemList.add(VoteItem(clothId = 0, imageUrl = "", name = "항목 입력"))
         }
 
         voteItemAdapter = VoteItemAdapter(
             voteItems = voteItemList,
-            onItemClick = { showPhotoOptions() },
+            onItemClick = { position -> showPhotoOptions(position) },
             onAddClick = {
                 addNewVoteItem()
                 setRecyclerViewHeightBasedOnItems(binding.voteItemRecyclerView)
+            },
+            onTextChange = { position, text ->
+                voteItemList[position].name = text // Update the voteItem name
+                viewModel.nameList.value = voteItemList // Update ViewModel with the new list
             }
         )
 
@@ -142,7 +302,7 @@ class CreateVoteFragment : Fragment() {
         if (voteItemList.size >= 4) {
             return  // 4개 이상이면 추가 안 함
         }
-        voteItemList.add(VoteItem(id = voteItemList.size + 1, imageUrl = "", name = "항목 입력"))
+        voteItemList.add(VoteItem(clothId = 0, imageUrl = "", name = "항목 입력"))
         voteItemAdapter.notifyItemInserted(voteItemList.size - 1)
 
         // 만약 4개가 되어서 추가 버튼이 사라져야 한다면 마지막 아이템 삭제
@@ -155,11 +315,19 @@ class CreateVoteFragment : Fragment() {
     // ✅ TakePictureLauncher - photoUri가 null이 아니면만 처리
     private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success && photoUri != null) {
-            binding.imageContainer.visibility = View.VISIBLE
-            binding.imgSelected.visibility = View.VISIBLE
-            binding.imgSelected.setImageURI(photoUri) // 촬영한 사진 표시
-            binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
-            binding.btnImageUpload.visibility = View.INVISIBLE
+            if (currentPosition == -1) {
+                // position이 -1이면 binding.imgSelected에 사진 로드
+                binding.imgSelected.setImageURI(photoUri)
+                binding.imageContainer.visibility = View.VISIBLE
+                binding.imgSelected.visibility = View.VISIBLE
+                binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
+                binding.btnImageUpload.visibility = View.INVISIBLE
+            } else {
+                // position이 0, 1, 2 등일 경우 해당 voteItem에 이미지 로드
+                voteItemList[currentPosition].imageUrl = photoUri.toString()
+                voteItemAdapter.notifyItemChanged(currentPosition)
+            }
+
             Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "사진 촬영 실패", Toast.LENGTH_SHORT).show()
@@ -171,67 +339,39 @@ class CreateVoteFragment : Fragment() {
         uri?.let {
             val savedPath = saveImageToInternalStorage(it)
             if (savedPath != null) {
-                binding.imageContainer.visibility = View.VISIBLE
-                binding.imgSelected.visibility = View.VISIBLE
-                binding.imgSelected.setImageURI(it) // ✅ 직접 선택한 URI 사용
-                binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
-                binding.btnImageUpload.visibility = View.INVISIBLE
-                saveImagePath(savedPath)
+                if (currentPosition == -1) {
+                    // position이 -1이면 binding.imgSelected에 사진 로드
+                    binding.imgSelected.setImageURI(it)
+                    binding.imageContainer.visibility = View.VISIBLE
+                    binding.imgSelected.visibility = View.VISIBLE
+                    binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
+                    binding.btnImageUpload.visibility = View.INVISIBLE
+                } else {
+                    // position이 0, 1, 2 등일 경우 해당 voteItem에 이미지 로드
+                    voteItemList[currentPosition].imageUrl = it.toString()
+                    voteItemAdapter.notifyItemChanged(currentPosition)
+                }
             } else {
                 Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun showPhotoOptions() {
+    private fun showPhotoOptions(position: Int) {
+        currentPosition = position
         val votePopup = VotePopupDialog(
-            onTakePhoto = { takePhoto() },
-            onChoosePhoto = { selectImageFromGallery() },
-            onLoadItem = { findNavController().navigate(R.id.loadCategoryFragment) },
+            onTakePhoto = { takePhoto(position) },
+            onChoosePhoto = { selectImageFromGallery(position) },
+            onLoadItem = {
+                val action = CreateVoteFragmentDirections.actionCreateVoteFragmentToLoadCategoryFragment(position)
+                findNavController().navigate(action) },
             onCancel = { /* 취소 버튼 동작 */ }
         )
         votePopup.show(parentFragmentManager, "VotePopupDialog")
     }
 
-//    private fun showPhotoOptionsItem(position: Int) {
-//        val votePopup = VotePopupDialog(
-//            onTakePhoto = { takePhotoForItem(position) },
-//            onChoosePhoto = { selectImageForItem(position) },
-//            onLoadItem = { findNavController().navigate(R.id.loadCategoryFragment) },
-//            onCancel = { /* 취소 버튼 동작 */ }
-//        )
-//        votePopup.show(parentFragmentManager, "VotePopupDialog")
-//    }
-//
-//    private fun takePhotoForItem(position: Int) {
-//        try {
-//            val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-//            val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//            val photoFile = File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
-//
-//            val uri = FileProvider.getUriForFile(
-//                requireContext(),
-//                "${requireContext().packageName}.fileprovider",
-//                photoFile
-//            )
-//
-//            photoUri = uri
-//            takePictureForItemLauncher.launch(uri to position)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Toast.makeText(requireContext(), "사진 촬영 준비 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-//        }
-//    }
-//
-//    private fun selectImageForItem(position: Int) {
-//        pickImageForItemLauncher.launch(position)
-//    }
 
-
-
-
-
-    private fun takePhoto() {
+    private fun takePhoto(position: Int) {
         try {
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
             val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -252,7 +392,7 @@ class CreateVoteFragment : Fragment() {
     }
 
 
-    private fun selectImageFromGallery() {
+    private fun selectImageFromGallery(position: Int) {
         pickImageLauncher.launch("image/*")
     }
 
@@ -274,14 +414,9 @@ class CreateVoteFragment : Fragment() {
         }
     }
 
-    private fun saveImagePath(path: String) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-        preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
-    }
-
     fun setRecyclerViewHeightBasedOnItems(recyclerView: RecyclerView) {
         val adapter = recyclerView.adapter ?: return
-        val layoutManager = recyclerView.layoutManager ?: return
+//        val layoutManager = recyclerView.layoutManager ?: return
 
         recyclerView.post {
             var totalHeight = 0
@@ -303,13 +438,8 @@ class CreateVoteFragment : Fragment() {
             val layoutParams = recyclerView.layoutParams
             layoutParams.height = Math.min(totalHeight, MAX_HEIGHT)
             recyclerView.layoutParams = layoutParams
-
-//            val layoutParams = recyclerView.layoutParams
-//            layoutParams.height = totalHeight
-//            recyclerView.layoutParams = layoutParams
         }
     }
-
 
 
     override fun onDestroyView() {

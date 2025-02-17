@@ -1,11 +1,9 @@
 package com.umc.upstyle.data.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.umc.upstyle.data.model.ClothIdResponse
-import com.umc.upstyle.data.model.ClothRequestDTO
 import com.umc.upstyle.data.model.ClothRequestDesDTO
 
 class ResponseViewModel : ViewModel() {
@@ -19,12 +17,6 @@ class ResponseViewModel : ViewModel() {
     private val _clothIDList = MutableLiveData<MutableList<ClothIdResponse>>()
     val clothIDList: LiveData<MutableList<ClothIdResponse>> = _clothIDList
 
-    private val _categoryData = MutableLiveData<Map<String, String>>()
-    val categoryData: LiveData<Map<String, String>> = _categoryData
-
-    // ✅ Toast 메시지를 위한 LiveData 추가
-    private val _toastMessage = MutableLiveData<String>()
-    val toastMessage: LiveData<String> = _toastMessage
 
     init {
         resetData()
@@ -63,16 +55,9 @@ class ResponseViewModel : ViewModel() {
         _clothList.value = currentList
         _clothIDList.value = currentIDList
 
-        // ✅ 추가된 DTO 정보를 Toast 메시지로 설정
-        _toastMessage.value = "새로운 아이템 추가됨: ${cloth.clothId} - ${cloth.additionalInfo}"
     }
 
 
-    fun updateCategory(category: String, data: String) {
-        val currentData = _categoryData.value?.toMutableMap() ?: mutableMapOf()
-        currentData[category] = data
-        _categoryData.value = currentData
-    }
 
     // ✅ ViewModel의 데이터를 초기화하는 함수 추가
     fun clearData() {
@@ -83,13 +68,5 @@ class ResponseViewModel : ViewModel() {
         _imageUris.value = emptyList()
         _clothList.value = mutableListOf()
         _clothIDList.value = mutableListOf()
-        _categoryData.value = mapOf(
-            "OUTER" to "없음",
-            "TOP" to "없음",
-            "BOTTOM" to "없음",
-            "SHOES" to "없음",
-            "BAG" to "없음",
-            "OTHER" to "없음"
-        )
     }
 }

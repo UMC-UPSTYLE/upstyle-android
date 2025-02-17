@@ -48,8 +48,15 @@ class VoteFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.voteRecyclerView.requestLayout()
+
+        PostRepository.fetchPosts { postList ->
+            binding.voteRecyclerView.adapter = PostAdapter(postList) { post ->
+                listener?.onVoteSelected(post.id, post.title, post.totalResponseCount)
+                Log.d("Retrofit", "id 전달 성공!")
+            }
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
