@@ -1,8 +1,14 @@
-<ScrollView android:id="@+id/todayOotdFragment"
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/todayOotdFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/background_black">
+        android:background="@color/background_black"
+        tools:ignore="MissingConstraints">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -382,3 +389,32 @@
     </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+
+    <!-- Overlay Progress -->
+    <FrameLayout
+        android:id="@+id/overlayProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/overlayProgressBar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/main_color_1"/>
+
+        <TextView
+            android:id="@+id/tvOverlayProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0%"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"/>
+    </FrameLayout>
+</FrameLayout>
