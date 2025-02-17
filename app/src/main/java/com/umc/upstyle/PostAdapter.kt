@@ -20,20 +20,32 @@ class PostAdapter(
             tvTitle.text = post.title
             tvVoteCount.text = "${post.totalResponseCount}명 투표"
 
-            itemView.setOnClickListener {
-                onPostClick(post) // 클릭 이벤트 실행
-            }
+//            itemView.setOnClickListener {
+//                onPostClick(post) // 클릭 이벤트 실행
+//            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_post, parent, false)
-        return PostViewHolder(view)
+        val holder = PostViewHolder(view)
+
+        // 클릭 리스너를 여기서 한 번만 설정
+        holder.itemView.setOnClickListener {
+            val position = holder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                onPostClick(postList[position])
+            }
+        }
+
+        return holder
     }
+
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(postList[position])
+
     }
 
     override fun getItemCount(): Int = postList.size

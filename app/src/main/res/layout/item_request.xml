@@ -17,11 +17,11 @@
         android:paddingStart="24dp"
         android:paddingEnd="16dp"
         android:paddingTop="16dp"
+        android:clickable="false"
+        android:focusable="false"
         android:layout_marginBottom="12dp"
         android:paddingBottom="16dp"
         android:background="@drawable/bg_post_gray"
-        android:clickable="true"
-        android:focusable="true"
         android:focusableInTouchMode="false">>
 
         <TextView
