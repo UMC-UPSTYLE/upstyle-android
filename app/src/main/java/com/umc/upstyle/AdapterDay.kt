@@ -167,7 +167,9 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
                     override fun onResponse(call: Call<ApiResponse<OOTDCalendar>>, response: Response<ApiResponse<OOTDCalendar>>) {
                         if (response.isSuccessful) {
                             response.body()?.result?.let { ootdCalendar ->
-                                updateOOTDData(ootdCalendar.ootdPreviewList)
+                                // 최신 데이터 순으로 정렬 후 업데이트
+                                val sortedList = ootdCalendar.ootdPreviewList.sortedByDescending { it.id }
+                                updateOOTDData(sortedList)
                             }
                         }
                     }
@@ -184,12 +186,16 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
     // OOTD 데이터를 저장하는 함수
     fun updateOOTDData(ootdList: List<OOTDPreview>) {
         for (ootd in ootdList) {
-            if (!ootdMap.containsKey(ootd.date)) { // 중복 방지
+            val existingData = ootdMap[ootd.date]
+
+            // 기존 데이터보다 id(또는 createdAt)가 더 큰 경우 최신 데이터로 덮어쓰기
+            if (existingData == null || ootd.id > existingData.first) {
                 ootdMap[ootd.date] = Pair(ootd.id, ootd.imageUrl)
             }
         }
         notifyDataSetChanged()
     }
+
 
     // 날짜를 기반으로 OOTD ID 가져오는 함수
     private fun getOOTDIdByDate(dateKey: String): Int? {
