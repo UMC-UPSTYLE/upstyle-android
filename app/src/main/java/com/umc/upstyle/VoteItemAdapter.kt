@@ -1,17 +1,20 @@
-package com.umc.upstyle.adapter
+package com.umc.upstyle
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.umc.upstyle.databinding.ItemVoteBinding
-import com.umc.upstyle.model.VoteItem
+import com.umc.upstyle.data.model.VoteItem
 
 class VoteItemAdapter(
     private val voteItems: MutableList<VoteItem>,
     private val onItemClick: (Int) -> Unit,
-    private val onAddClick: () -> Unit
+    private val onAddClick: () -> Unit,
+    private val onTextChange: (Int, String) -> Unit // Callback to handle text changes
 ) : RecyclerView.Adapter<VoteItemAdapter.VoteItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoteItemViewHolder {
@@ -31,17 +34,42 @@ class VoteItemAdapter(
         return if (voteItems.size >= 4) voteItems.size else voteItems.size + 1
     }
 
+    // 아이템의 이미지 URL을 업데이트하는 메서드
+    fun updateImageAtPosition(position: Int, newImageUrl: String, clothId: Int = 0) {
+        try {
+            if (position in voteItems.indices) {
+                voteItems[position].imageUrl = newImageUrl
+                voteItems[position].clothId = clothId
+                notifyItemChanged(position) // 해당 아이템만 갱신
+                Log.d("VoteItemAdapter", "position: $position 갱신 완료 ${voteItems[position].imageUrl} 입니다")
+            } else {
+                Log.e("VoteItemAdapter", "Invalid position: $position, voteItems size: ${voteItems.size}")
+            }
+        } catch (e: Exception) {
+            Log.e("VoteItemAdapter", "Error updating image at position $position: ${e.message}", e)
+        }
+    }
+
 
     inner class VoteItemViewHolder(private val binding: ItemVoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(voteItem: VoteItem) {
-            // ✅ Glide를 사용하여 이미지 로드
-            Glide.with(binding.root.context)
-                .load(voteItem.imageUrl) // `imageUrl`이 String일 경우
-                .into(binding.ivVoteItemImage)
+            if (voteItem.imageUrl.isNotEmpty()) {
+                Glide.with(binding.root.context)
+                    .load(voteItem.imageUrl)  // viewModel에서 가져온 이미지 URL
+                    .into(binding.ivVoteItemImage)  // 이미지 뷰에 로드
 
-            binding.etVoteItemText.setText(voteItem.name) // ✅ EditText 값 설정
+                binding.icPicture.visibility = View.GONE
+            }
+
+            binding.etVoteItemText.setText(voteItem.name) // EditText 값 설정
+
+            // Add text change listener to update the value in the ViewModel or List
+            binding.etVoteItemText.addTextChangedListener {
+                onTextChange(adapterPosition, it.toString())  // Notify when text changes
+            }
+
             binding.root.setOnClickListener { onItemClick(adapterPosition) }
         }
 
@@ -59,6 +87,6 @@ class VoteItemAdapter(
                 binding.root.setOnClickListener { onAddClick() }
             }
         }
-
     }
 }
+
