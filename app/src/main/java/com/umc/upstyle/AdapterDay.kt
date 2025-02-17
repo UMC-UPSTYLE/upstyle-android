@@ -1,18 +1,21 @@
 package com.umc.upstyle
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.OOTDCalendar
 import com.umc.upstyle.data.model.OOTDPreview
@@ -23,6 +26,7 @@ import java.util.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.bumptech.glide.request.target.Target
 
 class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Date>) :
     RecyclerView.Adapter<AdapterDay.DayView>() {
@@ -79,18 +83,13 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
             }
         }
 
-//        // OOTD 이미지 적용
-//        val imageUrl = ootdMap[dateKey]?.second
-//        if (imageUrl != null) {
-//            loadBackgroundImage(holder.binding.itemDayLayout, imageUrl)
-//        } else {
-//            holder.binding.itemDayLayout.setBackgroundResource(R.drawable.bg_other_day)
-//        }
+
 
         // OOTD 이미지 적용
         val imageUrl = ootdMap[dateKey]?.second
         if (imageUrl != null) {
-            loadBackgroundImage(holder.binding.itemDayImage, imageUrl)
+            loadBackgroundImage(holder.binding.itemDayImage, holder.binding.itemDayText, imageUrl)
+            holder.binding.itemDayText.text = currentDay.toString()
         } else {
             holder.binding.itemDayImage.visibility = View.GONE // 이미지 없으면 숨김
         }
@@ -200,7 +199,12 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
     }
 
 
-    private fun loadBackgroundImage(imageView: ImageView, url: String) {
+    private fun loadBackgroundImage(imageView: ImageView, textView: TextView, url: String?) {
+        if (url.isNullOrEmpty()) {
+            imageView.visibility = View.GONE
+            textView.setTextColor(Color.BLACK) // 이미지가 없을 경우 검정색
+            return
+        }
 
         imageView.visibility = View.VISIBLE // 이미지뷰 표시
 
@@ -208,7 +212,29 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
             .load(url)
             .placeholder(R.drawable.bg_other_day) // 기본 배경 추가
             .error(R.drawable.bg_other_day) // 오류 시 기본 배경 유지
-            .into(imageView) // ImageView에 직접 로드
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    textView.setTextColor(Color.BLACK) // 이미지 로드 실패 시 검정색
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    textView.setTextColor(Color.WHITE) // 이미지 로드 성공 시 흰색
+                    return false
+                }
+            })
+            .into(imageView)
     }
 
 

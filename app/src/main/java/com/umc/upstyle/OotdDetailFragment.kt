@@ -101,6 +101,7 @@ class OotdDetailFragment : Fragment() {
     }
 
     private fun displayImage(imageUrl: String) {
+        Log.e("DEBUG", "imageUrl: $imageUrl")
         Glide.with(this)
             .load(imageUrl)
             .diskCacheStrategy(DiskCacheStrategy.ALL) // 캐싱 문제 해결
