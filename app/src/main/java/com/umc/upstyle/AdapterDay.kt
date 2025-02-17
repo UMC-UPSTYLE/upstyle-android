@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -61,9 +62,13 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
                 .show()
             val context = holder.binding.root.context
             val ootdId = getOOTDIdByDate(dateKey)
+            val ootdImage = getOOTDImageByDate(dateKey)
 
             if (ootdId != null) {
-                val bundle = Bundle().apply { putInt("SELECTED_OOTD_ID", ootdId) }
+                val bundle = Bundle().apply {
+                    putInt("SELECTED_OOTD_ID", ootdId)
+                    putString("SELECTED_OOTD_IMAGE", ootdImage)
+                }
                 val navController = Navigation.findNavController(holder.binding.root)
                 navController.navigate(R.id.ootdDetailFragment, bundle)
             } else {
@@ -74,14 +79,21 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
             }
         }
 
+//        // OOTD 이미지 적용
+//        val imageUrl = ootdMap[dateKey]?.second
+//        if (imageUrl != null) {
+//            loadBackgroundImage(holder.binding.itemDayLayout, imageUrl)
+//        } else {
+//            holder.binding.itemDayLayout.setBackgroundResource(R.drawable.bg_other_day)
+//        }
+
         // OOTD 이미지 적용
         val imageUrl = ootdMap[dateKey]?.second
         if (imageUrl != null) {
-            loadBackgroundImage(holder.binding.itemDayLayout, imageUrl)
+            loadBackgroundImage(holder.binding.itemDayImage, imageUrl)
         } else {
-            holder.binding.itemDayLayout.setBackgroundResource(R.drawable.bg_other_day)
+            holder.binding.itemDayImage.visibility = View.GONE // 이미지 없으면 숨김
         }
-
 
         // 현재 아이템의 달과 비교
         val isOtherMonth = tempMonth != currentDate.month
@@ -182,22 +194,21 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
         return ootdMap[dateKey]?.first // 날짜를 기반으로 OOTD ID 반환
     }
 
+    // 날짜를 기반으로 OOTD 이미지 가져오는 함수
+    private fun getOOTDImageByDate(dateKey: String): String? {
+        return ootdMap[dateKey]?.second // 날짜를 기반으로 OOTD 이미지 반환
+    }
 
-    private fun loadBackgroundImage(view: View, url: String) {
-        val cornerRadius = 40
 
-        Glide.with(view.context)
+    private fun loadBackgroundImage(imageView: ImageView, url: String) {
+
+        imageView.visibility = View.VISIBLE // 이미지뷰 표시
+
+        Glide.with(imageView.context)
             .load(url)
-            .apply(RequestOptions().transform(RoundedCorners(cornerRadius)))
-            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
-                override fun onResourceReady(resource: android.graphics.drawable.Drawable, transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?) {
-                    view.background = resource
-                }
-
-                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
-                    view.background = placeholder
-                }
-            })
+            .placeholder(R.drawable.bg_other_day) // 기본 배경 추가
+            .error(R.drawable.bg_other_day) // 오류 시 기본 배경 유지
+            .into(imageView) // ImageView에 직접 로드
     }
 
 

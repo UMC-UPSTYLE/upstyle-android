@@ -24,10 +24,11 @@
     <!-- OOTD 이미지 -->
     <ImageView
         android:id="@+id/item_day_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:visibility="gone"
+        android:visibility="invisible"
+        android:background="@drawable/bg_other_day"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_day_text"
