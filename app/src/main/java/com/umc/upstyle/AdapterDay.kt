@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.OOTDCalendar
 import com.umc.upstyle.data.model.OOTDPreview
@@ -208,10 +211,14 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
 
         imageView.visibility = View.VISIBLE // 이미지뷰 표시
 
+        val requestOptions = RequestOptions()
+            .transform(CenterCrop(), RoundedCorners(30)) // 둥글게 만들기
+            .placeholder(R.drawable.bg_other_day) // 기본 배경 추가
+            .error(R.drawable.bg_other_day) // 로드 실패 시 기본 배경 유지
+
         Glide.with(imageView.context)
             .load(url)
-            .placeholder(R.drawable.bg_other_day) // 기본 배경 추가
-            .error(R.drawable.bg_other_day) // 오류 시 기본 배경 유지
+            .apply(requestOptions)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
