@@ -158,6 +158,7 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
         return ROW * 7
     }
 
+    // ootd 데이터 가져오기
     fun fetchOOTDDataFromAPI(userId: Int) {
         val apiService = RetrofitClient.createService(OotdApiService::class.java)
 
@@ -188,7 +189,7 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
         for (ootd in ootdList) {
             val existingData = ootdMap[ootd.date]
 
-            // 기존 데이터보다 id(또는 createdAt)가 더 큰 경우 최신 데이터로 덮어쓰기
+            // 기존 데이터보다 id가 더 큰 경우 최신 데이터로 덮어쓰기
             if (existingData == null || ootd.id > existingData.first) {
                 ootdMap[ootd.date] = Pair(ootd.id, ootd.imageUrl)
             }
@@ -207,7 +208,7 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
         return ootdMap[dateKey]?.second // 날짜를 기반으로 OOTD 이미지 반환
     }
 
-
+    // 캘린더에 미리보기 이미지 로드
     private fun loadBackgroundImage(imageView: ImageView, textView: TextView, url: String?) {
         if (url.isNullOrEmpty()) {
             imageView.visibility = View.GONE

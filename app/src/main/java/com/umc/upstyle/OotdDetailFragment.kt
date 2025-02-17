@@ -54,6 +54,7 @@ class OotdDetailFragment : Fragment() {
             override fun onResponse(call: Call<ApiResponse<Ootd>>, response: Response<ApiResponse<Ootd>>) {
                 if (response.isSuccessful) {
                     response.body()?.result?.let { ootd ->
+                        Log.e("API_RESPONSE", "Fetched OOTD: $ootd")
                         displayOotdData(ootd)
                     }
                 } else {
