@@ -130,6 +130,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 )
 
                 clothViewModel.addClothRequest(clothRequestDTO)
+                Toast.makeText(requireContext(), "아이템 추가 $clothRequestDTO", Toast.LENGTH_SHORT).show()
 
             }
             // UI 업데이트
@@ -145,9 +146,11 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             try {
                 val uploadedImageUrls = mutableListOf<String>()
 
+                // ProgressBar 표시
+                binding.overlayProgress.visibility = View.VISIBLE
+
                 // 이미지 URI가 있으면 Firebase에 업로드
                 if (imageUri != null) {
-                    // 이미지 업로드가 완료되면 uploadedImageUrls를 업데이트
                     val imageUrl = uploadImageToFirebase(imageUri)
                     if (imageUrl != null) {
                         uploadedImageUrls.add(imageUrl)
@@ -160,6 +163,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 // 만약 이미지 업로드에 실패했다면 바로 종료
                 if (uploadedImageUrls.isEmpty()) {
                     Log.e("Upload", "이미지 업로드에 실패했습니다.")
+                    binding.overlayProgress.visibility = View.GONE
                     return@launch
                 }
 
@@ -167,20 +171,27 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 val updatedRequest = request.copy(imageUrls = uploadedImageUrls)
 
                 Log.d("Request Update", "Request Update 반영 성공")
+
                 // 서버로 요청 전송
                 Log.d("Retrofit", "Retrofit 서버 전달 시도")
                 Log.d("Retrofit", "$updatedRequest")
                 sendToServer(updatedRequest)
+
+                // 성공 시 ProgressBar 숨기기
+                binding.overlayProgress.visibility = View.GONE
+
                 Toast.makeText(requireContext(), "OOTD 업로드 성공", Toast.LENGTH_SHORT).show()
+                Log.d("Retrofit", "OOTD 업로드 성공")
                 findNavController().navigate(R.id.action_todayOotdFragment_to_mainActivity)
 
             } catch (e: Exception) {
                 Log.e("Retrofit", "에러 발생: ${e.message}")
+                binding.overlayProgress.visibility = View.GONE
             }
         }
     }
 
-    // Firebase에 이미지를 업로드하는 함수 (output으로 반환)
+    // Firebase에 이미지를 업로드하면서 ProgressBar 업데이트
     private suspend fun uploadImageToFirebase(uri: Uri): String? {
         return try {
             val storageRef = FirebaseStorage.getInstance().reference
@@ -189,34 +200,34 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
             val uploadTask = imageRef.putFile(uri)
 
-            // 업로드 진행 상황을 처리하려면, suspendCoroutine을 사용하여 비동기 작업을 처리할 수 있습니다.
+            // 업로드 진행 상황을 UI에 표시
             uploadTask.addOnProgressListener { taskSnapshot ->
                 val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
-                // 진행률 표시 (예: ProgressBar)
+                binding.overlayProgressBar.progress = progress
+                binding.tvOverlayProgress.text = "${progress}%"
                 Log.d("FirebaseStorage", "Upload progress: $progress%")
             }
 
-            // 업로드 성공 후 downloadUrl을 가져오기
-            val downloadUri = suspendCoroutine<String?> { cont ->
+            // 업로드 성공 후 다운로드 URL 반환
+            suspendCoroutine { continuation ->
                 uploadTask.addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener { uri ->
-                        cont.resume(uri.toString())
+                        continuation.resume(uri.toString())
                     }.addOnFailureListener { exception ->
                         Log.e("FirebaseStorage", "Download URL Error", exception)
-                        cont.resume(null)
+                        continuation.resume(null)
                     }
                 }.addOnFailureListener { exception ->
                     Log.e("FirebaseStorage", "Upload Error", exception)
-                    cont.resume(null)
+                    continuation.resume(null)
                 }
             }
-
-            downloadUri
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
+
 
 
     // 서버로 OOTDRequest를 전송하는 함수
@@ -271,6 +282,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             )
 
             clothViewModel.addClothRequest(clothRequestDTO)
+            Toast.makeText(requireContext(), "생성한 아이템 $clothRequestDTO", Toast.LENGTH_SHORT).show()
 
         }
 
