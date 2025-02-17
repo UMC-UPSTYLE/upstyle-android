@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.kakao.sdk.user.UserApiClient
 import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
+import com.umc.upstyle.data.network.AuthApiService
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.FragmentAccountBinding
@@ -29,6 +30,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
     private val userApiService = RetrofitClient.createService(UserApiService::class.java)
+    private val authApiService = RetrofitClient.createService(AuthApiService::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -90,35 +92,48 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     }
 
     private fun logout() {
-        UserApiClient.instance.logout { error ->
-            if (error != null) {
-                unlinkKakaoAccount() // 로그아웃 실패 시, 강제 연결 해제 (unlink)
-            } else {
-                clearJwtAndNavigateToLogin() // 로그아웃 후 JWT 삭제 및 로그인 화면 이동
-            }
-        }
-    }
-
-    // 카카오 계정 강제 연결 해제
-    private fun unlinkKakaoAccount() {
-        UserApiClient.instance.unlink { error ->
-            if (error != null) {
-            } else {
-                clearJwtAndNavigateToLogin() // ✅ 계정 연결 해제 후 JWT 삭제 및 로그인 화면 이동
-            }
-        }
-    }
-
-    // JWT 삭제 후 로그인 화면으로 이동
-    private fun clearJwtAndNavigateToLogin() {
         val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
-        sharedPref.edit().remove("jwt_token").apply()
+        val accessToken = sharedPref.getString("kakao_access_token", null)
 
-        // 로그인 화면으로 이동
+        if (accessToken.isNullOrEmpty()) {
+            Log.e("Logout", "🚨 Access Token 없음 → 로그아웃 불가능")
+            clearSessionAndNavigateToLogin()
+            return
+        }
+
+        Log.d("Logout", "🚀 서버 로그아웃 요청 - Access Token 사용")
+        logoutFromServer(accessToken) // ✅ 서버 로그아웃만 실행 (카카오 로그아웃 X)
+    }
+
+    // ✅ 서버 로그아웃 실행
+    private fun logoutFromServer(accessToken: String) {
+        authApiService.logout("Bearer $accessToken").enqueue(object : Callback<ApiResponse<String>> {
+            override fun onResponse(call: Call<ApiResponse<String>>, response: Response<ApiResponse<String>>) {
+                if (response.isSuccessful) {
+                    Log.d("Logout", "✅ 서버 로그아웃 성공")
+                } else {
+                    Log.e("Logout", "❌ 서버 로그아웃 실패: ${response.code()} - ${response.errorBody()?.string()}")
+                }
+                clearSessionAndNavigateToLogin() // 🔹 서버 로그아웃 후 최종 클리어
+            }
+
+            override fun onFailure(call: Call<ApiResponse<String>>, t: Throwable) {
+                Log.e("Logout", "❌ 서버 로그아웃 요청 실패: ${t.message}")
+                clearSessionAndNavigateToLogin() // 🔹 서버 로그아웃 실패해도 클리어 실행
+            }
+        })
+    }
+
+    // ✅ JWT 및 Access Token 삭제 후 로그인 화면 이동
+    private fun clearSessionAndNavigateToLogin() {
+        val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
+        sharedPref.edit().clear().apply()
+
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
-        requireActivity().finish() // 현재 액티비티 종료
+        requireActivity().finish()
     }
+
 
 
     override fun onDestroyView() {

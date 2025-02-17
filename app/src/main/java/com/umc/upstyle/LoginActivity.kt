@@ -1,10 +1,12 @@
 package com.umc.upstyle
 
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.umc.upstyle.data.network.AuthApiService
@@ -26,34 +28,76 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ 자동 로그인 확인
-        checkAutoLogin()
-
-        // ✅ 카카오 로그인 버튼 클릭 시 로그인 시작
-        binding.btKakaoLogin.setOnClickListener {
-            logoutAndStartKakaoLogin() // ✅ 기존 JWT 삭제 후 로그인 시작
-        }
-    }
-
-    // ✅ 자동 로그인 확인
-    private fun checkAutoLogin() {
         val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
         val jwtToken = sharedPref.getString("jwt_token", null)
+        val kakaoAccessToken = sharedPref.getString("kakao_access_token", null) // ✅ Access Token 확인
 
-        if (!jwtToken.isNullOrEmpty()) {
-            Log.d("AutoLogin", "✅ 자동 로그인 진행: JWT 존재")
-            navigateToMainActivity() // ✅ 토큰이 있으면 바로 메인 화면으로 이동
+        // ✅ 로그 추가해서 SharedPreferences 상태 확인
+        Log.d("Login", "📌 앱 실행 시 SharedPreferences 상태")
+        Log.d("Login", "📌 jwt_token: $jwtToken")
+        Log.d("Login", "📌 kakao_access_token: $kakaoAccessToken")
+
+
+        if (!jwtToken.isNullOrEmpty() && !kakaoAccessToken.isNullOrEmpty()) {
+            Log.d("Login", "✅ JWT 및 Access Token 존재 → Access Token 검증 시작")
+
+            // ✅ Access Token이 유효한지 먼저 확인 (만료되었을 경우만 갱신)
+            UserApiClient.instance.accessTokenInfo { token, error ->
+                if (error != null) {
+                    Log.e("Login", "❌ Access Token 유효성 검사 실패: ${error.message}")
+                    Log.d("Login", "🔄 Access Token 만료 → 갱신 시도")
+                    checkAndRefreshAccessToken()
+                } else {
+                    Log.d("Login", "✅ Access Token 유효함 → 자동 로그인 진행")
+                    navigateToMainActivity()
+                }
+            }
         } else {
-            Log.d("AutoLogin", "❌ 자동 로그인 불가: JWT 없음")
+            Log.d("Login", "❌ 자동 로그인 불가: JWT & Access Token 없음 또는 로그아웃됨")
+        }
+
+
+        binding.btKakaoLogin.setOnClickListener {
+            logoutAndStartKakaoLogin()
         }
     }
 
 
-    // ✅ 기존 JWT 삭제 후 카카오 로그인 시작
+    private fun checkAndRefreshAccessToken() {
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("Token", "❌ Access Token 확인 실패: ${error.message}")
+                Log.d("Token", "🔄 Access Token 만료됨 → 새 로그인 필요")
+                logoutAndStartKakaoLogin() // ✅ 기존 Access Token 삭제 후 새 로그인
+            } else if (token != null) {
+                Log.d("Token", "✅ Access Token 유효함, 만료까지 남은 시간: ${token.expiresIn}초")
+
+                // ✅ 새로운 Access Token을 저장하여 최신 상태 유지
+                val storedAccessToken = getStoredAccessToken()
+                if (storedAccessToken != null) {
+                    saveAccessToken(storedAccessToken)
+                } else {
+                    Log.e("Token", "❌ 저장된 Access Token이 없음")
+                }
+            }
+        }
+    }
+
+
+    private fun getStoredAccessToken(): String? {
+        val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
+        return sharedPref.getString("kakao_access_token", null) // ✅ 저장된 Access Token 반환
+    }
+
+
+
+    // 기존 JWT 삭제 후 카카오 로그인 시작
     private fun logoutAndStartKakaoLogin() {
         val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
-        sharedPref.edit().remove("jwt_token").apply()
-        Log.d("JWT", "✅ 기존 JWT 삭제 완료")
+        val editor = sharedPref.edit()
+        editor.clear()  // ✅ 모든 저장된 값 삭제
+        editor.commit()
+
 
         UserApiClient.instance.logout { error ->
             startKakaoLogin()
@@ -67,7 +111,14 @@ class LoginActivity : AppCompatActivity() {
                 handleKakaoLoginResponse(token, error)
             }
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(this, callback = ::handleKakaoLoginResponse)
+            UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
+                if (error != null) {
+                    Log.e("Login", "❌ 카카오 로그인 실패: ${error.message}")
+                    navigateToLogin() // ✅ 로그인 실패 시 로그인 화면으로 이동
+                } else {
+                    handleKakaoLoginResponse(token, null)
+                }
+            }
         }
     }
 
@@ -83,10 +134,10 @@ class LoginActivity : AppCompatActivity() {
 
     // Access Token 저장
     private fun saveAccessToken(accessToken: String) {
-        val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("kakao_access_token", accessToken)
-        editor.apply()
+        getSharedPreferences("Auth", MODE_PRIVATE)
+            .edit()
+            .putString("kakao_access_token", accessToken)
+            .apply()
     }
 
     // ✅ 사용자 정보 요청 (닉네임 & 이메일)
@@ -107,38 +158,44 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ 백엔드에 Access Token 전송 후 JWT 반환
     private fun sendTokenToServer(kakaoAccessToken: String) {
         Log.d("Login", "백엔드로 AccessToken 전송: $kakaoAccessToken")
 
         authApiService.loginWithKakao(kakaoAccessToken).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful && response.body() != null) {
-                    val jwt = response.body()!!
-                    Log.d("Login", "✅ JWT 수신: $jwt")
-                    saveJwt(jwt)
+                    saveJwt(response.body()!!)
+                    saveAccessToken(kakaoAccessToken)
                     navigateToBodyInfoActivity()
                 } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("Login", "❌ JWT 요청 실패: $errorBody")
+                    Log.e("Login", "❌ JWT 요청 실패: ${response.errorBody()?.string()}")
+                    navigateToLogin() // ✅ JWT 요청 실패 시 로그인 화면으로 이동
                 }
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.e("Login", "❌ JWT 요청 에러: ${t.message}")
+                navigateToLogin() // ✅ 네트워크 오류 발생 시 로그인 화면으로 이동
             }
         })
     }
 
     // ✅ 기존 JWT 삭제 후 새로운 JWT 저장
     private fun saveJwt(jwt: String) {
-        val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.remove("jwt_token") // ✅ 기존 JWT 삭제
-        editor.putString("jwt_token", jwt) // ✅ 새로운 JWT 저장
-        editor.apply()
+        getSharedPreferences("Auth", MODE_PRIVATE)
+            .edit()
+            .putString("jwt_token", jwt)
+            .apply()
 
         Log.d("JWT", "✅ 새로운 JWT 저장 완료")
+    }
+
+    // ✅ 로그인 화면으로 이동하는 함수 추가
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.putExtra("isLogout", true)
+        startActivity(intent)
+        finish()
     }
 
     private fun navigateToMainActivity() {
