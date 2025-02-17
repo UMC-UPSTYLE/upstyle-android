@@ -1,11 +1,9 @@
 package com.umc.upstyle.data.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.umc.upstyle.data.model.ClothIdResponse
-import com.umc.upstyle.data.model.ClothRequestDTO
 import com.umc.upstyle.data.model.ClothRequestDesDTO
 
 class ResponseViewModel : ViewModel() {
