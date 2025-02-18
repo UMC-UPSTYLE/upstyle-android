@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentWebViewBinding
@@ -32,6 +33,15 @@ class WebViewFragment : Fragment(R.layout.fragment_web_view) {
 
         // 뒤로 가기 버튼 클릭 시 WebView에서 뒤로 가도록 설정
         binding.backButton.setOnClickListener {
+            if (binding.webView.canGoBack()) {
+                binding.webView.goBack()  // WebView에서 뒤로 가기
+            } else {
+                findNavController().navigateUp() // 뒤로 가기 버튼을 눌렀을 때 뒤로 가기
+            }
+        }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (binding.webView.canGoBack()) {
                 binding.webView.goBack()  // WebView에서 뒤로 가기
             } else {

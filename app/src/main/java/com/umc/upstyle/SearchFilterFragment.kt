@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -48,6 +49,11 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
             adapter = RecyclerAdapter(loadItemsFromPreferences())
         }
         updateFilterButtonState()
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack(R.id.searchFragment, false)
+        }
     }
 
     override fun onResume() {

@@ -31,7 +31,7 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
             return
         }
 
-        binding.backButton.setOnClickListener { findNavController().navigate(R.id.searchFragment) }
+        binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
 
         setupCategoryOptions()
 

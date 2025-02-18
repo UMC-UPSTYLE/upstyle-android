@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
@@ -30,6 +31,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, Req
         val adapter = TabPagerAdapter(this)
         val voteFragment = VoteFragment()
         val requestFragment = RequestFragment()
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
 
 
         // 리스너 설정

@@ -7,6 +7,7 @@ import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -103,6 +104,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             clothViewModel.clearData()
             findNavController().navigate(R.id.mainFragment)
         }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
     }
 
 

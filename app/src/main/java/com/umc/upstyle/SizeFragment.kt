@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -54,6 +55,12 @@ class SizeFragment : Fragment() {
 
         // 뒤로가기 버튼 클릭 이벤트 설정
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
 
         // 다음 버튼 클릭 시 처리
         binding.nextButton.setOnClickListener {

@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -46,7 +47,12 @@ class SearchItemFragment : Fragment() {
 
         // 뒤로가기 버튼 클릭 이벤트
         binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.searchFragment)
+            findNavController().popBackStack(R.id.searchFragment, false)
+        }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack(R.id.searchFragment, false)
         }
 
         val category = arguments?.getString("category") // 전달된 데이터 수신

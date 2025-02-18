@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kakao.sdk.user.Constants.GENDER
@@ -59,6 +60,11 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
                 Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
             }
         })
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
 
         // 뒤로 가기
         binding.backButton.setOnClickListener { findNavController().navigateUp() }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
@@ -62,6 +63,11 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
 
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {

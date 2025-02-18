@@ -42,7 +42,7 @@ class ClosetResultFragment : Fragment() {
 
         // TextView에 선택된 컬러들 보여주기
         binding.tvSelectedOptions.text = resultText
-        
+
 
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {

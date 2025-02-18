@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
@@ -50,6 +51,11 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         binding.termsOfService.setOnClickListener {
             val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380d68eeedc8911eb1af0") } // URL을 전달
             findNavController().navigate(R.id.webViewFragment, bundle)
+        }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
         }
 
         binding.logoutBtn.setOnClickListener { showLoadItemPopupDialog() }
