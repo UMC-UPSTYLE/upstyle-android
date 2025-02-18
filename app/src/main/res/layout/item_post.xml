@@ -9,8 +9,8 @@
     android:paddingTop="16dp"
     android:layout_marginBottom="12dp"
     android:paddingBottom="16dp"
-    android:clickable="false"
-    android:focusable="false"
+    android:clickable="true"
+    android:focusable="true"
     android:background="@drawable/bg_post_gray">
 
     <TextView
