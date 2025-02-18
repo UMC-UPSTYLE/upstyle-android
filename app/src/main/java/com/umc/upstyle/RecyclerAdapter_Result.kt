@@ -33,9 +33,12 @@ class RecyclerAdapter_Result(
                 .load(item.imageUrl)
                 .into(imageView)
 
-            itemView.setOnClickListener {
+            // ✅ 이미지 클릭 시 이동
+            imageView.setOnClickListener {
+                Log.d("RecyclerView", "Image clicked: ${item.description}")
                 onItemClick(item)
             }
+
         }
     }
 

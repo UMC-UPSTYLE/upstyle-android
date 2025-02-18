@@ -26,13 +26,20 @@ class SearchItemFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var category: String? = null
+    private var kindId: Int? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Safe Args로 전달된 데이터 수신
+
         val args = SearchItemFragmentArgs.fromBundle(requireArguments())
-        category = args.category // Safe Args로 데이터 수신
+        category = args.category // Safe Args로 받은 category
+        kindId = args.kindId // Safe Args로 받은 kindId
+
+        Log.d("SearchItemFragment", "Received category: $category, kindId: $kindId")
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +52,6 @@ class SearchItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 뒤로가기 버튼 클릭 이벤트
         binding.backButton.setOnClickListener {
             findNavController().popBackStack(R.id.searchFragment, false)
         }
@@ -54,6 +60,9 @@ class SearchItemFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack(R.id.searchFragment, false)
         }
+
+
+        binding.titleText.text = category ?: "카테고리 없음"
 
         val category = arguments?.getString("category") // 전달된 데이터 수신
 
@@ -84,12 +93,13 @@ class SearchItemFragment : Fragment() {
         setupRecyclerView(items)
 
         val userId = 1
-        val kindId = getkindId(category)
 
-        // ✅ 서버에서 아이템 불러오기
+        Log.d("SearchItemFragment", "Fetching items for kindId: $kindId")
+
+        // ✅ Safe Args로 받은 kindId를 그대로 사용
         fetchItemsFromCloset(userId, kindId)
-
     }
+
 
     private fun getkindId(category: String?): Int? {
         return when (category) {
@@ -107,64 +117,60 @@ class SearchItemFragment : Fragment() {
 
     private fun setupRecyclerView(items: List<Item_search>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+
+        if (items.isEmpty()) {
+            Log.w("RecyclerView", "No items to display!") // ✅ 로그 추가
+        }
+
         binding.recyclerView.adapter = RecyclerAdapter_Search(items) { selectedItem ->
             navigateToSearchResultFragment(selectedItem)
         }
     }
 
-
-    private fun loadItemsFromPreferences(): List<Item_search> {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-
-        // 해당 카테고리에 맞는 텍스트와 이미지 경로 가져오기
-        val description = preferences.getString(category, "$category 정보 없음")
-        val savedImagePath = preferences.getString("SAVED_IMAGE_PATH", null)
-
-        // 기본 샘플 데이터
-        val itemSearchs = mutableListOf(
-            Item_search("샘플 1", "https://example.com/image1.jpg"),
-            Item_search("샘플 2", "https://example.com/image2.jpg")
-        )
-
-        // 저장된 데이터 추가
-        if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
-            val file = File(savedImagePath)
-            if (file.exists()) {
-                val fileUri = Uri.fromFile(file)
-                itemSearchs.add(0, Item_search(description, fileUri.toString()))
-            }
-        }
-
-        return itemSearchs
-    }
-
-
     private fun fetchItemsFromCloset(userId: Int, kindId: Int?) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        Log.d("CATEGORY_ID", "API 요청 - kindId: $kindId") // ✅ kindId 값 확인
+        Log.d("API_REQUEST", "Fetching items for kindId: $kindId")
 
         apiService.getClosetByCategory(userId, kindId).enqueue(object : retrofit2.Callback<ClosetCategoryResponse> {
             override fun onResponse(call: Call<ClosetCategoryResponse>, response: retrofit2.Response<ClosetCategoryResponse>) {
+                Log.d("API_RESPONSE", "Response Code: ${response.code()}")
+
                 if (response.isSuccessful) {
                     response.body()?.let { closetResponse ->
-                        Log.d("API_RESPONSE", "서버 응답 개수: ${closetResponse.result.clothPreviewList.size}")
+                        Log.d("API_RESPONSE", "Closet Response: ${closetResponse.result.clothPreviewList}")
 
-                        // ✅ 만약 서버에서 필터링이 안 되었다면, 클라이언트에서 수동 필터링
-                        val filteredItems = closetResponse.result.clothPreviewList
-                            .filter { item ->
-                                kindId == null || item.kindId == kindId // 정확하게 kindId 일치 여부 체크
+                        val filteredItems = closetResponse.result.clothPreviewList.mapNotNull { clothPreview ->
+                            // null 또는 "null" 문자열 제거
+                            val categoryName = clothPreview.categoryName?.takeIf { it.lowercase() != "null" }
+                            val fitName = clothPreview.fitName?.takeIf { it.lowercase() != "null" }
+                            val colorName = clothPreview.colorName?.takeIf { it.lowercase() != "null" }
+
+                            // 유효한 값만 리스트에 추가
+                            val description = listOfNotNull(categoryName, fitName, colorName).joinToString(" ")
+
+                            if (categoryName == null) {
+                                Log.w("FILTER", "Skipping item with null categoryName")
+                                return@mapNotNull null
                             }
 
-                            .map { clothPreview ->
-                                val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
-                                val description = "${clothPreview.categoryName} ${clothPreview.fitName} ${clothPreview.colorName}"
-                                Item_search(description, imageUrl)
-                            }
+                            val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
 
-                        Log.d("FILTERED_ITEMS", "필터링된 아이템 개수: ${filteredItems.size}") // ✅ 필터링된 결과 개수 확인
+                            // ✅ categoryId, fitId, colorId 추가
+                            Item_search(
+                                description = description,
+                                imageUrl = imageUrl,
+                                categoryId = clothPreview.categoryId,
+                                fitId = clothPreview.fitId,
+                                colorId = clothPreview.colorId
+                            )
+                        }
 
-                        setupRecyclerView(filteredItems) // ✅ 필터링된 데이터 적용
+                        Log.d("FILTERED_ITEMS", "필터링된 아이템 개수: ${filteredItems.size}")
+
+                        setupRecyclerView(filteredItems)
+                    } ?: run {
+                        Log.e("API_ERROR", "Response Body is Null")
                     }
                 } else {
                     Log.e("API_ERROR", "Error: ${response.errorBody()?.string()}")
@@ -179,15 +185,18 @@ class SearchItemFragment : Fragment() {
 
 
 
+
     private fun navigateToSearchResultFragment(item: Item_search) {
         val action = SearchItemFragmentDirections
             .actionSearchItemFragmentToSearchResultFragment(
                 imageUrl = item.imageUrl,
-                description = item.description // ✅ description 값 전달
+                description = item.description,      // ✅ 여기에 description 추가!
+                categoryId = item.categoryId ?: -1,
+                fitId = item.fitId ?: -1,
+                colorId = item.colorId ?: -1
             )
         findNavController().navigate(action)
     }
-
 
 
 

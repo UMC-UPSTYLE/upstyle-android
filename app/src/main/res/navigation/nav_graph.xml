@@ -238,13 +238,25 @@
         <argument
             android:name="description"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue=""/>
         <argument
             android:name="category"
             app:argType="string"
             android:defaultValue="DEFAULT" />
+        <argument
+            android:name="categoryId"
+            app:argType="integer"
+            android:defaultValue="-1"/>
+        <argument
+            android:name="fitId"
+            app:argType="integer"
+            android:defaultValue="-1"/>
+        <argument
+            android:name="colorId"
+            app:argType="integer"
+            android:defaultValue="-1"/>
         <action
-            android:id="@+id/action_searchResultFragment_to_bookmarkOotdtFragment"
+            android:id="@+id/action_searchResultFragment_to_bookmarkOotdFragment"
             app:destination="@id/bookmarkOotdFragment" />
     </fragment>
 
@@ -254,13 +266,41 @@
         android:label="Closet Item"
         tools:layout="@layout/fragment_bookmark_ootd">
         <argument
+            android:name="kindId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="categoryId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="fitId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="colorId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="categoryName"
+            app:argType="string"
+            android:defaultValue="Unknown" />
+        <argument
+            android:name="fitName"
+            app:argType="string"
+            android:defaultValue="Unknown" />
+        <argument
+            android:name="colorName"
+            app:argType="string"
+            android:defaultValue="Unknown" />
+        <argument
             android:name="imageUrl"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="" />
         <argument
-            android:name="description"
+            android:name="kindName"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="사용자" />
     </fragment>
 
 
@@ -297,6 +337,12 @@
         android:name="com.umc.upstyle.SearchItemFragment"
         android:label="fragment_search_item"
         tools:layout="@layout/fragment_search_item" >
+
+            <argument
+                android:name="kindId"
+                app:argType="integer"
+                android:defaultValue="-1"/> <!--기본값-->
+
         <argument
             android:name="category"
             app:argType="string"
