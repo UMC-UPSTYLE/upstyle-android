@@ -24,12 +24,13 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 공통 클릭 이벤트 처리
-        binding.btnGoToOuter.setOnClickListener { navigateToSearchItemFragment("OUTER") }
-        binding.btnGoToTop.setOnClickListener { navigateToSearchItemFragment("TOP") }
-        binding.btnGoToBottom.setOnClickListener { navigateToSearchItemFragment("BOTTOM") }
-        binding.btnGoToShoes.setOnClickListener { navigateToSearchItemFragment("SHOES") }
-        binding.btnGoToBag.setOnClickListener { navigateToSearchItemFragment("BAG") }
-        binding.btnGoToOther.setOnClickListener { navigateToSearchItemFragment("OTHER") }
+        binding.btnGoToOuter.setOnClickListener { navigateToSearchItemFragment("OUTER", 1) }
+        binding.btnGoToTop.setOnClickListener { navigateToSearchItemFragment("TOP", 2) }
+        binding.btnGoToBottom.setOnClickListener { navigateToSearchItemFragment("BOTTOM", 3) }
+        binding.btnGoToShoes.setOnClickListener { navigateToSearchItemFragment("SHOES", 4) }
+        binding.btnGoToBag.setOnClickListener { navigateToSearchItemFragment("BAG", 5) }
+        binding.btnGoToOther.setOnClickListener { navigateToSearchItemFragment("OTHER", 6) }
+
         binding.categoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.subcategoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
@@ -37,8 +38,9 @@ class SearchFragment : Fragment() {
     }
 
     // Navigation Component를 통한 전환 함수
-    private fun navigateToSearchItemFragment(category: String) {
-        val action = SearchFragmentDirections.actionSearchFragmentToSearchItemFragment(category)
+    private fun navigateToSearchItemFragment(category: String, kindId: Int) {
+        val action = SearchFragmentDirections
+            .actionSearchFragmentToSearchItemFragment(category, kindId)
         findNavController().navigate(action)
     }
 

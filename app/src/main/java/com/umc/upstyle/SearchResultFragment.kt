@@ -1,8 +1,6 @@
 package com.umc.upstyle
 
 import Item_result
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,25 +14,33 @@ import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentSearchResultBinding
 import retrofit2.Call
-import java.io.File
 
 class SearchResultFragment : Fragment() {
 
     private var _binding: FragmentSearchResultBinding? = null
     private val binding get() = _binding!! // Non-nullable로 사용하기 위한 접근자
 
-    private var category: String? = null
+    private var categoryId: Int? = null
+    private var fitId: Int? = null
+    private var colorId: Int? = null
+    private var selectedDescription: String? = null // ✅ 선택한 아이템 설명 저장
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Arguments로 전달된 category 값 가져오기
-        category = arguments?.getString("CATEGORY")
+
+        // ✅ Safe Args를 통해 전달된 데이터 받기
+        val args = SearchResultFragmentArgs.fromBundle(requireArguments())
+        categoryId = args.categoryId
+        fitId = args.fitId
+        colorId = args.colorId
+        selectedDescription = args.description
+
+        Log.d("SearchResultFragment", "Received categoryId: $categoryId, fitId: $fitId, colorId: $colorId, description: $selectedDescription")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        // 뷰 바인딩 초기화
+    ): View {
         _binding = FragmentSearchResultBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,46 +49,21 @@ class SearchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val selectedDescription = arguments?.getString("description") // ✅ 전달된 description 받기
-        val category = arguments?.getString("category") // ✅ category 가져오기
+        Log.d("SearchResultFragment", "Fetching data for categoryId: $categoryId, fitId: $fitId, colorId: $colorId")
 
-
-        // RecyclerView 설정
-        val allItems = loadItemsFromPreferences()
-
-
-        val bundle = Bundle().apply {
-            putString("category", category)
-        }
-
-        // ✅ categoryId 가져오기 (필요 시 사용)
-        val categoryId = arguments?.getInt("categoryId")
-
-
-        // ✅ 선택한 description과 같은 아이템만 필터링
-        val filteredItems = if (!selectedDescription.isNullOrEmpty()) {
-            allItems.filter { it.description == selectedDescription }
-        } else {
-            allItems
-        }
-
-        setupRecyclerView(filteredItems) // ✅ 필터링된 아이템만 RecyclerView에 적용
-
-        // ✅ API 데이터 가져오기 (categoryId가 있을 경우)
+        // ✅ API 데이터 가져오기
         if (categoryId != null) {
-            fetchClothesByCategory(categoryId, selectedDescription)
+            fetchClothesByCategory(categoryId, fitId, colorId)
         }
     }
 
-
-
     private fun setupRecyclerView(items: List<Item_result>) {
-
         // 검색 결과 개수를 UI에 반영
         binding.tvResultCount.text = items.size.toString()
 
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         val adapter = RecyclerAdapter_Result(items) { selectedItem ->
+            Log.d("RecyclerView", "Clicked item: $selectedItem")
             navigateToBookmarkOotdFragment(selectedItem)
         }
         binding.recyclerView.adapter = adapter
@@ -90,74 +71,51 @@ class SearchResultFragment : Fragment() {
     }
 
 
-
-    // 선택한 아이템을 전달하는 함수 추가
-    private fun navigateToBookmarkOotdFragment(selectedItem: Item_result) {
-        val bundle = Bundle().apply {
-            putString("item_name", selectedItem.description)  // 아이템 이름
-            putString("item_image", selectedItem.imageUrl)  // 이미지 URL
-        }
-        findNavController().navigate(R.id.action_searchResultFragment_to_bookmarkOotdtFragment, bundle)
-    }
-
-
-
-
-    override fun onResume() {
-        super.onResume()
-        binding.recyclerView.adapter?.notifyDataSetChanged() // 리사이클러뷰 어댑터 데이터 갱신
-    }
-
-    private fun loadItemsFromPreferences(): List<Item_result> {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-
-        val description = preferences.getString(category, "$category 정보 없음")
-        val savedImagePath = preferences.getString("SAVED_IMAGE_PATH", null)
-
-
-        // 기본 샘플 데이터 -> ui확인용
-        val itemResults = mutableListOf(
-            Item_result("셔츠 슬림 블랙", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"),
-            Item_result("코튼팬츠 오버핏 그레이", "https://sitem.ssgcdn.com/70/26/15/item/1000363152670_i1_750.jpg"),
-            Item_result("무스탕 레귤러 오렌지", "https://m.likeygirl.kr/web/product/big/20231204_000027_LK.jpg")
-
-        )
-
-
-
-        // 저장된 데이터 추가
-        if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
-            itemResults.add(Item_result(description, savedImagePath))
-        }
-
-        return itemResults
-    }
-
-    private fun fetchClothesByCategory(categoryId: Int?, selectedDescription: String?) {
+    // ✅ 같은 속성을 가진 다른 사람의 아이템 불러오기
+    private fun fetchClothesByCategory(categoryId: Int?, fitId: Int?, colorId: Int?) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getClothesByCategory(kindId = null, categoryId = categoryId, colorIds = null, fitId = null)
+        Log.d("API_REQUEST", "Fetching clothes with categoryId: $categoryId, fitId: $fitId, colorId: $colorId")
+
+        apiService.getClothesByCategory(
+            kindId = null,  //kindId 필터를 아예 없앰
+            categoryId = categoryId,
+            colorIds = listOfNotNull(colorId),
+            fitId = fitId
+        )
+
             .enqueue(object : retrofit2.Callback<ClothesCategoryResponse> {
                 override fun onResponse(call: Call<ClothesCategoryResponse>, response: retrofit2.Response<ClothesCategoryResponse>) {
                     if (response.isSuccessful) {
                         response.body()?.let { clothesResponse ->
-                            Log.d("API_RESPONSE", "Received ${clothesResponse.result.clothPreviewList.size} items") // ✅ 응답 로그 확인
+                            Log.d("API_RESPONSE", "Received ${clothesResponse.result.clothPreviewList.size} items")
 
-                            val allItems = clothesResponse.result.clothPreviewList.map { clothPreview ->
+                            val filteredItems = clothesResponse.result.clothPreviewList.map { clothPreview ->
                                 val imageUrl = clothPreview.ootd?.imageUrls?.firstOrNull() ?: "https://example.com/default_image.jpg"
-                                val description = "${clothPreview.categoryName} ${clothPreview.fitName} ${clothPreview.colorName}"
-                                Item_result(description, imageUrl)
-                            }
+                                val description = listOfNotNull(clothPreview.categoryName, clothPreview.fitName, clothPreview.colorName)
+                                    .joinToString(" ")
 
-                            // ✅ 선택한 description과 같은 아이템만 필터링
-                            val filteredItems = if (!selectedDescription.isNullOrEmpty()) {
-                                allItems.filter { it.description == selectedDescription }
-                            } else {
-                                allItems
+                                // ✅ 모든 데이터를 포함한 Item_result 생성
+                                Item_result(
+                                    description = description,
+                                    imageUrl = imageUrl,
+                                    kindId = clothPreview.kindId,
+                                    kindName = clothPreview.kindName,
+                                    categoryId = clothPreview.categoryId,
+                                    categoryName = clothPreview.categoryName,
+                                    fitId = clothPreview.fitId,
+                                    fitName = clothPreview.fitName,
+                                    colorId = clothPreview.colorId,
+                                    colorName = clothPreview.colorName
+                                )
                             }
 
                             activity?.runOnUiThread {
-                                setupRecyclerView(filteredItems) // ✅ 필터링된 데이터만 RecyclerView에 적용
+                                if (filteredItems.isNotEmpty()) {
+                                    setupRecyclerView(filteredItems)
+                                } else {
+                                    Log.e("SearchResultFragment", "filteredItems 리스트가 비어 있음!")
+                                }
                             }
                         }
                     }
@@ -171,22 +129,34 @@ class SearchResultFragment : Fragment() {
 
 
 
+    // ✅ 선택한 아이템을 OOTD 북마크로 전달하는 함수
+    private fun navigateToBookmarkOotdFragment(selectedItem: Item_result) {
+        val bundle = Bundle().apply {
+            putInt("kind_id", -1)  // ✅ 모든 kindId 포함을 위해 -1 또는 null 사용
+            putInt("category_id", selectedItem.categoryId ?: -1)
+            putInt("fit_id", selectedItem.fitId ?: -1)
+            putInt("color_id", selectedItem.colorId ?: -1)
+
+            putString("category_name", selectedItem.categoryName ?: "Unknown")
+            putString("fit_name", selectedItem.fitName ?: "Unknown")
+            putString("color_name", selectedItem.colorName ?: "Unknown")
+        }
+
+        Log.d("Navigation", "Navigating to BookmarkOotdFragment with bundle: $bundle")
+
+        try {
+            findNavController().navigate(R.id.action_searchResultFragment_to_bookmarkOotdFragment, bundle)
+        } catch (e: Exception) {
+            Log.e("Navigation Error", "Navigation failed: ${e.message}")
+        }
+    }
+
+
+
 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // 메모리 누수 방지: 뷰가 파괴되면 바인딩 해제
-        _binding = null
+        _binding = null // ✅ 메모리 누수 방지: 뷰 바인딩 해제
     }
-
-    /*companion object {
-        fun newInstance(category: String): ClosetItemFragment {
-            val fragment = ClosetItemFragment()
-            val args = Bundle()
-            args.putString("CATEGORY", category) // 카테고리 전달
-            fragment.arguments = args
-            return fragment
-        }
-    }*/
-
 }

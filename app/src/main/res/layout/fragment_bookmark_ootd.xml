@@ -87,6 +87,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/topDivider" />
 
+
+
         <ImageView
             android:id="@+id/outer_black"
             android:layout_width="74dp"
@@ -105,6 +107,7 @@
             android:text="텍스트 예시"
             android:gravity="center_vertical"
             android:layout_marginStart="24dp"
+            android:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/outer_black"
             app:layout_constraintTop_toTopOf="@id/outer_black"/>
 
@@ -122,6 +125,7 @@
 
 
 
+
         <ImageView
             android:id="@+id/top_black"
             android:layout_width="74dp"
@@ -132,6 +136,17 @@
             app:layout_constraintStart_toStartOf="@id/outer_black"
             app:layout_constraintTop_toBottomOf="@id/outer_black"
             android:src="@drawable/text_top"/>
+
+        <TextView
+            android:id="@+id/top_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="텍스트 예시"
+            android:gravity="center_vertical"
+            android:layout_marginStart="38dp"
+            app:layout_constraintStart_toEndOf="@id/top_black"
+            app:layout_constraintTop_toTopOf="@id/top_black"/>
+
 
         <ImageView
             android:id="@+id/bookmark_top"
@@ -154,6 +169,18 @@
             app:layout_constraintTop_toBottomOf="@id/top_black"
             android:src="@drawable/text_bottom"/>
 
+
+        <TextView
+            android:id="@+id/bottom_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:text="텍스트 예시"
+            app:layout_constraintStart_toEndOf="@id/bottom_black"
+            app:layout_constraintTop_toTopOf="@id/bottom_black" />
+
         <ImageView
             android:id="@+id/bookmark_bottom"
             android:layout_width="24dp"
@@ -164,37 +191,29 @@
             app:layout_constraintTop_toTopOf="@id/bottom_black"
             android:src="@drawable/bookmark_off"/>
 
-        <ImageView
-            android:id="@+id/bag_black"
-            android:layout_width="74dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginStart="-14dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="@id/bottom_black"
-            app:layout_constraintTop_toBottomOf="@id/bottom_black"
-            android:src="@drawable/text_bag"/>
 
-        <ImageView
-            android:id="@+id/bookmark_bag"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="22dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bag_black"
-            android:src="@drawable/bookmark_off"/>
 
         <ImageView
             android:id="@+id/shoes_black"
             android:layout_width="74dp"
             android:layout_height="30dp"
             android:layout_marginTop="11dp"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="0dp"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="@id/bag_black"
-            app:layout_constraintTop_toBottomOf="@id/bag_black"
+            app:layout_constraintStart_toStartOf="@id/bottom_black"
+            app:layout_constraintTop_toBottomOf="@id/bottom_black"
             android:src="@drawable/text_shoes"/>
+
+        <TextView
+            android:id="@+id/shoes_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="44dp"
+            android:gravity="center_vertical"
+            android:text="텍스트 예시"
+            app:layout_constraintStart_toEndOf="@id/bottom_black"
+            app:layout_constraintTop_toTopOf="@id/bottom_black" />
 
         <ImageView
             android:id="@+id/bookmark_shoes"
@@ -207,15 +226,58 @@
             android:src="@drawable/bookmark_off"/>
 
         <ImageView
+            android:id="@+id/bag_black"
+            android:layout_width="74dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginStart="-14dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="@id/shoes_black"
+            app:layout_constraintTop_toBottomOf="@id/shoes_black"
+            android:src="@drawable/text_bag"/>
+
+        <TextView
+            android:id="@+id/bag_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center_vertical"
+            android:text="텍스트 예시"
+            app:layout_constraintStart_toEndOf="@id/shoes_black"
+            app:layout_constraintTop_toTopOf="@id/shoes_black" />
+
+        <ImageView
+            android:id="@+id/bookmark_bag"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="22dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bag_black"
+            android:src="@drawable/bookmark_off"/>
+
+        <ImageView
             android:id="@+id/other_black"
             android:layout_width="74dp"
             android:layout_height="30dp"
             android:layout_marginTop="11dp"
-            android:layout_marginStart="0dp"
+            android:layout_marginStart="14dp"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="@id/shoes_black"
-            app:layout_constraintTop_toBottomOf="@id/shoes_black"
+            app:layout_constraintStart_toStartOf="@id/bag_black"
+            app:layout_constraintTop_toBottomOf="@id/bag_black"
             android:src="@drawable/text_other"/>
+
+        <TextView
+            android:id="@+id/other_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="44dp"
+            android:gravity="center_vertical"
+            android:text="텍스트 예시"
+            app:layout_constraintStart_toEndOf="@id/other_black"
+            app:layout_constraintTop_toTopOf="@id/bag_black" />
 
         <ImageView
             android:id="@+id/bookmark_other"

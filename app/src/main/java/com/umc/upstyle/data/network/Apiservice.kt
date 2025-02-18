@@ -55,7 +55,7 @@ interface ApiService {
 
     @GET("/clothes/categories")
     fun getClothesByCategory(
-        @Query("kindId") kindId: Int?,
+        @Query("kindId") kindId: Int? = null,
         @Query("categoryId") categoryId: Int?,
         @Query("colorIds") colorIds: List<Int>?,
         @Query("fitId") fitId: Int?,
