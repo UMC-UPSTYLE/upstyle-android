@@ -38,7 +38,7 @@ data class ClothesCategoryResponse(
         data class Ootd(
             val id: Int,
             val date: String,
-            val imageUrls: List<String>
+            val imageUrl: String
         ) : Parcelable
     }
 }

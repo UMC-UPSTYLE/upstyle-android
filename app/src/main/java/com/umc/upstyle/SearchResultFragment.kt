@@ -60,7 +60,7 @@ class SearchResultFragment : Fragment() {
         val selectedDescription = arguments?.getString("description") // ✅ 전달된 description 받기
         val category = arguments?.getString("category") // ✅ category 가져오기
 
-        
+
 
         val bundle = Bundle().apply {
             putString("category", category)
@@ -72,6 +72,7 @@ class SearchResultFragment : Fragment() {
 
         // ✅ API 데이터 가져오기
         if (categoryId != null) {
+            Log.d("SearchResultFragment", "categoryId: $categoryId, fitId: $fitId, colorId: $colorId")
             fetchClothesByCategory(categoryId, fitId, colorId)
         }
     }
@@ -110,7 +111,7 @@ class SearchResultFragment : Fragment() {
                             Log.d("API_RESPONSE", "Received ${clothesResponse.result.clothPreviewList.size} items")
 
                             val filteredItems = clothesResponse.result.clothPreviewList.map { clothPreview ->
-                                val imageUrl = clothPreview.ootd?.imageUrls?.firstOrNull() ?: "https://example.com/default_image.jpg"
+                                val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
                                 val description = listOfNotNull(clothPreview.categoryName, clothPreview.fitName, clothPreview.colorName)
                                     .joinToString(" ")
 
