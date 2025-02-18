@@ -1,5 +1,9 @@
 package com.umc.upstyle.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class ClothPreview(
     val id: Int,
     val kindId: Int,
@@ -12,8 +16,10 @@ data class ClothPreview(
     val colorName: String,
     val additionalInfo: String?,
     val ootd: Ootd? = null
-) {
+) : Parcelable
+{
+    @Parcelize
     data class Ootd(
         val imageUrl: String
-    )
+    ) : Parcelable
 }

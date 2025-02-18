@@ -1,6 +1,7 @@
 import Item_search
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,21 +36,14 @@ class RecyclerAdapter_Search(
         // 제목 설정
         holder.itemTitle.text = item.description
 
-        // Glide를 사용해 이미지를 비동기로 로드하고 버튼 배경 설정
+        Log.d("RecyclerAdapter_Search", "Loading image URL: ${item.imageUrl}")
+
         Glide.with(context)
             .load(item.imageUrl)
-            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
-                override fun onResourceReady(
-                    resource: android.graphics.drawable.Drawable,
-                    transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?
-                ) {
-                    holder.itemButton.background = resource
-                }
+            .placeholder(R.drawable.bg_sub_color_1) // ✅ 로딩 중일 때 사용할 기본 이미지
+            .error(R.drawable.bg_gray_15) // ✅ 로딩 실패 시 대체 이미지
+            .into(holder.itemButton) // ✅ `background` 대신 `setImageDrawable()` 사용됨
 
-                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
-                    holder.itemButton.background = placeholder
-                }
-            })
 
         // 클릭 이벤트 설정: itemClickListener 호출
         holder.itemButton.setOnClickListener {

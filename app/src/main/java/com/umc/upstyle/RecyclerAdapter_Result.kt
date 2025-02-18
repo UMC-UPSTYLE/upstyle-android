@@ -29,6 +29,8 @@ class RecyclerAdapter_Result(
             Log.d("ADAPTER_BIND", "아이템 바인딩: ${item.description} (${item.imageUrl})") // ✅ 로그 추가
             titleView.text = item.description
 
+
+            Log.d("RecyclerAdapter_Result", "Loading image URL: ${item.imageUrl}")
             Glide.with(itemView.context)
                 .load(item.imageUrl)
                 .into(imageView)

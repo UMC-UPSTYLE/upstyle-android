@@ -164,6 +164,9 @@ class RequestDetailFragment : Fragment() {
             .load(requestDetail.imageUrl)
             .into(binding.ivImage)
 
+        if(requestDetail.imageUrl=="") {
+            binding.ivImage.visibility = View.GONE
+        }
     }
 
     private fun showBottomSheet(commentId: Int) {

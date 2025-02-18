@@ -1,4 +1,5 @@
 import android.os.Parcelable
+import com.umc.upstyle.data.model.Ootd
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

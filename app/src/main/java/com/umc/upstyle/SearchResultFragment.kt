@@ -10,11 +10,15 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.umc.upstyle.data.model.Cloth
 import com.umc.upstyle.data.model.ClothesCategoryResponse
+import com.umc.upstyle.data.model.Ootd
+import com.umc.upstyle.data.model.User
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentSearchResultBinding
 import retrofit2.Call
+import java.util.ArrayList
 
 class SearchResultFragment : Fragment() {
 
@@ -24,6 +28,8 @@ class SearchResultFragment : Fragment() {
     private var categoryId: Int? = null
     private var fitId: Int? = null
     private var colorId: Int? = null
+    private var ootdId: Int = 0
+    private var clothList: List<Cloth> ?= null
     private var selectedDescription: String? = null // ✅ 선택한 아이템 설명 저장
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +66,7 @@ class SearchResultFragment : Fragment() {
         val selectedDescription = arguments?.getString("description") // ✅ 전달된 description 받기
         val category = arguments?.getString("category") // ✅ category 가져오기
 
-        
+
 
         val bundle = Bundle().apply {
             putString("category", category)
@@ -72,6 +78,7 @@ class SearchResultFragment : Fragment() {
 
         // ✅ API 데이터 가져오기
         if (categoryId != null) {
+            Log.d("SearchResultFragment", "categoryId: $categoryId, fitId: $fitId, colorId: $colorId")
             fetchClothesByCategory(categoryId, fitId, colorId)
         }
     }
@@ -83,7 +90,7 @@ class SearchResultFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         val adapter = RecyclerAdapter_Result(items) { selectedItem ->
             Log.d("RecyclerView", "Clicked item: $selectedItem")
-            navigateToBookmarkOotdFragment(selectedItem)
+            navigateToBookmarkOotdFragment(selectedItem, selectedItem.ootd.id)
         }
         binding.recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
@@ -109,13 +116,34 @@ class SearchResultFragment : Fragment() {
                         response.body()?.let { clothesResponse ->
                             Log.d("API_RESPONSE", "Received ${clothesResponse.result.clothPreviewList.size} items")
 
+                            Log.d("SearchResult", "clothList 비었나?: $clothList")
+
                             val filteredItems = clothesResponse.result.clothPreviewList.map { clothPreview ->
-                                val imageUrl = clothPreview.ootd?.imageUrls?.firstOrNull() ?: "https://example.com/default_image.jpg"
-                                val description = listOfNotNull(clothPreview.categoryName, clothPreview.fitName, clothPreview.colorName)
+                                val imageUrl = clothPreview.ootd?.imageUrl
+                                    ?: "https://example.com/default_image.jpg"
+                                val description = listOfNotNull(
+                                    clothPreview.categoryName,
+                                    clothPreview.fitName,
+                                    clothPreview.colorName
+                                )
                                     .joinToString(" ")
+                                clothList = clothPreview.ootd?.clothList ?: emptyList()
+                                ootdId = clothPreview.ootd?.id ?: 0
+
+                                Log.d("SearchResult", "clothList: $clothList")
+
+                                var ootd = Ootd(
+                                    id = clothPreview.ootd?.id ?: 0,  // id는 null일 경우 0으로 초기화
+                                    user = User(0, ""),  // User 클래스에 기본값을 넣어야 합니다. 예: 빈 문자열로 초기화
+                                    date = "",  // date는 빈 문자열로 초기화
+                                    imageUrls = emptyList(),  // imageUrls는 빈 리스트로 초기화
+                                    clothList = emptyList()  // clothList는 빈 리스트로 초기화
+                                )
+
 
                                 // ✅ 모든 데이터를 포함한 Item_result 생성
                                 Item_result(
+                                    id = clothPreview.id?: 0,
                                     description = description,
                                     imageUrl = imageUrl,
                                     kindId = clothPreview.kindId,
@@ -125,7 +153,8 @@ class SearchResultFragment : Fragment() {
                                     fitId = clothPreview.fitId,
                                     fitName = clothPreview.fitName,
                                     colorId = clothPreview.colorId,
-                                    colorName = clothPreview.colorName
+                                    colorName = clothPreview.colorName,
+                                    ootd = ootd
                                 )
                             }
 
@@ -149,13 +178,15 @@ class SearchResultFragment : Fragment() {
 
 
     // ✅ 선택한 아이템을 OOTD 북마크로 전달하는 함수
-    private fun navigateToBookmarkOotdFragment(selectedItem: Item_result) {
+    private fun navigateToBookmarkOotdFragment(selectedItem: Item_result, ootdId: Int) {
         val bundle = Bundle().apply {
             putInt("kind_id", -1)  // ✅ 모든 kindId 포함을 위해 -1 또는 null 사용
             putInt("category_id", selectedItem.categoryId ?: -1)
             putInt("fit_id", selectedItem.fitId ?: -1)
             putInt("color_id", selectedItem.colorId ?: -1)
+            putInt("ootd_id", ootdId)
 
+//            putParcelableArrayList("clothList", ArrayList(clothList))
             putString("category_name", selectedItem.categoryName ?: "Unknown")
             putString("fit_name", selectedItem.fitName ?: "Unknown")
             putString("color_name", selectedItem.colorName ?: "Unknown")
