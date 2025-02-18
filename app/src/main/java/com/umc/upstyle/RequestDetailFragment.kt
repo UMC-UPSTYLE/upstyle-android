@@ -51,6 +51,8 @@ class RequestDetailFragment : Fragment() {
     ): View {
         _binding = FragmentRequestDetailBinding.inflate(inflater, container, false)
         requestService = RetrofitClient.createService(RequestService::class.java)
+
+        fetchRequestDetails(requestId)
         return binding.root
     }
 
@@ -62,7 +64,7 @@ class RequestDetailFragment : Fragment() {
         requestId = args.id // 이전 프래그먼트에서 전달된 voteId
         commentCount = args.commentCount
 
-        fetchRequestDetails(requestId)
+
 
         // SwipeRefreshLayout의 새로고침 리스너 설정
         swipeRefreshLayout.setOnRefreshListener {
