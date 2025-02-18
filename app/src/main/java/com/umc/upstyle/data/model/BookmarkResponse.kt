@@ -1,36 +1,51 @@
 package com.umc.upstyle.data.model
 
+import com.google.gson.annotations.SerializedName
+
+// ✅ 단일 북마크 요청 (북마크 추가/삭제) 응답
 data class BookmarkResponse(
-    val isSuccess: Boolean,
-    val code: String,
-    val message: String,
-    val result: BookmarkResult
+    @SerializedName("isSuccess") val isSuccess: Boolean,
+    @SerializedName("code") val code: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("result") val result: BookmarkItem? // ✅ 단일 북마크 객체 반환 가능
 )
 
+// ✅ 북마크 목록 조회 응답 (북마크 리스트 포함)
+data class BookmarkListResponse(
+    @SerializedName("isSuccess") val isSuccess: Boolean,
+    @SerializedName("code") val code: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("result") val result: BookmarkResult // ✅ 리스트를 포함한 응답
+)
+
+// ✅ 북마크 목록 정보
 data class BookmarkResult(
-    val bookmarkList: List<BookmarkItem>,
-    val listSize: Int,
-    val totalPage: Int,
-    val totalElements: Int,
-    val isFirst: Boolean,
-    val isLast: Boolean,
-    val id: Int,
+    @SerializedName("bookmarkList") val bookmarkList: List<BookmarkItem>, // ✅ 여러 개의 북마크
+    @SerializedName("listSize") val listSize: Int,
+    @SerializedName("totalPage") val totalPage: Int,
+    @SerializedName("totalElements") val totalElements: Int,
+    @SerializedName("isFirst") val isFirst: Boolean,
+    @SerializedName("isLast") val isLast: Boolean,
     val userId: Int,
     val clothId: Int,
     val isBookmarked: Boolean
-
 )
 
+// ✅ 단일 북마크 아이템 (북마크 추가/삭제 시 반환)
 data class BookmarkItem(
-    val clothId: Int,
-    val kind: String,
-    val category: String,
-    val fit: String,
-    val color: String,
-    val ootd: OotdItem?
+    @SerializedName("clothId") val clothId: Int,
+    @SerializedName("kind") val kind: String,
+    @SerializedName("category") val category: String,
+    @SerializedName("fit") val fit: String,
+    @SerializedName("color") val color: String,
+    @SerializedName("ootd") val ootd: OotdItem?,
+    @SerializedName("userId") val userId: Int,
+    @SerializedName("isBookmarked") val isBookmarked: Boolean,
+    @SerializedName("bookmarkList") val bookmarkList: List<BookmarkItem>
 )
 
+// ✅ OOTD 이미지 정보
 data class OotdItem(
-    val id: Int,
-    val imageUrl: String
+    @SerializedName("id") val id: Int,
+    @SerializedName("imageUrl") val imageUrl: String
 )
