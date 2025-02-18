@@ -14,6 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
     <!-- 스크롤을 위한 ScrollView -->
     <ScrollView
         android:id="@+id/scrollView"
@@ -171,6 +177,7 @@
         </LinearLayout>
         </LinearLayout>
     </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 

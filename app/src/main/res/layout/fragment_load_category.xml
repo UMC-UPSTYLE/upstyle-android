@@ -87,17 +87,6 @@
                     android:contentDescription="옷장 이미지"
                     android:src="@drawable/closet_yellow" />
 
-                <TextView
-                    android:id="@+id/tv_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/main_color_1"
-                    android:text="받아온 데이터가 없음"/>
-
-                <ImageView
-                    android:id="@+id/iv_test"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"/>
             </LinearLayout>
         </LinearLayout>
 

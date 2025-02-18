@@ -2,6 +2,7 @@ package com.umc.upstyle.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 
 data class RequestResponse(
     val isSuccess: Boolean,
@@ -52,7 +53,7 @@ data class ResponseDetailResponse(
 
 data class ClothResponse(
     val id: Int,
-    val kindName: String,
+    val kindId: Int,
     val categoryName: String,
     val fitName: String,
     val colorName: String
@@ -62,3 +63,13 @@ data class ClothResponse(
 data class ClothIdResponse(
     val clothId: Int
 ): Parcelable
+
+
+data class CodiResponseRequest(
+    @SerializedName("userId") val userId: Int,
+    @SerializedName("body") val body: String,
+    @SerializedName("date") val date: String,
+    @SerializedName("imageUrl") val imageUrl: String,
+    @SerializedName("clothRequestDTOList") val clothRequestDTOList: List<ClothIdResponse>
+)
+

@@ -21,14 +21,11 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.umc.upstyle.data.model.AddCodiReqDTO
 import com.google.firebase.storage.FirebaseStorage
-import com.umc.upstyle.data.model.AddCodiRes
 import com.umc.upstyle.data.network.RequestService
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.viewmodel.RequestViewModel
 import com.umc.upstyle.databinding.FragmentCreateRequestBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import java.util.UUID
 import kotlinx.coroutines.launch
 import kotlin.coroutines.suspendCoroutine
 import java.io.File
@@ -94,7 +91,6 @@ class CreateRequestFragment : Fragment() {
                             binding.imgSelected.visibility = View.VISIBLE
                             binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
                             binding.btnImageUpload.visibility = View.INVISIBLE
-                            saveImageUri(Uri.parse(item.imageUrl)) // ✅ photoUri가 null이 아닐 때 저장
 
                             photoUri = Uri.parse(item.imageUrl)
                             Glide.with(requireContext())
@@ -118,16 +114,7 @@ class CreateRequestFragment : Fragment() {
 
             // 사진 URI도 초기화
             photoUri = null
-            Toast.makeText(requireContext(), "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }
-
-//        binding.btnUpload.setOnClickListener{
-//            Toast.makeText(requireContext(), "${photoUri.toString()}", Toast.LENGTH_LONG).show()
-//            GlobalScope.launch {
-//                sendToServer()
-//            }
-//        }
-
 
         binding.btnUpload.setOnClickListener {
             lifecycleScope.launch { sendToServerWithFirebaseUpload() }
@@ -211,14 +198,13 @@ class CreateRequestFragment : Fragment() {
             binding.imgSelected.setImageURI(photoUri) // 촬영한 사진 표시
             binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
             binding.btnImageUpload.visibility = View.INVISIBLE
-            saveImageUri(photoUri!!) // ✅ photoUri가 null이 아닐 때 저장
             Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "사진 촬영 실패", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // ✅ 이미지 선택 시 photoUri를 사용하지 않고 직접 적용
+    // ✅ 이미지 선택
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val savedPath = saveImageToInternalStorage(it)
@@ -228,13 +214,11 @@ class CreateRequestFragment : Fragment() {
                 binding.imgSelected.setImageURI(it) // ✅ 직접 선택한 URI 사용
                 binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
                 binding.btnImageUpload.visibility = View.INVISIBLE
-                saveImagePath(savedPath)
                 photoUri = it
-                Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
             }
-        } ?: Toast.makeText(requireContext(), "사진 선택 취소", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showPhotoOptions() {
@@ -267,11 +251,6 @@ class CreateRequestFragment : Fragment() {
         }
     }
 
-    private fun saveImageUri(uri: Uri) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-        preferences.edit().putString("SAVED_IMAGE_PATH", uri.toString()).apply()
-        Toast.makeText(requireContext(), "이미지 경로가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-    }
 
     private fun selectImageFromGallery() {
         pickImageLauncher.launch("image/*")
@@ -295,10 +274,6 @@ class CreateRequestFragment : Fragment() {
         }
     }
 
-    private fun saveImagePath(path: String) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-        preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
-    }
 
     // AddCodiReqDTO 객체와 API 응답을 처리하는 함수
     private suspend fun sendToServer() {
@@ -339,8 +314,6 @@ class CreateRequestFragment : Fragment() {
             Log.e("CodiRequest", "Error: ${e.message}")
         }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.network.ApiService
@@ -35,6 +36,7 @@ class MyHomeFragment : Fragment() {
     private val center = Int.MAX_VALUE / 2 // 중앙 위치 값 (Adapter에서 사용한 값)
     private val apiService = RetrofitClient.createService(OotdApiService::class.java)
     private val userApiService = RetrofitClient.createService(UserApiService::class.java)
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
 
     override fun onCreateView(
@@ -47,6 +49,8 @@ class MyHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout2)
 
         val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
         val jwtToken = sharedPref.getString("jwt_token", null)
@@ -111,6 +115,12 @@ class MyHomeFragment : Fragment() {
 
         fetchOOTDCalendarData(userId = 1, year, month)
 
+        // SwipeRefreshLayout의 새로고침 리스너 설정
+        swipeRefreshLayout.setOnRefreshListener {
+            // 새로고침 작업을 실행, 예: 데이터 로드
+            fetchOOTDCalendarData(userId = 1, year, month)
+        }
+
         // 섹션 이동 버튼 리스너
         binding.closetSection.setOnClickListener {
             findNavController().navigate(R.id.closetFragment)
@@ -142,11 +152,12 @@ class MyHomeFragment : Fragment() {
                     Log.e("API_ERROR", "Response Failed: ${response.code()}")
                 }
             }
-
             override fun onFailure(call: Call<ApiResponse<OOTDCalendar>>, t: Throwable) {
                 Log.e("API_ERROR", "Request Failed", t)
             }
         })
+        // 데이터 로드가 끝났을 때 새로고침 상태를 종료
+        swipeRefreshLayout.isRefreshing = false // 새로고침 종료
     }
 
     // 데이터를 Adapter로 전달하여 UI 업데이트

@@ -1,7 +1,7 @@
-package com.umc.upstyle.model
+package com.umc.upstyle.data.model
 
 data class VoteItem(
-    val id: Int,
-    val imageUrl: String, // 이미지 리소스 ID
-    val name: String
+    var clothId: Int = 0,
+    var imageUrl: String, // 이미지 리소스 ID
+    var name: String
 )

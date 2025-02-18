@@ -126,6 +126,7 @@ class ResponseFragment : Fragment() {
             "SELECTED_ITEM_ID", selectedItemID ?: mutableListOf()
         )
 
+        responseViewModel.clearData() // 필요한 메서드를 호출해서 ViewModel의 데이터를 초기화
         findNavController().popBackStack()
     }
 
@@ -138,7 +139,6 @@ class ResponseFragment : Fragment() {
             val category = navBackStackEntry.savedStateHandle.get<String>("CATEGORY")
 //
             // ViewModel에 데이터 추가
-            responseViewModel.updateCategory(category ?: "OTHER", selectedItem)
             val clothId = navBackStackEntry.savedStateHandle.get<Int>("CLOTH_ID") ?: 0
             val kindId = navBackStackEntry.savedStateHandle.get<Int>("KIND_ID") ?: 0
             val categoryId = navBackStackEntry.savedStateHandle.get<Int>("CATEGORY_ID") ?: 0

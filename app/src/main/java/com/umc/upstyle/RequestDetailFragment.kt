@@ -1,5 +1,6 @@
 package com.umc.upstyle
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.umc.upstyle.data.model.ClothIdResponse
 import com.umc.upstyle.data.model.ClothRequestDTO
@@ -31,13 +33,16 @@ class RequestDetailFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var responseAdapter: ResponseAdapter
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var codiResPreviewList = mutableListOf<CodiResPreview>()
 
 
+    private var requestId: Int = 0
     private var userId: Int = 0
     private var commentCount: Int = 0
     private lateinit var requestService: RequestService
     private val args: RequestDetailFragmentArgs by navArgs()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,10 +56,18 @@ class RequestDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val requestId = args.id // 이전 프래그먼트에서 전달된 voteId
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+
+        requestId = args.id // 이전 프래그먼트에서 전달된 voteId
         commentCount = args.commentCount
 
         fetchRequestDetails(requestId)
+
+        // SwipeRefreshLayout의 새로고침 리스너 설정
+        swipeRefreshLayout.setOnRefreshListener {
+            // 새로고침 작업을 실행, 예: 데이터 로드
+            fetchRequestDetails(requestId)
+        }
 
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -65,9 +78,6 @@ class RequestDetailFragment : Fragment() {
 
         recyclerView.adapter = responseAdapter
 
-//        binding.testButton.setOnClickListener {
-//            modalBottomSheet()
-//        }
 
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
@@ -81,13 +91,17 @@ class RequestDetailFragment : Fragment() {
         }
     }
 
+
     override fun onResume() {
         super.onResume()
+
+        fetchRequestDetails(requestId)
+
         val clothList = findNavController().currentBackStackEntry?.savedStateHandle?.get<MutableList<ClothRequestDesDTO>>("SELECTED_ITEM")?: null
         val clothIDList = findNavController().currentBackStackEntry?.savedStateHandle?.get<MutableList<ClothIdResponse>>("SELECTED_ITEM_ID")?: null
 
         if((clothIDList != null) && (clothList != null)) {
-            createBottomSheet(clothList, clothIDList)
+            createBottomSheet(clothList, clothIDList, requestId)
         }
     }
 
@@ -116,6 +130,9 @@ class RequestDetailFragment : Fragment() {
                             Log.d("RequestDetail", "업데이트된 리스트 크기: ${codiResPreviewList.size}")
 
                             responseAdapter.notifyDataSetChanged()
+
+                            // 데이터 로드가 끝났을 때 새로고침 상태를 종료
+                            swipeRefreshLayout.isRefreshing = false // 새로고침 종료
                         }
                     } ?: Log.e("RequestDetail", "응답 본문이 null")
                 } else {
@@ -150,9 +167,9 @@ class RequestDetailFragment : Fragment() {
         bottomSheetViewFragment.show(parentFragmentManager, bottomSheetViewFragment.tag)
     }
 
-    private fun createBottomSheet(clothList: MutableList<ClothRequestDesDTO>, clothIDList: MutableList<ClothIdResponse>) {
+    private fun createBottomSheet(clothList: MutableList<ClothRequestDesDTO>, clothIDList: MutableList<ClothIdResponse>, requestId: Int) {
         // 클릭된 댓글 id를 Bottom Sheet에 넘겨서 API 호출
-        val codiBottomSheetDialogFragment = CodiBottomSheetFragment.newInstance(clothList, clothIDList)
+        val codiBottomSheetDialogFragment = CodiBottomSheetFragment.newInstance(clothList, clothIDList, requestId)
         // 모서리 둥글게 해서 Bottom Sheet 불러오는 코드
         codiBottomSheetDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme)
         codiBottomSheetDialogFragment.show(parentFragmentManager, codiBottomSheetDialogFragment.tag)
