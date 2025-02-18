@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.data.model.ClothesCategoryResponse
@@ -50,6 +51,27 @@ class SearchResultFragment : Fragment() {
 
 
         Log.d("SearchResultFragment", "Fetching data for categoryId: $categoryId, fitId: $fitId, colorId: $colorId")
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
+        val selectedDescription = arguments?.getString("description") // ✅ 전달된 description 받기
+        val category = arguments?.getString("category") // ✅ category 가져오기
+
+
+        // RecyclerView 설정
+        val allItems = loadItemsFromPreferences()
+
+
+        val bundle = Bundle().apply {
+            putString("category", category)
+        }
+
+        // ✅ categoryId 가져오기 (필요 시 사용)
+        val categoryId = arguments?.getInt("categoryId")
+
 
         // ✅ API 데이터 가져오기
         if (categoryId != null) {

@@ -9,6 +9,19 @@
     app:layout_constraintDimensionRatio="1:1"
     android:layout_margin="3dp">
 
+    <!-- OOTD 이미지 -->
+    <ImageView
+        android:id="@+id/item_day_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        android:background="@drawable/bg_other_day"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <TextView
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,18 +34,5 @@
         android:textStyle="bold"
         android:text="9"/>
 
-    <!-- OOTD 이미지 -->
-    <ImageView
-        android:id="@+id/item_day_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:clipToOutline="true"
-        android:background="@drawable/bg_sub_color_1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_day_text"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

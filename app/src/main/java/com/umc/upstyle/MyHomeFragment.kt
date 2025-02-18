@@ -54,39 +54,35 @@ class MyHomeFragment : Fragment() {
 
         val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
         val jwtToken = sharedPref.getString("jwt_token", null)
-        val isGuest = sharedPref.getBoolean("is_guest", false)  // 비회원 여부 확인
 
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        if (isGuest) { // 비회원 모드
-            binding.topUserName.text = "비회원 님"
-            binding.wardrobeText.text = "비회원님의 옷장"
-        } else { // 회원 모드
-            userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
-                Callback<ApiResponse<AccountInfoDTO>> {
-                override fun onResponse(
-                    call: Call<ApiResponse<AccountInfoDTO>>,
-                    response: Response<ApiResponse<AccountInfoDTO>>
-                ) {
-                    if (response.isSuccessful) {
-                        val nickName = response.body()?.result?.nickname
-                        binding.topUserName.text = "${nickName} 님"
-                        binding.wardrobeText.text = "${nickName}님의 옷장"
-                    } else {
-                        binding.wardrobeText.text = "닉네임을 불러올 수 없음"
-                        binding.topUserName.text = "닉네임을 불러올 수 없음"
-                    }
-
+        userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
+            Callback<ApiResponse<AccountInfoDTO>> {
+            override fun onResponse(
+                call: Call<ApiResponse<AccountInfoDTO>>,
+                response: Response<ApiResponse<AccountInfoDTO>>
+            ) {
+                if (response.isSuccessful) {
+                    val nickName = response.body()?.result?.nickname
+                    binding.topUserName.text = "${nickName} 님"
+                    binding.wardrobeText.text = "${nickName}님의 옷장"
+                } else {
+                    binding.wardrobeText.text = "닉네임을 불러올 수 없음"
+                    binding.topUserName.text = "닉네임을 불러올 수 없음"
                 }
 
-                override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
-                    Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
-                }
-            })
-        }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
+                Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
+            }
+        })
+
 
         // 리사이클러뷰 설정
-        monthListManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        monthListManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         val monthListAdapter = AdapterMonth()
 
         binding.calendarCustom.apply {

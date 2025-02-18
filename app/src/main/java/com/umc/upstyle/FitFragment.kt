@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -40,6 +41,11 @@ class FitFragment : Fragment(R.layout.activity_fit) {
 
         // 뒤로가기 버튼 클릭 이벤트 설정
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
 
         // 이전 Fragment에서 전달된 데이터 수신
         selectedCategory = arguments?.getString("CATEGORY")

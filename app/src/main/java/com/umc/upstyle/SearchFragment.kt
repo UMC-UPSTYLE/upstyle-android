@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
@@ -35,6 +36,12 @@ class SearchFragment : Fragment() {
         binding.subcategoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.colorfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
+
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
     }
 
     // Navigation Component를 통한 전환 함수

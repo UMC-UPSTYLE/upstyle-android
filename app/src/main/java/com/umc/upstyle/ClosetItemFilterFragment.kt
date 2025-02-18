@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,9 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
 
     private var _binding: FragmentClosetItemFilterBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var category: String
+    private lateinit var ClosetItemFragment: String
 
 //    // 선택된 필터 정보를 저장하는 변수
 //    private var selectedCategory: String? = null
@@ -36,6 +40,10 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentClosetItemFilterBinding.inflate(inflater, container, false)
+
+        category = arguments?.getString("category").toString() // 전달된 데이터 수신
+        ClosetItemFragment = arguments?.getString("ClosetItemFragment").toString()
+
         return binding.root
     }
 
@@ -56,9 +64,19 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
+            val ClosetItemFragment = arguments?.getString("ClosetItemFragment")
+
+            when (ClosetItemFragment) {
+                "true" -> findNavController().navigateUp()
+                else -> findNavController().navigate(R.id.SearchItemFragment) // 기본적으로 이전 화면으로 이동
+            }
         }
 
 //        // 이전 화면에서 전달된 데이터 수신
@@ -209,24 +227,24 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
             Toast.makeText(requireContext(), "컬러를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        val category = arguments?.getString("category") // 전달된 데이터 수신
-
-
         // 선택된 옵션을 문자열로 변환하여 전달
         val bundle = Bundle().apply {
             putString("category", category)
+            putString("ClosetItemFragment", ClosetItemFragment)
             putStringArrayList("selectedOptions", ArrayList(selectedOptions)) // ArrayList로 변환하여 전달
         }
 
         // 테스트용
         Toast.makeText(requireContext(), "선택된 컬러: $filteredColor", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "category: $category", Toast.LENGTH_SHORT).show()
 
         // ClosetResultFragment로 이동하며 데이터 전달
         findNavController().navigate(R.id.closetResultFragment, bundle)
 
 
+
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

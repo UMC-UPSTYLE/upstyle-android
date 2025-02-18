@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -46,11 +47,18 @@ class BookmarkOotdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // ✅ arguments에서 데이터 직접 가져오기 (Safe Args 사용 X)
         val kindId = arguments?.getInt("kind_id") ?: -1
         val categoryId = arguments?.getInt("category_id") ?: -1
         val fitId = arguments?.getInt("fit_id") ?: -1
         val colorId = arguments?.getInt("color_id") ?: -1
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
 
         val categoryName = arguments?.getString("category_name") ?: "Unknown"
         val fitName = arguments?.getString("fit_name") ?: "Unknown"

@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -25,7 +26,14 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
 
         _binding = FragmentSearchCategoryBinding.bind(view)
 
-        binding.backButton.setOnClickListener { findNavController().navigate(R.id.searchFragment) }
+        binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack(R.id.searchFragment, false)
+        }
+
+
 
         setupCategoryOptions()
 

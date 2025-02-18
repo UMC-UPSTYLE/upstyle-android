@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -52,10 +53,44 @@ class SearchItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.searchFragment)
+            findNavController().popBackStack(R.id.searchFragment, false)
         }
 
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack(R.id.searchFragment, false)
+        }
+
+
         binding.titleText.text = category ?: "카테고리 없음"
+
+        val category = arguments?.getString("category") // 전달된 데이터 수신
+
+
+        val bundle = Bundle().apply {
+            putString("category", category)
+        }
+
+        // 컬러 필터링 filterButton
+        binding.filterButton.setOnClickListener {
+//            val action = SearchItemFragmentDirections
+//                .actionSearchItemFragmentToClosetItemFilterFragment(category ?: "DEFAULT")
+//            findNavController().navigate(action)
+            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
+        }
+
+        val args = SearchItemFragmentArgs.fromBundle(requireArguments())
+
+
+
+
+        // 상단 제목 설정
+        binding.titleText.text = "$category"
+
+
+        // RecyclerView 설정
+        val items = loadItemsFromPreferences()
+        setupRecyclerView(items)
 
         val userId = 1
 
