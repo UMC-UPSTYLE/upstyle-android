@@ -1,6 +1,10 @@
 package com.umc.upstyle.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 // 옷 데이터 클래스
+@Parcelize
 data class Cloth(
     val id: Int,
     val kindId: Int,
@@ -11,4 +15,4 @@ data class Cloth(
     val fitName: String,
     val colorId: Int,
     val colorName: String
-)
+) : Parcelable

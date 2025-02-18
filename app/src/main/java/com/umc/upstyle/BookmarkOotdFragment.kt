@@ -11,9 +11,13 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.BookmarkRequest
 import com.umc.upstyle.data.model.BookmarkResponse
+import com.umc.upstyle.data.model.Cloth
+import com.umc.upstyle.data.model.Ootd
 import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.OotdApiService
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentBookmarkOotdBinding
 import retrofit2.Call
@@ -25,6 +29,7 @@ class BookmarkOotdFragment : Fragment() {
     // ViewBinding 객체 선언
     private var _binding: FragmentBookmarkOotdBinding? = null
     private val binding get() = _binding!!
+    private val apiService = RetrofitClient.createService(OotdApiService::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,9 +52,15 @@ class BookmarkOotdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         // ✅ arguments에서 데이터 직접 가져오기 (Safe Args 사용 X)
-        val kindId = arguments?.getInt("kind_id") ?: -1
+
+        val clothId = arguments?.getInt("cloth_id") ?: -1
+        val ootdId = arguments?.getInt("ootd_id") ?: -1
+//        val clothList: ArrayList<Cloth>? = arguments?.getParcelableArrayList("clothList")
+        Log.d("BookmarkOotdFragment", "받아온 cloth_id: $clothId")
+        Log.d("BookmarkOotdFragment", "받아온 ootd_id: $ootdId")
         val categoryId = arguments?.getInt("category_id") ?: -1
         val fitId = arguments?.getInt("fit_id") ?: -1
         val colorId = arguments?.getInt("color_id") ?: -1
@@ -74,24 +85,15 @@ class BookmarkOotdFragment : Fragment() {
         binding.bagText.setTextColor(resources.getColor(android.R.color.white, null))
         binding.otherText.setTextColor(resources.getColor(android.R.color.white, null))
 
-
-
         // ✅ kindId에 맞게 적절한 TextView에 텍스트 설정
         val itemDescription = "$categoryName $fitName $colorName"
 
-        when (kindId) {
-            1 -> binding.outerText.text = "$categoryName $fitName $colorName"
-            2 -> binding.topText.text = "$categoryName $fitName $colorName"
-            3 -> binding.bottomText.text = "$categoryName $fitName $colorName"
-            4 -> binding.shoesText.text =  "$categoryName $fitName $colorName"
-            5 -> binding.bagText.text =  "$categoryName $fitName $colorName"
-            6 -> binding.otherText.text =  "$categoryName $fitName $colorName"
-            else -> Log.d("BookmarkOotdFragment", "Unknown kindId: $kindId")
-        }
+        fetchOotdData(ootdId)
 
         // ✅ 북마크 상태 관리
-        setupBookmarkButtons(kindId)
+        setupBookmarkButtons(clothId)
     }
+
 
     // ✅ 북마크 버튼 설정 함수
     private fun setupBookmarkButtons(kindId: Int?) {
@@ -127,11 +129,13 @@ class BookmarkOotdFragment : Fragment() {
         val userId = 1 // 예시: 현재 로그인한 사용자 ID
         val request = BookmarkRequest(userId, kindId) // kindId를 clothId로 전달
 
-
         val bookmarkApi = RetrofitClient.createService(ApiService::class.java)
 
         bookmarkApi.toggleBookmark(request).enqueue(object : Callback<BookmarkResponse> {
-            override fun onResponse(call: Call<BookmarkResponse>, response: Response<BookmarkResponse>) {
+            override fun onResponse(
+                call: Call<BookmarkResponse>,
+                response: Response<BookmarkResponse>
+            ) {
                 if (response.isSuccessful) {
                     Log.d("Bookmark", "북마크 변경 완료: $isBookmarked")
                 } else {
@@ -145,14 +149,70 @@ class BookmarkOotdFragment : Fragment() {
         })
     }
 
+    // 서버에서 데이터 가져오기
+    private fun fetchOotdData(ootdId: Int) {
+        apiService.getOOTDById(ootdId).enqueue(object : Callback<ApiResponse<Ootd>> {
+            override fun onResponse(
+                call: Call<ApiResponse<Ootd>>,
+                response: Response<ApiResponse<Ootd>>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.result?.let { ootd ->
+                        Log.d("API_RESPONSE", "Fetched OOTD: $ootd")
+
+                        Glide.with(requireContext())
+                            .load(ootd.imageUrls?.getOrNull(0))
+                            .into(binding.ootdImage)
+
+                        Log.d("API_RESPONSE", "가져온 Image Url: ${ootd.imageUrls?.getOrNull(0)}")
+
+                        binding.userName.text = ootd.user.nickname
+
+                        ootd.clothList?.forEach { cloth ->
+                            val categoryName = cloth.categoryName
+                            val fitName = cloth.fitName
+                            val colorName = cloth.colorName
+
+                            // kindId에 따라 텍스트를 설정
+                            when (cloth.kindId) {
+                                1 -> binding.outerText.text = "$categoryName $fitName $colorName"
+                                2 -> binding.topText.text = "$categoryName $fitName $colorName"
+                                3 -> binding.bottomText.text = "$categoryName $fitName $colorName"
+                                4 -> binding.shoesText.text = "$categoryName $colorName"
+                                5 -> binding.bagText.text = "$categoryName $fitName $colorName"
+                                6 -> binding.otherText.text = "$categoryName $colorName"
+                                else -> Log.d(
+                                    "BookmarkOotdFragment",
+                                    "Unknown kindId: ${cloth.kindId}"
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    Log.e("API_ERROR", "Failed to fetch data for OOTD ID: $ootdId")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<Ootd>>, t: Throwable) {
+                Log.e("API_ERROR", "Request failed", t)
+            }
+        })
+    }
+
     // ✅ 북마크 상태 저장/로드
     private fun saveBookmarkState(key: String, isBookmarked: Boolean) {
-        val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
+        val preferences = requireActivity().getSharedPreferences(
+            "BookmarkPrefs",
+            android.content.Context.MODE_PRIVATE
+        )
         preferences.edit().putBoolean(key, isBookmarked).apply()
     }
 
     private fun loadBookmarkState(key: String): Boolean {
-        val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
+        val preferences = requireActivity().getSharedPreferences(
+            "BookmarkPrefs",
+            android.content.Context.MODE_PRIVATE
+        )
         return preferences.getBoolean(key, false)
     }
 
