@@ -58,9 +58,10 @@ class SearchItemFragment : Fragment() {
 
         // 컬러 필터링 filterButton
         binding.filterButton.setOnClickListener {
-            val action = SearchItemFragmentDirections
-                .actionSearchItemFragmentToClosetItemFilterFragment(category ?: "DEFAULT")
-            findNavController().navigate(action)
+//            val action = SearchItemFragmentDirections
+//                .actionSearchItemFragmentToClosetItemFilterFragment(category ?: "DEFAULT")
+//            findNavController().navigate(action)
+            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
         }
 
         val args = SearchItemFragmentArgs.fromBundle(requireArguments())

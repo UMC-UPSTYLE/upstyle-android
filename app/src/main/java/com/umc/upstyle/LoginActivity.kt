@@ -23,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide() // 액션바 숨기기
         enableEdgeToEdge()
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
