@@ -58,7 +58,12 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
 
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
+            val ClosetItemFragment = arguments?.getString("ClosetItemFragment")
+
+            when (ClosetItemFragment) {
+                "true" -> findNavController().navigateUp()
+                else -> findNavController().navigate(R.id.SearchItemFragment) // 기본적으로 이전 화면으로 이동
+            }
         }
 
 //        // 이전 화면에서 전달된 데이터 수신
@@ -211,11 +216,12 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
         }
 
         val category = arguments?.getString("category") // 전달된 데이터 수신
-
+        val ClosetItemFragment = arguments?.getString("ClosetItemFragment")
 
         // 선택된 옵션을 문자열로 변환하여 전달
         val bundle = Bundle().apply {
             putString("category", category)
+            putString("ClosetItemFragment", ClosetItemFragment)
             putStringArrayList("selectedOptions", ArrayList(selectedOptions)) // ArrayList로 변환하여 전달
         }
 
@@ -227,6 +233,7 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
 
 
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

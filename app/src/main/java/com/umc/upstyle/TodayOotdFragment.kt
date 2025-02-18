@@ -17,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClothRequestDTO
 import com.umc.upstyle.data.model.OOTDRequest
+import com.umc.upstyle.data.model.Ootd
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.OOTDService
 import com.umc.upstyle.data.network.RetrofitClient
@@ -58,10 +59,14 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         // 전달된 데이터 처리
         observeSelectedItem()
 
-        // 상단에 띄우는 날짜
-        val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
-        val todayDate = dateFormat.format(Date())
-        binding.date.text = todayDate
+        val dateKey = arguments?.getString("DATE")
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("MMdd", Locale.getDefault())
+
+        val parsedDate = dateKey?.let { inputFormat.parse(it) } ?: Date() // String -> Date 변환
+        val ootdDate = outputFormat.format(parsedDate) // Date -> MMdd 형식의 String 변환
+        binding.date.text = ootdDate
+
 
         // 저장된 데이터 복원
         updateUIWithViewModel()
@@ -74,7 +79,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         // 저장 버튼 이벤트
         binding.saveButton.setOnClickListener {
-            val dateServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            //val dateServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val dateServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(parsedDate)
             val ootdRequest = OOTDRequest(
                 userId = 1,
                 date = dateServer,
@@ -98,6 +104,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             findNavController().navigate(R.id.mainFragment)
         }
     }
+
 
     private fun observeSelectedItem() {
         val navBackStackEntry = findNavController().currentBackStackEntry

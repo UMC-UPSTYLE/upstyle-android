@@ -16,6 +16,7 @@ activityKtx = "1.7.0"
 navigationSafeArgsGradlePlugin = "2.8.5"
 firebaseStorageKtx = "21.0.1"
 firebaseAppcheckPlayintegrity = "18.0.0"
+activity = "1.10.0"
 swiperefreshlayout = "1.1.0"
 
 

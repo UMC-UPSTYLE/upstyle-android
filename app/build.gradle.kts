@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.activity)
     implementation(libs.androidx.swiperefreshlayout)
 
 
@@ -131,5 +132,6 @@ dependencies {
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
 }
 

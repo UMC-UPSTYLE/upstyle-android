@@ -7,6 +7,7 @@ import com.umc.upstyle.data.model.OOTDCalendar
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface AuthApiService {
@@ -14,6 +15,10 @@ interface AuthApiService {
 //    fun loginWithKakao(
 //        @Header("Authorization") accessToken: String // 카카오 액세스 토큰을 헤더에 포함
 //    ): Call<ApiResponse<KakaoJwtDTO>>
+    @POST("/auth/logout")
+    fun logout(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<String>>
 
     @GET("/auth/kakao/loginJWT")
     fun loginWithKakao(

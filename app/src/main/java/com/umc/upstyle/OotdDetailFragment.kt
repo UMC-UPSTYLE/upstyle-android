@@ -6,9 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.Ootd
 import com.umc.upstyle.data.network.OotdApiService
@@ -33,20 +33,29 @@ class OotdDetailFragment : Fragment() {
 
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
-        // 전달된 OOTD ID 받기
+        // 전달된 정보 받기
         val ootdId = arguments?.getInt("SELECTED_OOTD_ID")
+        val ootdImage = arguments?.getString("SELECTED_OOTD_IMAGE")
+
+        if (!ootdImage.isNullOrEmpty()) {
+            Log.e("PIC", "Using provided image: $ootdImage")
+            binding.photoImageView.tag = ootdImage
+            displayImage(ootdImage)
+        }
 
         if (ootdId != null) {
-            fetchOotdData(ootdId) // 서버에서 해당 OOTD 데이터 요청
+            fetchOotdData(ootdId)
         }
     }
 
+    // 서버에서 데이터 가져오기
     private fun fetchOotdData(ootdId: Int) {
         apiService.getOOTDById(ootdId).enqueue(object : Callback<ApiResponse<Ootd>> {
             override fun onResponse(call: Call<ApiResponse<Ootd>>, response: Response<ApiResponse<Ootd>>) {
                 if (response.isSuccessful) {
                     response.body()?.result?.let { ootd ->
-                        displayOotdData(ootd) // 데이터를 화면에 표시
+                        Log.e("API_RESPONSE", "Fetched OOTD: $ootd")
+                        displayOotdData(ootd)
                     }
                 } else {
                     Log.e("API_ERROR", "Failed to fetch data for OOTD ID: $ootdId")
@@ -59,20 +68,9 @@ class OotdDetailFragment : Fragment() {
         })
     }
 
+    // ootd 정보 텍스트로 나열
     private fun displayOotdData(ootd: Ootd) {
         binding.date.text = formatDateKey(ootd.date)
-
-//        Glide.with(this).load(ootd.imageUrl).into(binding.photoImageView)
-
-        // OOTD 이미지 적용
-        val imageUrl = ootd.imageUrl
-        if (imageUrl != null) {
-            binding.photoImageView.visibility = View.VISIBLE
-            loadImage(binding.photoImageView, imageUrl.toString())
-            Log.e("PIC", ootd.imageUrl)
-        } else {
-            binding.photoImageView.visibility = View.GONE
-        }
 
         val textViewList = listOf(
             binding.outerText,
@@ -103,13 +101,17 @@ class OotdDetailFragment : Fragment() {
         return parts[1] + parts[2]
     }
 
-    // Glide를 이용한 이미지 로드
-    private fun loadImage(imageView: ImageView, url: String) {
-        Glide.with(imageView.context)
-            .load(url)
-            .into(imageView)
-    }
+    private fun displayImage(imageUrl: String) {
+        Log.e("DEBUG", "imageUrl: $imageUrl")
+        Glide.with(this)
+            .load(imageUrl)
+            .diskCacheStrategy(DiskCacheStrategy.ALL) // 캐싱 문제 해결
+            .placeholder(R.drawable.bg_other_day) // 로딩 중 기본 이미지
+            .error(R.drawable.bg_other_day) // 로딩 실패 시 기본 이미지
+            .into(binding.photoImageView)
 
+        binding.photoImageView.visibility = View.VISIBLE
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

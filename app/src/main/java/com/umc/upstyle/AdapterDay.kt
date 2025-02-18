@@ -1,16 +1,23 @@
 package com.umc.upstyle
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.OOTDCalendar
@@ -22,6 +29,7 @@ import java.util.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.bumptech.glide.request.target.Target
 
 class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Date>) :
     RecyclerView.Adapter<AdapterDay.DayView>() {
@@ -61,9 +69,13 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
                 .show()
             val context = holder.binding.root.context
             val ootdId = getOOTDIdByDate(dateKey)
+            val ootdImage = getOOTDImageByDate(dateKey)
 
             if (ootdId != null) {
-                val bundle = Bundle().apply { putInt("SELECTED_OOTD_ID", ootdId) }
+                val bundle = Bundle().apply {
+                    putInt("SELECTED_OOTD_ID", ootdId)
+                    putString("SELECTED_OOTD_IMAGE", ootdImage)
+                }
                 val navController = Navigation.findNavController(holder.binding.root)
                 navController.navigate(R.id.ootdDetailFragment, bundle)
             } else {
@@ -74,14 +86,16 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
             }
         }
 
+
+
         // OOTD 이미지 적용
         val imageUrl = ootdMap[dateKey]?.second
         if (imageUrl != null) {
-            loadBackgroundImage(holder.binding.itemDayLayout, imageUrl)
+            loadBackgroundImage(holder.binding.itemDayImage, holder.binding.itemDayText, imageUrl)
+            holder.binding.itemDayText.text = currentDay.toString()
         } else {
-            holder.binding.itemDayLayout.setBackgroundResource(R.drawable.bg_other_day)
+            holder.binding.itemDayImage.visibility = View.GONE // 이미지 없으면 숨김
         }
-
 
         // 현재 아이템의 달과 비교
         val isOtherMonth = tempMonth != currentDate.month
@@ -144,6 +158,7 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
         return ROW * 7
     }
 
+    // ootd 데이터 가져오기
     fun fetchOOTDDataFromAPI(userId: Int) {
         val apiService = RetrofitClient.createService(OotdApiService::class.java)
 
@@ -153,7 +168,9 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
                     override fun onResponse(call: Call<ApiResponse<OOTDCalendar>>, response: Response<ApiResponse<OOTDCalendar>>) {
                         if (response.isSuccessful) {
                             response.body()?.result?.let { ootdCalendar ->
-                                updateOOTDData(ootdCalendar.ootdPreviewList)
+                                // 최신 데이터 순으로 정렬 후 업데이트
+                                val sortedList = ootdCalendar.ootdPreviewList.sortedByDescending { it.id }
+                                updateOOTDData(sortedList)
                             }
                         }
                     }
@@ -170,34 +187,68 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
     // OOTD 데이터를 저장하는 함수
     fun updateOOTDData(ootdList: List<OOTDPreview>) {
         for (ootd in ootdList) {
-            if (!ootdMap.containsKey(ootd.date)) { // 중복 방지
+            val existingData = ootdMap[ootd.date]
+
+            // 기존 데이터보다 id가 더 큰 경우 최신 데이터로 덮어쓰기
+            if (existingData == null || ootd.id > existingData.first) {
                 ootdMap[ootd.date] = Pair(ootd.id, ootd.imageUrl)
             }
         }
         notifyDataSetChanged()
     }
 
+
     // 날짜를 기반으로 OOTD ID 가져오는 함수
     private fun getOOTDIdByDate(dateKey: String): Int? {
         return ootdMap[dateKey]?.first // 날짜를 기반으로 OOTD ID 반환
     }
 
+    // 날짜를 기반으로 OOTD 이미지 가져오는 함수
+    private fun getOOTDImageByDate(dateKey: String): String? {
+        return ootdMap[dateKey]?.second // 날짜를 기반으로 OOTD 이미지 반환
+    }
 
-    private fun loadBackgroundImage(view: View, url: String) {
-        val cornerRadius = 40
+    // 캘린더에 미리보기 이미지 로드
+    private fun loadBackgroundImage(imageView: ImageView, textView: TextView, url: String?) {
+        if (url.isNullOrEmpty()) {
+            imageView.visibility = View.GONE
+            textView.setTextColor(Color.BLACK) // 이미지가 없을 경우 검정색
+            return
+        }
 
-        Glide.with(view.context)
+        imageView.visibility = View.VISIBLE // 이미지뷰 표시
+
+        val requestOptions = RequestOptions()
+            .transform(CenterCrop(), RoundedCorners(30)) // 둥글게 만들기
+            .placeholder(R.drawable.bg_other_day) // 기본 배경 추가
+            .error(R.drawable.bg_other_day) // 로드 실패 시 기본 배경 유지
+
+        Glide.with(imageView.context)
             .load(url)
-            .apply(RequestOptions().transform(RoundedCorners(cornerRadius)))
-            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
-                override fun onResourceReady(resource: android.graphics.drawable.Drawable, transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?) {
-                    view.background = resource
+            .apply(requestOptions)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    textView.setTextColor(Color.BLACK) // 이미지 로드 실패 시 검정색
+                    return false
                 }
 
-                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
-                    view.background = placeholder
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    textView.setTextColor(Color.WHITE) // 이미지 로드 성공 시 흰색
+                    return false
                 }
             })
+            .into(imageView)
     }
 
 

@@ -51,7 +51,7 @@
                 android:layout_height="366dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="43dp"
-                android:background="@drawable/round_pic_upload"
+
                 android:backgroundTintMode="src_over"
                 android:clipToOutline="true"
                 android:elevation="4dp"

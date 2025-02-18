@@ -8,7 +8,7 @@
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_black"
+        android:background="@color/black"
         tools:context=".LoginActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,38 +17,15 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="MissingConstraints"
+            <!-- 로고 -->
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@drawable/logo"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_kakao_login"
-                android:layout_marginBottom="17dp">
-
-                <TextView
-                    android:id="@+id/tv_non_member"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="비회원으로 둘러보기"
-                    android:textSize="11sp"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="MissingConstraints" />
-
-                <View
-                    android:id="@+id/line_non_member"
-                    android:layout_width="130sp"
-                    android:layout_height="1dp"
-                    android:background="@drawable/line_shape_login"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_non_member"
-                    android:layout_marginTop="5dp" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <ImageButton
                 android:id="@+id/bt_kakao_login"

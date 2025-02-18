@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.databinding.FragmentClosetItemBinding
@@ -61,7 +62,15 @@ class ClosetItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
+            findNavController().navigate(R.id.closetFragment)
+        }
+
+        binding.filterButton.setOnClickListener {
+            val bundle = Bundle().apply {
+                val category = arguments?.getString("category")
+                putString("ClosetItemFragment", "true")
+            }
+            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
         }
 
         //category 값을 그대로 사용하여 상단 텍스트 설정
