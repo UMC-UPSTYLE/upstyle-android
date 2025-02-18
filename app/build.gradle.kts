@@ -76,7 +76,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.appcheck.playintegrity)
-    implementation(libs.activity)
     implementation(libs.androidx.swiperefreshlayout)
 
 
