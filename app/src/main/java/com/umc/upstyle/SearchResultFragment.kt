@@ -60,10 +60,7 @@ class SearchResultFragment : Fragment() {
         val selectedDescription = arguments?.getString("description") // ✅ 전달된 description 받기
         val category = arguments?.getString("category") // ✅ category 가져오기
 
-
-        // RecyclerView 설정
-        val allItems = loadItemsFromPreferences()
-
+        
 
         val bundle = Bundle().apply {
             putString("category", category)

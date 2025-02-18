@@ -89,8 +89,6 @@ class SearchItemFragment : Fragment() {
 
 
         // RecyclerView 설정
-        val items = loadItemsFromPreferences()
-        setupRecyclerView(items)
 
         val userId = 1
 
