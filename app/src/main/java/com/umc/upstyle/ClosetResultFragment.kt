@@ -42,26 +42,19 @@ class ClosetResultFragment : Fragment() {
 
         // TextView에 선택된 컬러들 보여주기
         binding.tvSelectedOptions.text = resultText
-
-//        // closetItemFragment으로 뒤로가기
-//        binding.backButton.setOnClickListener {
-//            findNavController().navigate(R.id.closetItemFragment)
-//        }
+        
 
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
-
-            val ClosetItemFragment = arguments?.getString("ClosetItemFragment")
-
-            when (ClosetItemFragment) {
-                "true" -> findNavController().navigate(R.id.closetItemFragment)
-                else -> findNavController().navigate(R.id.SearchItemFragment) // 기본적으로 이전 화면으로 이동
-            }
+            findNavController().popBackStack(R.id.closetItemFragment, false)
         }
 
         // 컬러 필터링 filterButton
         binding.filterButton.setOnClickListener {
-            findNavController().navigate(R.id.closetItemFilterFragment)
+            val bundle = Bundle().apply {
+                putString("category", where)
+            }
+            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
         }
 
 

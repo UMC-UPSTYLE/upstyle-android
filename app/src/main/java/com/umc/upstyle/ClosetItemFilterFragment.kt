@@ -18,6 +18,9 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
     private var _binding: FragmentClosetItemFilterBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var category: String
+    private lateinit var ClosetItemFragment: String
+
 //    // 선택된 필터 정보를 저장하는 변수
 //    private var selectedCategory: String? = null
 //    private var selectedSubCategory: String? = null
@@ -36,6 +39,10 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentClosetItemFilterBinding.inflate(inflater, container, false)
+
+        category = arguments?.getString("category").toString() // 전달된 데이터 수신
+        ClosetItemFragment = arguments?.getString("ClosetItemFragment").toString()
+
         return binding.root
     }
 
@@ -214,10 +221,6 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
             Toast.makeText(requireContext(), "컬러를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        val category = arguments?.getString("category") // 전달된 데이터 수신
-        val ClosetItemFragment = arguments?.getString("ClosetItemFragment")
-
         // 선택된 옵션을 문자열로 변환하여 전달
         val bundle = Bundle().apply {
             putString("category", category)
@@ -227,9 +230,11 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
 
         // 테스트용
         Toast.makeText(requireContext(), "선택된 컬러: $filteredColor", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "category: $category", Toast.LENGTH_SHORT).show()
 
         // ClosetResultFragment로 이동하며 데이터 전달
         findNavController().navigate(R.id.closetResultFragment, bundle)
+
 
 
     }

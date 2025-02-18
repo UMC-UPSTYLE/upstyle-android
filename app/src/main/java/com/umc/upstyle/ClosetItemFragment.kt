@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.data.network.ApiService
@@ -15,6 +16,8 @@ import com.umc.upstyle.data.model.ClosetCategoryResponse
 import java.io.File
 import com.umc.upstyle.data.model.ClothPreview
 import com.umc.upstyle.data.network.RetrofitClient
+import com.umc.upstyle.data.viewmodel.ClosetViewModel
+import com.umc.upstyle.data.viewmodel.RequestViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +32,7 @@ class ClosetItemFragment : Fragment() {
     private var category: String? = null
     private var userId: Int = 1 // 기본 userId 값 (필요 시 수정)
 
+    private lateinit var viewModel: ClosetViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,13 +52,18 @@ class ClosetItemFragment : Fragment() {
     }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // 뷰 바인딩 초기화
         _binding = FragmentClosetItemBinding.inflate(inflater, container, false)
+
+        // ViewModel 가져오기
+        viewModel = ViewModelProvider(requireActivity()).get(ClosetViewModel::class.java)
+
+        viewModel.category = category.toString()
+
         return binding.root
     }
 
@@ -62,19 +71,20 @@ class ClosetItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.closetFragment)
+            findNavController().navigateUp()
         }
 
         binding.filterButton.setOnClickListener {
             val bundle = Bundle().apply {
                 val category = arguments?.getString("category")
+                putString("category", category)
                 putString("ClosetItemFragment", "true")
             }
             findNavController().navigate(R.id.closetItemFilterFragment, bundle)
         }
 
         //category 값을 그대로 사용하여 상단 텍스트 설정
-        binding.titleText.text = category ?: "OTHER"
+        binding.titleText.text = viewModel.category ?: "OTHER"
 
         //API 호출
         fetchClosetItems()
