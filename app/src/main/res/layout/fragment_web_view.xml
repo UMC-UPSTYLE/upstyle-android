@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingBottom="10dp"
             android:background="@color/white">
 
             <!-- 뒤로가기 버튼 -->
@@ -22,7 +23,7 @@
                 android:layout_height="40dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="11dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/white"
                 android:src="@drawable/arrow_left_bk" />
@@ -32,8 +33,7 @@
                 android:id="@+id/myProfileTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="11dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="31dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="계정"
                 android:textColor="@color/black"
