@@ -56,6 +56,11 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             }
         }
 
+        if (!clothViewModel.imageUris.value.isNullOrEmpty() && clothViewModel.imageUris.value!![0] != "") {
+            binding.uploadText.visibility = View.GONE
+        }
+
+
 
         // 전달된 데이터 처리
         observeSelectedItem()
@@ -168,6 +173,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                     val imageUrl = uploadImageToFirebase(imageUri)
                     if (imageUrl != null) {
                         uploadedImageUrls.add(imageUrl)
+                        binding.uploadText.visibility = View.GONE   // ✅ 업로드 텍스트 숨기기
+
                         Log.d("Firebase", "이미지 업로드 성공: $imageUrl")
                     } else {
                         Log.e("Firebase", "이미지 업로드 실패")
@@ -253,6 +260,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 val response = ootdService.uploadOOTD(updatedRequest)
 
                 if (response.isSuccess) {
+                    binding.uploadText.visibility = View.GONE   // ✅ 업로드 텍스트 숨기기
+
                     Log.d("Retrofit", "업로드 성공!")
                 } else {
                     Log.e("Retrofit", "업로드 실패: ${response.code}")
@@ -471,6 +480,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         if (photoUri != null) {
             val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
             clothViewModel.addImage(photoUri.toString())
+            binding.uploadText.visibility = View.GONE   // ✅ 업로드 텍스트 숨기기
+
             preferences.edit().putString("SAVED_IMAGE_PATH", photoUri.toString()).apply()
         } else {
             Toast.makeText(requireContext(), "이미지 경로 저장 실패: URI가 null입니다.", Toast.LENGTH_SHORT).show()
