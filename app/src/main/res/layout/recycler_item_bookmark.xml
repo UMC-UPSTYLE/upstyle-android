@@ -6,6 +6,8 @@
 
     <!-- 이미지와 선택 버튼을 감싸는 FrameLayout -->
     <FrameLayout
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
         android:id="@+id/image_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
