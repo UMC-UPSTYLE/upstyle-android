@@ -27,7 +27,8 @@ class BookmarkFragment : Fragment() {
 
     private lateinit var adapter: RecyclerAdapter_Bookmark
     // ✅ 변수 정의 필요
-    private lateinit var bookmarkList: List<BookmarkItem> // 또는 MutableList<BookmarkItem>
+    private var bookmarkList: MutableList<BookmarkItem> = mutableListOf()
+
 
 
 
@@ -86,13 +87,13 @@ class BookmarkFragment : Fragment() {
     }
     private fun loadBookmarksFromServer() {
         val apiService = RetrofitClient.createService(ApiService::class.java)
-        apiService.getBookmarks(1).enqueue(object : Callback<BookmarkResponse> {
+        apiService.getBookmarks(null).enqueue(object : Callback<BookmarkResponse> {
             override fun onResponse(
                 call: Call<BookmarkResponse>,
                 response: Response<BookmarkResponse>
             ) {
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
-                    bookmarkList = response.body()?.result?.bookmarkList ?: emptyList()
+                    bookmarkList = (response.body()?.result?.bookmarkList ?: emptyList()).toMutableList()
                     Log.d("BookmarkFragment", "서버 데이터 불러오기 성공: $bookmarkList")  // 디버깅 로그 추가
                     filterBookmarks(R.id.btn_all)
                 } else {
@@ -139,6 +140,8 @@ class BookmarkFragment : Fragment() {
         adapter.updateList(filteredItems.map {
             val displayText = if (selectedCategoryId == R.id.btn_all) {
                 ""  // ALL 버튼 클릭 시 텍스트 없음
+            } else if (selectedCategoryId == R.id.btn_shoes || selectedCategoryId == R.id.btn_other) {
+                "${it.category} ${it.color}"
             } else {
                 "${it.category} ${it.fit} ${it.color}"  // 카테고리 핏 색깔 순서로 표시
             }

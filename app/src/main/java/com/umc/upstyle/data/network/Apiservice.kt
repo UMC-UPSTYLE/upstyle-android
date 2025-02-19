@@ -52,7 +52,7 @@ interface ApiService {
 
     @GET("bookmarks/")  // 서버의 API 엔드포인트
     fun getBookmarks(
-        @Query("userId") userId: Int
+        @Query("kindId") kindId: Int? = null
     ): Call<BookmarkResponse>
 
     @GET("codi-requests/")  // 실제 서버의 API 엔드포인트로 교체
