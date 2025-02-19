@@ -80,13 +80,6 @@ interface ApiService {
         @Path("clothId") clothId: Int
     ): Call<BookmarkResponse>
 
-    @POST("bookmarks/")
-    @Headers("Content-Type: application/json")
-    fun toggleBookmark(
-        @Header("Authorization") token: String,
-        @Body request: BookmarkRequest
-    ): Call<BookmarkResponse>
-
 
 
 }
