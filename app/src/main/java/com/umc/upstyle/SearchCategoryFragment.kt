@@ -2,7 +2,6 @@ package com.umc.upstyle
 
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -26,19 +25,22 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
 
         _binding = FragmentSearchCategoryBinding.bind(view)
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
+        // ✅ SharedPreferences에서 값 불러오기
+        filterViewModel.loadFromSharedPreferences(requireContext())
 
-        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        // ✅ UI 초기화
+        setupCategoryOptions()
+
+        // ✅ 뒤로가기 버튼
+        binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack(R.id.searchFragment, false)
         }
 
-
-
-        setupCategoryOptions()
-
+        // ✅ 완료 버튼 클릭 시
         binding.compOffButton.setOnClickListener { complete() }
 
+        // ✅ 네비게이션
         binding.subcategoryTextView.setOnClickListener { navigateToNextFragment("SUBCATEGORY") }
         binding.fitsizeTextView.setOnClickListener { navigateToNextFragment("FITSIZE") }
         binding.colorTextView.setOnClickListener { navigateToNextFragment("COLOR") }
@@ -48,6 +50,21 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
         val options = listOf("OUTER", "TOP", "BOTTOM", "SHOES", "BAG", "OTHER")
         createButtons(binding.optionsLayout, options) { selectedOption ->
             filterViewModel.selectedCategory = selectedOption
+            filterViewModel.kindId = getKindId(selectedOption)
+            filterViewModel.saveToSharedPreferences(requireContext())
+            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+        }
+
+        // ✅ 이전에 선택한 카테고리가 있으면 버튼 상태 유지
+        filterViewModel.selectedCategory?.let { selectedCategory ->
+            binding.optionsLayout.children.forEach { view ->
+                val button = view as TextView
+                button.background = if (button.text == selectedCategory) {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                } else {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                }
+            }
             binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
         }
     }
@@ -73,12 +90,28 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
         }
     }
 
+    private fun getKindId(category: String?): Int? {
+        return when (category) {
+            "OUTER" -> 1
+            "TOP" -> 2
+            "BOTTOM" -> 3
+            "SHOES" -> 4
+            "BAG" -> 5
+            "OTHER" -> 6
+            else -> null
+        }
+    }
+
     private fun navigateToNextFragment(type: String) {
         if (filterViewModel.selectedCategory.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "카테고리를 먼저 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
+        // ✅ SharedPreferences에 데이터 저장
+        filterViewModel.saveToSharedPreferences(requireContext())
+
+        // ✅ 프래그먼트 이동
         when (type) {
             "SUBCATEGORY" -> findNavController().navigate(R.id.searchSubcategoryFragment)
             "FITSIZE" -> findNavController().navigate(R.id.searchFitSizeFragment)
@@ -93,6 +126,11 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
             Toast.makeText(requireContext(), "찾고자하는 의류 분류를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        // ✅ SharedPreferences에 데이터 저장
+        filterViewModel.saveToSharedPreferences(requireContext())
+
+        // ✅ 네비게이션 수행
         findNavController().navigate(R.id.searchFilterFragment)
     }
 

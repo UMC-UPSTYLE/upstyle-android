@@ -2,9 +2,9 @@ package com.umc.upstyle
 
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -25,17 +25,15 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
 
         _binding = FragmentSearchFitSizeBinding.bind(view)
 
-        if (filterViewModel.selectedCategory.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
-            requireActivity().supportFragmentManager.popBackStack()
-            return
-        }
+        // ✅ SharedPreferences에서 값 불러오기
+        filterViewModel.loadFromSharedPreferences(requireContext())
 
         binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
 
+        // ✅ 핏 사이즈 옵션 생성
         setupCategoryOptions()
 
-        // SHOES 또는 OTHER 선택 시 fitsizeTextView를 비활성화 (회색 처리)
+        // ✅ SHOES 또는 OTHER 선택 시 fitsizeTextView를 비활성화 (회색 처리)
         if (filterViewModel.selectedCategory == "SHOES" || filterViewModel.selectedCategory == "OTHER") {
             binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
             binding.fitsizeTextView.isClickable = false
@@ -46,8 +44,8 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
             binding.fitsizeTextView.isEnabled = true
         }
 
+        // ✅ 완료 및 네비게이션 버튼 클릭 시
         binding.compOffButton.setOnClickListener { complete() }
-
         binding.categoryTextView.setOnClickListener { navigateToNextFragment("CATEGORY") }
         binding.subcategoryTextView.setOnClickListener { navigateToNextFragment("SUBCATEGORY") }
         binding.colorTextView.setOnClickListener { navigateToNextFragment("COLOR") }
@@ -57,6 +55,21 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
         val options = listOf("슬림", "레귤러", "오버핏")
         createButtons(binding.optionsLayout, options) { selectedOption ->
             filterViewModel.selectedFitSize = selectedOption
+            filterViewModel.fitId = getFitId(selectedOption) // ✅ 핏 사이즈 ID를 숫자로 저장
+            filterViewModel.saveToSharedPreferences(requireContext()) // ✅ 바로 SharedPreferences에 저장
+            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+        }
+
+        // ✅ 이전에 선택한 핏 사이즈가 있으면 버튼 상태 유지
+        filterViewModel.selectedFitSize?.let { selectedFitSize ->
+            binding.optionsLayout.children.forEach { view ->
+                val button = view as TextView
+                button.background = if (button.text == selectedFitSize) {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                } else {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                }
+            }
             binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
         }
     }
@@ -82,7 +95,21 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
         }
     }
 
+    // ✅ 핏 사이즈 이름에 따라 ID를 반환하는 함수
+    private fun getFitId(fitSize: String?): Int? {
+        return when (fitSize) {
+            "슬림" -> 1
+            "레귤러" -> 2
+            "오버핏" -> 3
+            else -> null
+        }
+    }
+
     private fun navigateToNextFragment(type: String) {
+        // ✅ SharedPreferences에 데이터 저장
+        filterViewModel.saveToSharedPreferences(requireContext())
+
+        // ✅ 프래그먼트 이동
         when (type) {
             "CATEGORY" -> findNavController().navigate(R.id.searchCategoryFragment)
             "SUBCATEGORY" -> findNavController().navigate(R.id.searchSubcategoryFragment)
@@ -93,10 +120,10 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
     }
 
     private fun complete() {
-        if (filterViewModel.selectedFitSize.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "핏/사이즈를 선택해주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // ✅ SharedPreferences에 데이터 저장
+        filterViewModel.saveToSharedPreferences(requireContext())
+
+        // ✅ 네비게이션 수행
         findNavController().navigate(R.id.searchFilterFragment)
     }
 

@@ -104,6 +104,7 @@
         android:text="핏/사이즈"
         android:textSize="13sp"
         android:textStyle="bold"
+        android:textColor="@color/white"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="11dp"
         android:layout_alignParentTop="true"

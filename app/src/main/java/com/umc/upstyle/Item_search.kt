@@ -8,6 +8,7 @@ data class Item_search(
     val imageUrl: String,
     val categoryId: Int? = null, // ✅ 새롭게 추가
     val fitId: Int? = null,      // ✅ 새롭게 추가
-    val colorId: Int? = null     // ✅ 새롭게 추가
+    val colorId: Int? = null  ,  // ✅ 새롭게 추가
+    val ootdId: Int? = null      // ✅ 새롭게 추가
 
 ) : Parcelable

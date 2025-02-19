@@ -411,7 +411,11 @@
         android:id="@+id/searchFilterFragment"
         android:name="com.umc.upstyle.SearchFilterFragment"
         android:label="Search Filter Fragment"
-        tools:layout="@layout/fragment_search_filter" />
+        tools:layout="@layout/fragment_search_filter" >
+        <action
+            android:id="@+id/action_searchFilterFragment_to_searchFilterOotdFragment"
+            app:destination="@id/searchFilterOotdFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/createVoteFragment"
@@ -602,6 +606,35 @@
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
         </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFilterOotdFragment"
+        android:name="com.umc.upstyle.SearchFilterOotdFragment"
+        android:label="SearchFilterOotdFragment"
+        tools:layout="@layout/fragment_search_filter_ootd">
+        <argument
+            android:name="description"
+            app:argType="string" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string" />
+        <argument
+            android:name="categoryId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="fitId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="colorId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="ootd_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
 

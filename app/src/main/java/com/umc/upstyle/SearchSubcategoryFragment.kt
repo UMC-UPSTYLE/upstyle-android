@@ -2,7 +2,6 @@ package com.umc.upstyle
 
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -12,7 +11,10 @@ import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
+import com.umc.upstyle.SharedPreferencesUtils.getCategoryId
+import com.umc.upstyle.databinding.FragmentSearchFitSizeBinding
 import com.umc.upstyle.databinding.FragmentSearchSubcategoryBinding
+import com.umc.upstyle.utils.CategoryUtil
 
 class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory) {
 
@@ -26,29 +28,25 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
 
         _binding = FragmentSearchSubcategoryBinding.bind(view)
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
+        filterViewModel.loadFromSharedPreferences(requireContext())
 
-        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().popBackStack(R.id.searchFragment, false)
-        }
+        binding.backButton.setOnClickListener { findNavController().popBackStack(R.id.searchFragment, false) }
 
         setupSubcategoryOptions(filterViewModel.selectedCategory ?: "")
 
-        // SHOES 또는 OTHER 선택 시 fitsizeTextView를 비활성화 (회색 처리)
         if (filterViewModel.selectedCategory == "SHOES" || filterViewModel.selectedCategory == "OTHER") {
-            binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
-            binding.fitsizeTextView.isClickable = false
-            binding.fitsizeTextView.isEnabled = false
+            binding.subcategoryTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
+            binding.subcategoryTextView.isClickable = false
+            binding.subcategoryTextView.isEnabled = false
         } else {
-            binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.fitsizeTextView.isClickable = true
-            binding.fitsizeTextView.isEnabled = true
+            binding.subcategoryTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.login_yellow))
+            binding.subcategoryTextView.isClickable = true
+            binding.subcategoryTextView.isEnabled = true
         }
 
         binding.compOffButton.setOnClickListener { complete() }
         binding.categoryTextView.setOnClickListener { navigateToNextFragment("CATEGORY") }
-        binding.fitsizeTextView.setOnClickListener { navigateToNextFragment("FITSIZE") }
+        binding.subcategoryTextView.setOnClickListener { navigateToNextFragment("SUBCATEGORY") }
         binding.colorTextView.setOnClickListener { navigateToNextFragment("COLOR") }
     }
 
@@ -56,6 +54,20 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
         val options = getCategoryOptions(category)
         createButtons(binding.optionsLayout, options) { selectedOption ->
             filterViewModel.selectedSubCategory = selectedOption
+            filterViewModel.categoryId = getCategoryId(selectedOption)
+            filterViewModel.saveToSharedPreferences(requireContext())
+            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+        }
+
+        filterViewModel.selectedSubCategory?.let { selectedSubCategory ->
+            binding.optionsLayout.children.forEach { view ->
+                val button = view as TextView
+                button.background = if (button.text == selectedSubCategory) {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                } else {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                }
+            }
             binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
         }
     }
@@ -93,20 +105,28 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
         }
     }
 
+    private fun getCategoryId(subcategory: String?): Int? {
+        val categoryIds: Pair<Int, Int>? = subcategory?.let { CategoryUtil.getCategoryIds(it) }
+        return categoryIds?.first
+    }
+
     private fun navigateToNextFragment(type: String) {
+
+        filterViewModel.saveToSharedPreferences(requireContext())
+
         when (type) {
             "CATEGORY" -> findNavController().navigate(R.id.searchCategoryFragment)
             "FITSIZE" -> findNavController().navigate(R.id.searchFitSizeFragment)
             "COLOR" -> findNavController().navigate(R.id.searchColorFragment)
         }
+
         Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
     }
 
     private fun complete() {
-        if (filterViewModel.selectedSubCategory.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "하위 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
+
+        filterViewModel.saveToSharedPreferences(requireContext())
+
         findNavController().navigate(R.id.searchFilterFragment)
     }
 
