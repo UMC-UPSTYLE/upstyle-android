@@ -1,5 +1,6 @@
 package com.umc.upstyle
 
+import android.content.Context
 import com.umc.upstyle.utils.Item_load
 import android.net.Uri
 import android.os.Bundle
@@ -23,14 +24,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.umc.upstyle.VoteItemAdapter
+import com.umc.upstyle.data.model.AccountInfoDTO
+import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.viewmodel.PostViewModel
 import com.umc.upstyle.databinding.FragmentCreateVoteBinding
 import com.umc.upstyle.data.model.VoteItem
 import com.umc.upstyle.data.model.VoteRequest
+import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.RequestService
 import com.umc.upstyle.data.network.RetrofitClient
+import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.data.network.VoteService
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -51,6 +59,7 @@ class CreateVoteFragment : Fragment() {
     private lateinit var editTextContent: EditText
     private var voteItemList = mutableListOf<VoteItem>()
     private lateinit var voteItemAdapter: VoteItemAdapter
+    private val userApiService = RetrofitClient.createService(UserApiService::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -58,6 +67,29 @@ class CreateVoteFragment : Fragment() {
         _binding = FragmentCreateVoteBinding.inflate(inflater, container, false)
         editTextTitle = binding.etTitle
         editTextContent = binding.etContent
+
+        val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
+        val jwtToken = sharedPref.getString("jwt_token", null)
+
+
+        userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
+            Callback<ApiResponse<AccountInfoDTO>> {
+            override fun onResponse(
+                call: Call<ApiResponse<AccountInfoDTO>>,
+                response: Response<ApiResponse<AccountInfoDTO>>
+            ) {
+                if (response.isSuccessful) {
+                    viewModel.username = response.body()?.result?.nickname.toString()
+
+                } else {
+                }
+
+            }
+
+            override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
+                Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
+            }
+        })
 
         setupRecyclerView()
         return binding.root
@@ -369,7 +401,7 @@ class CreateVoteFragment : Fragment() {
             onTakePhoto = { takePhoto(position) },
             onChoosePhoto = { selectImageFromGallery(position) },
             onLoadItem = {
-                val action = CreateVoteFragmentDirections.actionCreateVoteFragmentToLoadCategoryFragment(position)
+                val action = CreateVoteFragmentDirections.actionCreateVoteFragmentToLoadCategoryFragment(position, viewModel.username)
                 findNavController().navigate(action) },
             onCancel = { /* 취소 버튼 동작 */ }
         )

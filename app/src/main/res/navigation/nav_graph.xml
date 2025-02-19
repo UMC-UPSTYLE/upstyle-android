@@ -425,6 +425,10 @@
                 android:name="position"
                 app:argType="integer"
                 android:defaultValue="-1"/>
+            <argument
+                android:name="username"
+                app:argType="string"
+                android:defaultValue="익명"/>
         </action>
     </fragment>
 
@@ -533,7 +537,12 @@
         tools:layout="@layout/fragment_create_request" >
         <action
             android:id="@+id/action_createRequestFragment_to_loadCategoryFragment"
-            app:destination="@id/loadCategoryFragment" />
+            app:destination="@id/loadCategoryFragment">
+            <argument
+                android:name="username"
+                app:argType="string"
+                android:defaultValue="익명"/>
+        </action>
     </fragment>
     <fragment
         android:id="@+id/loadCategoryFragment"
@@ -547,6 +556,10 @@
             android:name="position"
             app:argType="integer"
             android:defaultValue="-1"/>
+        <argument
+            android:name="username"
+            app:argType="string"
+            android:defaultValue="익명"/>
         <action
             android:id="@+id/action_loadCategoryFragment_to_loadItemFragment"
             app:destination="@id/loadItemFragment">

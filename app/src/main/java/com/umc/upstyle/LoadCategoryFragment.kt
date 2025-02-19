@@ -26,8 +26,10 @@ class LoadCategoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val position = args.position // 전달받은 position 값
+        val username = args.username // 전달받은 username
         Toast.makeText(context, "받아온 포지션: $position", Toast.LENGTH_SHORT).show()
         categoryViewModel.position = position
+        categoryViewModel.username = username
         _binding = FragmentLoadCategoryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -76,6 +78,8 @@ class LoadCategoryFragment : Fragment() {
                 else -> findNavController().previousBackStackEntry?.savedStateHandle?.remove<Any>(key)
             }
         }
+
+        binding.tvUsername.text = categoryViewModel.username
 
 
         // 뒤로 가기 버튼 클릭 시 navigateUp() 실행

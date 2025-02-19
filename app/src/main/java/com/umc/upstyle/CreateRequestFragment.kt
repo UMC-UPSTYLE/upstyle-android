@@ -22,12 +22,18 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.umc.upstyle.data.model.AddCodiReqDTO
 import com.google.firebase.storage.FirebaseStorage
+import com.umc.upstyle.data.model.AccountInfoDTO
+import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.network.RequestService
 import com.umc.upstyle.data.network.RetrofitClient
+import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.data.viewmodel.RequestViewModel
 import com.umc.upstyle.databinding.FragmentCreateRequestBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.coroutines.suspendCoroutine
 import java.io.File
 import java.text.SimpleDateFormat
@@ -44,6 +50,7 @@ class CreateRequestFragment : Fragment() {
     private lateinit var viewModel: RequestViewModel
     private lateinit var editTextTitle: EditText
     private lateinit var editTextContent: EditText
+    private val userApiService = RetrofitClient.createService(UserApiService::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -60,6 +67,28 @@ class CreateRequestFragment : Fragment() {
         // ViewModel에 저장된 데이터가 있으면 복원
         editTextTitle.setText(viewModel.requestTitle)
         editTextContent.setText(viewModel.requestContent)
+
+        val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
+        val jwtToken = sharedPref.getString("jwt_token", null)
+
+
+        userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
+            Callback<ApiResponse<AccountInfoDTO>> {
+            override fun onResponse(
+                call: Call<ApiResponse<AccountInfoDTO>>,
+                response: Response<ApiResponse<AccountInfoDTO>>
+            ) {
+                if (response.isSuccessful) {
+                    viewModel.username = response.body()?.result?.nickname.toString()
+                } else {
+                }
+
+            }
+
+            override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
+                Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
+            }
+        })
 
         return binding.root
     }
@@ -231,7 +260,8 @@ class CreateRequestFragment : Fragment() {
         val votePopup = VotePopupDialog(
             onTakePhoto = { takePhoto() },
             onChoosePhoto = { selectImageFromGallery() },
-            onLoadItem = { findNavController().navigate(R.id.loadCategoryFragment) },
+            onLoadItem = { val action = CreateRequestFragmentDirections.actionCreateRequestFragmentToLoadCategoryFragment(viewModel.username)
+                findNavController().navigate(action) },
             onCancel = { /* 취소 버튼 동작 */ }
         )
         votePopup.show(parentFragmentManager, "VotePopupDialog")

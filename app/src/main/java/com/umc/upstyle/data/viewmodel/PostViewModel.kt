@@ -11,6 +11,7 @@ class PostViewModel : ViewModel() {
     var postTitle: String = ""
     var postContent: String = ""
     var imageUrl: String = ""
+    var username: String = ""
 
     private val _optionList = MutableLiveData<MutableList<VoteOptionSimple>>()
     val optionList: LiveData<MutableList<VoteOptionSimple>> = _optionList
