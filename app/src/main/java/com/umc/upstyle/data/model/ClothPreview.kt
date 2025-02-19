@@ -20,6 +20,6 @@ data class ClothPreview(
 {
     @Parcelize
     data class Ootd(
-        val imageUrl: String
+        val imageUrl: String,
     ) : Parcelable
 }

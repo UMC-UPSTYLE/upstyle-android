@@ -26,7 +26,12 @@ interface ApiService {
     @GET("closets/categories")
     fun getClosetByCategory(
         @Query("userId") userId: Int,
-        @Query("kindId") categoryId: Int? = null
+        @Query("kindId") kindId: Int? = null,
+        @Query("categoryId") categoryId: Int? = null,
+        @Query("colorId") colorId: List<Int>? = null,
+        @Query("fitId") fitId: Int? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10
     ): Call<ClosetCategoryResponse>
 
 

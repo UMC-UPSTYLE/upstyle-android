@@ -60,4 +60,5 @@ object CategoryUtil {
     fun getCategoryIds(subCategory: String): Pair<Int, Int>? {
         return categoryMap[subCategory]
     }
+
 }
