@@ -2,21 +2,30 @@ package com.umc.upstyle
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.umc.upstyle.data.model.AccountInfoDTO
+import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.ClothIdResponse
 import com.umc.upstyle.data.model.ClothRequestDTO
 import com.umc.upstyle.data.model.ClothRequestDesDTO
 import com.umc.upstyle.data.model.CodiResponseRequest
+import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.OOTDService
+import com.umc.upstyle.data.network.OotdApiService
 import com.umc.upstyle.data.network.RequestService
 import com.umc.upstyle.data.network.RetrofitClient
+import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.FragmentCodiBottomSheetDialogBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -30,6 +39,9 @@ class CodiBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var clothList: MutableList<ClothRequestDesDTO>
     private lateinit var clothIDList: MutableList<ClothIdResponse>
     private var requestId by Delegates.notNull<Int>()
+    private val apiService = RetrofitClient.createService(OotdApiService::class.java)
+    private val userApiService = RetrofitClient.createService(UserApiService::class.java)
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +55,30 @@ class CodiBottomSheetFragment : BottomSheetDialogFragment() {
             clothIDList = it.getParcelableArrayList<ClothIdResponse>("CLOTH_ID_LIST") ?: mutableListOf()
             requestId = it.getInt("REQUEST_ID", -1) // 기본값 -1 설정 (예외 처리용)
         }
+
+        val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
+        val jwtToken = sharedPref.getString("jwt_token", null)
+
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
+            Callback<ApiResponse<AccountInfoDTO>> {
+            override fun onResponse(
+                call: Call<ApiResponse<AccountInfoDTO>>,
+                response: Response<ApiResponse<AccountInfoDTO>>
+            ) {
+                if (response.isSuccessful) {
+                    val nickName = response.body()?.result?.nickname
+                    binding.tvUsername.text = "${nickName}"
+                } else {
+                }
+
+            }
+
+            override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
+                Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
+            }
+        })
 
         // UI 업데이트
         updateUI(clothList)
