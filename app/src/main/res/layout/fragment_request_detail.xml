@@ -43,7 +43,6 @@
                 android:id="@+id/mainTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="9dp"
                 android:text="코디 요청"
                 android:textSize="20sp"
                 android:textStyle="bold"

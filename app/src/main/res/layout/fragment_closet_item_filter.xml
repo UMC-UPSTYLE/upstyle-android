@@ -27,13 +27,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="51dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="29dp"
         android:text="필터"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/login_yellow"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- 컬러 텍스트 1 -->

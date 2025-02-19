@@ -34,8 +34,7 @@
             android:textColor="@color/selectYellow"
             app:layout_constraintTop_toTopOf="@id/backButton"
             app:layout_constraintStart_toEndOf="@id/backButton"
-            app:layout_constraintBottom_toBottomOf="@id/backButton"
-            android:layout_marginStart="8dp" />
+            app:layout_constraintBottom_toBottomOf="@id/backButton" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/subtitle_bar"
@@ -95,6 +94,7 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="gone"
                 android:id="@+id/filterButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
