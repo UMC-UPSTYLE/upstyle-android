@@ -18,12 +18,13 @@
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="12dp"
             android:background="@null"
-            android:layout_marginStart="11dp"
             android:src="@drawable/arrow_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <!-- OOTD 이미지 -->
         <ImageView

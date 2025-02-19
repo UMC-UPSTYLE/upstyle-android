@@ -26,6 +26,7 @@
                 android:src="@drawable/arrow_left"
                 android:background="@null"
                 android:layout_marginTop="24dp"
+                android:layout_marginStart="1dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
