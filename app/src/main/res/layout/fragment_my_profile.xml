@@ -15,7 +15,7 @@
         android:src="@drawable/arrow_left"
         android:background="@null"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="11dp"
+        android:layout_marginStart="12dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="24dp" />
 

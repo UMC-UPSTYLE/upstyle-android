@@ -10,8 +10,8 @@
         android:id="@+id/backButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/arrow_left"
         android:contentDescription="뒤로가기" />
 
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="24dp"
         android:layout_toEndOf="@id/backButton"
         android:fontFamily="@font/pretendard_medium"
         android:text=""

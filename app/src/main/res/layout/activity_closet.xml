@@ -1,6 +1,6 @@
 
 
-<ScrollView 
+<ScrollView
     android:id="@+id/closetFragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app2="http://schemas.android.com/apk/res-auto"
@@ -17,14 +17,16 @@
         android:background="#000000">
 
         <!-- 뒤로가기 버튼 -->
-        <ImageView
+        <ImageButton
             android:id="@+id/backButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="11dp"
             android:src="@drawable/arrow_left"
-            android:contentDescription="뒤로가기" />
+            android:background="@null"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="12dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="24dp" />
 
         <!-- 상단 텍스트 -->
         <LinearLayout
@@ -47,7 +49,7 @@
                     android:id="@+id/tv_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="사용자"
+                    android:text=""
                     android:textColor="#FFFFFF"
                     android:textSize="34sp"
                     android:textStyle="bold" />
@@ -333,5 +335,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- GridLayout for 옷장 아이템 -->
-           </RelativeLayout>
+    </RelativeLayout>
 </ScrollView>
