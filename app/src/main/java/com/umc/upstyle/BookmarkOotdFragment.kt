@@ -96,58 +96,90 @@ class BookmarkOotdFragment : Fragment() {
 
 
     // ✅ 북마크 버튼 설정 함수
-    private fun setupBookmarkButtons(kindId: Int?) {
-        if (kindId == null) return
+    private fun setupBookmarkButtons(clothId: Int) {
+        if (clothId == -1) return
 
         val bookmarkButtons = listOf(
-            binding.bookmarkOuter to "bookmark_outer_$kindId",
-            binding.bookmarkTop to "bookmark_top_$kindId",
-            binding.bookmarkBottom to "bookmark_bottom_$kindId",
-            binding.bookmarkShoes to "bookmark_shoes_$kindId",
-            binding.bookmarkBag to "bookmark_bag_$kindId",
-            binding.bookmarkOther to "bookmark_other_$kindId"
+            binding.bookmarkOuter,
+            binding.bookmarkTop,
+            binding.bookmarkBottom,
+            binding.bookmarkShoes,
+            binding.bookmarkBag,
+            binding.bookmarkOther
         )
 
-        val bookmarkStates = mutableMapOf<String, Boolean>()
-        bookmarkButtons.forEach { (button, key) ->
-            val isBookmarked = loadBookmarkState(key)
-            bookmarkStates[key] = isBookmarked
-            button.setImageResource(if (isBookmarked) R.drawable.bookmark_on else R.drawable.bookmark_off)
+        val jwtToken = requireActivity()
+            .getSharedPreferences("Auth", android.content.Context.MODE_PRIVATE)
+            .getString("jwt_token", null)
 
-            button.setOnClickListener {
-                val newState = !bookmarkStates[key]!!
-                bookmarkStates[key] = newState
-                button.setImageResource(if (newState) R.drawable.bookmark_on else R.drawable.bookmark_off)
-
-                toggleBookmark(kindId, newState)
-            }
+        if (jwtToken.isNullOrEmpty()) {
+            Log.e("Bookmark", "❌ JWT 토큰이 없음")
+            return
         }
-    }
-
-    // ✅ 북마크 저장/취소 API 호출
-    private fun toggleBookmark(kindId: Int, isBookmarked: Boolean) {
-        val userId = 1 // 예시: 현재 로그인한 사용자 ID
-        val request = BookmarkRequest(userId, kindId) // kindId를 clothId로 전달
 
         val bookmarkApi = RetrofitClient.createService(ApiService::class.java)
 
-        bookmarkApi.toggleBookmark(request).enqueue(object : Callback<BookmarkResponse> {
-            override fun onResponse(
-                call: Call<BookmarkResponse>,
-                response: Response<BookmarkResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.d("Bookmark", "북마크 변경 완료: $isBookmarked")
+        bookmarkApi.getBookmarkStatus("Bearer $jwtToken", clothId).enqueue(object : Callback<BookmarkResponse> {
+            override fun onResponse(call: Call<BookmarkResponse>, response: Response<BookmarkResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val isBookmarked = response.body()!!.result?.isBookmarked ?: false
+
+                    bookmarkButtons.forEach { button ->
+                        button.setImageResource(if (isBookmarked) R.drawable.bookmark_on else R.drawable.bookmark_off)
+
+                        button.setOnClickListener {
+                            toggleBookmark(clothId, button)
+                        }
+                    }
                 } else {
-                    Log.e("Bookmark", "Error: ${response.errorBody()?.string()}")
+                    Log.e("Bookmark", "❌ 북마크 상태 가져오기 실패: ${response.errorBody()?.string()}")
                 }
             }
 
             override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
-                Log.e("Bookmark", "Failure: ${t.message}")
+                Log.e("Bookmark", "❌ 서버 요청 실패: ${t.message}")
             }
         })
     }
+
+
+
+    // ✅ 북마크 저장/취소 API 호출
+    private fun toggleBookmark(clothId: Int, button: ImageView) {
+        val jwtToken = requireActivity()
+            .getSharedPreferences("Auth", android.content.Context.MODE_PRIVATE)
+            .getString("jwt_token", null)
+
+        if (jwtToken.isNullOrEmpty()) {
+            Log.e("Bookmark", "❌ JWT 토큰이 없음")
+            return
+        }
+
+        val bookmarkApi = RetrofitClient.createService(ApiService::class.java)
+
+        val request = BookmarkRequest(clothId,clothId)
+
+        bookmarkApi.toggleBookmark("Bearer $jwtToken", request).enqueue(object : Callback<BookmarkResponse> {
+            override fun onResponse(call: Call<BookmarkResponse>, response: Response<BookmarkResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val bookmarkResult = response.body()!!.result
+                    val newBookmarkState = bookmarkResult?.isBookmarked ?: false
+
+                    Log.d("Bookmark", "✅ 북마크 변경 완료: $newBookmarkState")
+
+                    button.setImageResource(if (newBookmarkState) R.drawable.bookmark_on else R.drawable.bookmark_off)
+                } else {
+                    Log.e("Bookmark", "❌ 북마크 변경 실패: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
+                Log.e("Bookmark", "❌ 서버 요청 실패: ${t.message}")
+            }
+        })
+    }
+
+
 
     // 서버에서 데이터 가져오기
     private fun fetchOotdData(ootdId: Int) {

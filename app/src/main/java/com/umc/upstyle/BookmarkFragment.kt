@@ -26,7 +26,9 @@ class BookmarkFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: RecyclerAdapter_Bookmark
-    private var bookmarkList: List<BookmarkItem> = emptyList()
+    // ✅ 변수 정의 필요
+    private lateinit var bookmarkList: List<BookmarkItem> // 또는 MutableList<BookmarkItem>
+
 
 
     override fun onCreateView(

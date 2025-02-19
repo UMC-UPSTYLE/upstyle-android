@@ -10,6 +10,8 @@ import com.umc.upstyle.data.model.VotePreviewResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -62,6 +64,20 @@ interface ApiService {
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 10
     ): Call<ClothesCategoryResponse>
+
+
+    @GET("bookmarks/{clothId}")
+    fun getBookmarkStatus(
+        @Header("Authorization") token: String,
+        @Path("clothId") clothId: Int
+    ): Call<BookmarkResponse>
+
+    @POST("bookmarks/")
+    @Headers("Content-Type: application/json")
+    fun toggleBookmark(
+        @Header("Authorization") token: String,
+        @Body request: BookmarkRequest
+    ): Call<BookmarkResponse>
 
 
 
