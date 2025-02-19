@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="계정"
         android:textSize="24sp"
-        android:layout_marginStart="34dp"
+        android:layout_marginStart="26dp"
         android:layout_marginTop="49dp"
         android:layout_marginBottom="30dp"
         android:textColor="@color/main_color_1"
@@ -22,7 +22,7 @@
         tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp">
 
@@ -59,10 +59,9 @@
             android:id="@+id/myProfileBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="273dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginTop="6dp"
             android:src="@drawable/myprofilebtn"
             android:background="@null"/>
