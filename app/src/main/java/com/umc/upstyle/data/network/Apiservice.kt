@@ -31,6 +31,14 @@ interface ApiService {
         @Query("kindId") categoryId: Int? = null
     ): Call<ClosetCategoryResponse>
 
+    // 옷장 카테고리별 조회 API
+    @GET("closets/categories")
+    fun getClosetByFilter(
+        @Query("userId") userId: Int,
+        @Query("kindId") categoryId: Int? = null,
+        @Query("colorId") colorId: List<Int>
+    ): Call<ClosetCategoryResponse>
+
 
     @GET("closet/{userId}/{categoryId}")
     fun getClosetByCategory(

@@ -84,6 +84,7 @@ class ClosetItemFragment : Fragment() {
             val bundle = Bundle().apply {
                 val category = arguments?.getString("category")
                 putString("category", category)
+                categoryId?.let { it1 -> putInt("categoryId", it1) }
                 putString("ClosetItemFragment", "true")
             }
             findNavController().navigate(R.id.closetItemFilterFragment, bundle)

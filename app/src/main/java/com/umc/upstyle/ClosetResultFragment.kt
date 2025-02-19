@@ -10,12 +10,23 @@ import com.umc.upstyle.databinding.FragmentClosetResultBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.umc.upstyle.data.model.ClosetCategoryResponse
+import com.umc.upstyle.data.model.ClothPreview
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
+import com.umc.upstyle.util.ColorUtil
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 
 class ClosetResultFragment : Fragment() {
 
     private var _binding: FragmentClosetResultBinding? = null
     private val binding get() = _binding!!
+    private var categoryId: Int = 0
+    private lateinit var selectedOptions: List<String>
+    private lateinit var colorIds: List<Int>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +41,14 @@ class ClosetResultFragment : Fragment() {
 
         // arguments에서 전달된 데이터 받기
         val where = arguments?.getString("category") ?: "기본값1"
+        categoryId = arguments?.getInt("categoryId") ?: 0
+        selectedOptions = ((arguments?.getIntegerArrayList("selectedOptions") ?: emptyList<String>()) as List<String>)
+
+
+        // 색상 이름을 숫자로 변환하여 List<Int>로 만듦
+        colorIds = selectedOptions.mapNotNull { colorName ->
+            ColorUtil.getColorIdByName(colorName.toString())
+        }
 
         // 어디서 온 건지 TextView에 데이터 설정 ex. OUTER, TOP
         binding.mainTitleTextView.text = where
@@ -57,7 +76,36 @@ class ClosetResultFragment : Fragment() {
             findNavController().navigate(R.id.closetItemFilterFragment, bundle)
         }
 
+        //API 호출
+        fetchClosetItems()
 
+    }
+
+    private fun fetchClosetItems() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getClosetByFilter(userId = 1, categoryId = categoryId, colorId = colorIds)
+            .enqueue(object : Callback<ClosetCategoryResponse> {
+                override fun onResponse(
+                    call: Call<ClosetCategoryResponse>,
+                    response: Response<ClosetCategoryResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        val items = response.body()?.result?.clothPreviewList ?: emptyList()
+                        setupRecyclerView(items)
+                        binding.tvResultCount.text = items.size.toString()
+                    } else {
+//                        binding.titleText.text = "데이터 불러오기 실패"
+                    }
+                }
+                override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
+                }
+            })
+    }
+    // RecyclerView 설정
+    private fun setupRecyclerView(items: List<ClothPreview>) {
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
     }
 
     override fun onDestroyView() {

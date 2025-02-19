@@ -20,6 +20,7 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
     private val binding get() = _binding!!
 
     private lateinit var category: String
+    private var categoryId: Int = 0
     private lateinit var ClosetItemFragment: String
 
 //    // 선택된 필터 정보를 저장하는 변수
@@ -42,6 +43,7 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
         _binding = FragmentClosetItemFilterBinding.inflate(inflater, container, false)
 
         category = arguments?.getString("category").toString() // 전달된 데이터 수신
+        categoryId = arguments?.getInt("categoryId")!!
         ClosetItemFragment = arguments?.getString("ClosetItemFragment").toString()
 
         return binding.root
@@ -230,6 +232,7 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
         // 선택된 옵션을 문자열로 변환하여 전달
         val bundle = Bundle().apply {
             putString("category", category)
+            putInt("categoryId", categoryId)
             putString("ClosetItemFragment", ClosetItemFragment)
             putStringArrayList("selectedOptions", ArrayList(selectedOptions)) // ArrayList로 변환하여 전달
         }
