@@ -121,16 +121,16 @@
             app:layout_constraintTop_toTopOf="@id/outer_black" />
 
 
-
         <ImageView
             android:id="@+id/bookmark_outer"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="22dp"
+            android:src="@drawable/bookmark_off"
+            app:layout_constraintBottom_toBottomOf="@+id/outer_black"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/outer_black"
-            android:src="@drawable/bookmark_off"/>
+            app:layout_constraintTop_toTopOf="@id/outer_black" />
 
 
 
@@ -163,10 +163,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="22dp"
+            android:src="@drawable/bookmark_off"
+            app:layout_constraintBottom_toBottomOf="@+id/top_black"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/top_black"
-            android:src="@drawable/bookmark_off"/>
+            app:layout_constraintTop_toTopOf="@id/top_black" />
 
         <ImageView
             android:id="@+id/bottom_black"
@@ -196,10 +197,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="22dp"
+            android:src="@drawable/bookmark_off"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_black"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bottom_black"
-            android:src="@drawable/bookmark_off"/>
+            app:layout_constraintTop_toTopOf="@id/bottom_black" />
 
 
 
@@ -230,10 +232,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="22dp"
+            android:src="@drawable/bookmark_off"
+            app:layout_constraintBottom_toBottomOf="@+id/shoes_black"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/shoes_black"
-            android:src="@drawable/bookmark_off"/>
+            app:layout_constraintTop_toTopOf="@id/shoes_black" />
 
         <ImageView
             android:id="@+id/bag_black"
@@ -262,10 +265,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="22dp"
+            android:src="@drawable/bookmark_off"
+            app:layout_constraintBottom_toBottomOf="@+id/bag_black"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bag_black"
-            android:src="@drawable/bookmark_off"/>
+            app:layout_constraintTop_toTopOf="@id/bag_black" />
 
         <ImageView
             android:id="@+id/other_black"
@@ -294,10 +298,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="22dp"
+            android:src="@drawable/bookmark_off"
+            app:layout_constraintBottom_toBottomOf="@+id/other_black"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/other_black"
-            android:src="@drawable/bookmark_off"/>
+            app:layout_constraintTop_toTopOf="@id/other_black" />
 
 
 
