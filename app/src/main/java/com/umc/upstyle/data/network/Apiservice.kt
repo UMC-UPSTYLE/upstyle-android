@@ -18,13 +18,12 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    // 본인 옷장 조회 API
-    @GET("closets/")
+    // 본인 옷장 조회 썸네일 설정 API
+    @GET("closets")
     fun getMyCloset(
-        @Query("userId") userId: Int?= null
     ): Call<ClosetResponse>
 
-    // 다른 사용자 옷장 조회 API
+    // 다른 사용자 옷장 조회 썸네일 설정 API
     @GET("closets/{userId}")
     fun getOtherCloset(
         @Path("userId") userId: Int?= null
