@@ -46,6 +46,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, Req
         adapter.addFragment(requestFragment) // 두 번째 탭: 코디 요청
 
         binding.viewPager.adapter = adapter
+        binding.viewPager.offscreenPageLimit = 2  // 탭 개수만큼 설정
+
 
         // TabLayout과 ViewPager2를 연결
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -93,6 +95,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, Req
             .actionChatFragmentToRequestDetailFragment(requestId, requestTitle, commentCount)
         findNavController().navigate(action)
     }
+
+    override fun onResume() {
+        super.onResume()
+        binding.viewPager.requestLayout()
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
