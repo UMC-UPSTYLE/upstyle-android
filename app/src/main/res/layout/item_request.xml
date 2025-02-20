@@ -22,7 +22,7 @@
         android:layout_marginBottom="12dp"
         android:paddingBottom="16dp"
         android:background="@drawable/bg_post_gray"
-        android:focusableInTouchMode="false">>
+        android:focusableInTouchMode="false">
 
         <TextView
             android:id="@+id/tvTitle"
