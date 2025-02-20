@@ -104,6 +104,7 @@
         android:layout_height="wrap_content"
         android:text="핏/사이즈"
         android:textSize="13sp"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="11dp"
@@ -160,7 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="28dp"
-        android:background="@drawable/comp_off"
+        android:background="@drawable/comp_on"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
