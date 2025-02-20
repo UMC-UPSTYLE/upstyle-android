@@ -50,11 +50,11 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         // 이전 Fragment나 Activity에서 전달된 데이터 처리
         handleReceivedData()
 
-        clothViewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            message?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }
-        }
+//        clothViewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+//            message?.let {
+//                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
         if (!clothViewModel.imageUris.value.isNullOrEmpty() && clothViewModel.imageUris.value!![0] != "") {
             binding.uploadText.visibility = View.GONE
@@ -149,7 +149,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 )
 
                 clothViewModel.addClothRequest(clothRequestDTO)
-                Toast.makeText(requireContext(), "아이템 추가 $clothRequestDTO", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "아이템 추가 $clothRequestDTO", Toast.LENGTH_SHORT).show()
 
             }
             // UI 업데이트
@@ -305,7 +305,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             )
 
             clothViewModel.addClothRequest(clothRequestDTO)
-            Toast.makeText(requireContext(), "생성한 아이템 $clothRequestDTO", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "생성한 아이템 $clothRequestDTO", Toast.LENGTH_SHORT).show()
 
         }
 

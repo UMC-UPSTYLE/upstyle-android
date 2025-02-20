@@ -134,11 +134,11 @@ class CreateVoteFragment : Fragment() {
                         ?.let { position ->
                             findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("CLOTH_ID")
                                 ?.let { clothId ->
-                                    Toast.makeText(
-                                        context,
-                                        "받아온 clothId: $clothId",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+//                                    Toast.makeText(
+//                                        context,
+//                                        "받아온 clothId: $clothId",
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
                                     // 이미지 로드 처리
                                     if (position == -1) {
                                         // 그냥 사진 등록
@@ -169,11 +169,11 @@ class CreateVoteFragment : Fragment() {
                                                 imageUrl,
                                                 clothId
                                             )
-                                            Toast.makeText(
-                                                context,
-                                                "업데이트된 이미지 clothId${voteItemList[position].clothId}",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+//                                            Toast.makeText(
+//                                                context,
+//                                                "업데이트된 이미지 clothId${voteItemList[position].clothId}",
+//                                                Toast.LENGTH_SHORT
+//                                            ).show()
                                         }
                                     } else {
                                     }
