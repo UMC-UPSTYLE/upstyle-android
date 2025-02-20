@@ -138,7 +138,6 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
             "COLOR" -> findNavController().navigate(R.id.searchColorFragment)
         }
 
-        Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
     }
 
     private fun complete() {

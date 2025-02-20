@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -150,8 +151,6 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
             "SUBCATEGORY" -> findNavController().navigate(R.id.searchSubcategoryFragment)
             "COLOR" -> findNavController().navigate(R.id.searchColorFragment)
         }
-
-        Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
     }
 
     private fun complete() {
