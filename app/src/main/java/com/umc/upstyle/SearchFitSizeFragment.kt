@@ -5,12 +5,16 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
+import com.umc.upstyle.SharedPreferencesUtils.getCategoryId
+import com.umc.upstyle.SharedPreferencesUtils.getColorId
+import com.umc.upstyle.SharedPreferencesUtils.getFitId
 import com.umc.upstyle.databinding.FragmentSearchFitSizeBinding
 
 class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
@@ -54,10 +58,15 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
     private fun setupCategoryOptions() {
         val options = listOf("슬림", "레귤러", "오버핏")
         createButtons(binding.optionsLayout, options) { selectedOption ->
-            filterViewModel.selectedFitSize = selectedOption
-            filterViewModel.fitId = getFitId(selectedOption) // ✅ 핏 사이즈 ID를 숫자로 저장
-            filterViewModel.saveToSharedPreferences(requireContext()) // ✅ 바로 SharedPreferences에 저장
-            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+            if (selectedOption == null) {
+                filterViewModel.selectedFitSize = null
+                filterViewModel.fitId = null
+                filterViewModel.saveToSharedPreferences(requireContext()) // ✅ 바로 SharedPreferences에 저장
+            } else {
+                filterViewModel.selectedFitSize = selectedOption
+                filterViewModel.fitId = getFitId(selectedOption) // ✅ 핏 사이즈 ID를 숫자로 저장
+                filterViewModel.saveToSharedPreferences(requireContext()) // ✅ 바로 SharedPreferences에 저장
+            }
         }
 
         // ✅ 이전에 선택한 핏 사이즈가 있으면 버튼 상태 유지
@@ -65,17 +74,23 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
             binding.optionsLayout.children.forEach { view ->
                 val button = view as TextView
                 button.background = if (button.text == selectedFitSize) {
+                    button.tag = true
                     ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
                 } else {
+                    button.tag = false
                     ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
                 }
             }
             binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
         }
+        binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+        binding.compOffButton.isEnabled = true
     }
 
     private fun createButtons(layout: FlexboxLayout, options: List<String>, onClick: (String) -> Unit) {
         layout.removeAllViews()
+        var selectedButton: TextView? = null  // 현재 선택된 버튼을 저장
+
         options.forEach { option ->
             val button = TextView(requireContext()).apply {
                 text = option
@@ -83,10 +98,31 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(40, 10, 40, 10)
                 background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+
                 setOnClickListener {
-                    layout.children.forEach { it.background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background) }
-                    background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
-                    onClick(option)
+                    if (this == selectedButton) {
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                        filterViewModel.selectedFitSize = null
+                        filterViewModel.fitId = -1
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        selectedButton = null
+                        onClick(null.toString())
+
+                    } else {
+                        // ✅ 다른 버튼이 선택되면 모든 버튼 초기화 및 새로운 버튼 선택
+                        layout.children.forEach { view ->
+                            (view as TextView).background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                        }
+                        filterViewModel.selectedFitSize = null
+                        filterViewModel.fitId = null
+                        // ✅ 새로운 버튼 선택 및 SharedPreferences에 저장
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                        filterViewModel.selectedFitSize = option
+                        filterViewModel.fitId = getFitId(option)
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        selectedButton = this
+                        onClick(option)
+                    }
                 }
             }
             layout.addView(button, FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT).apply {
@@ -116,7 +152,9 @@ class SearchFitSizeFragment : Fragment(R.layout.fragment_search_fit_size) {
             "COLOR" -> findNavController().navigate(R.id.searchColorFragment)
         }
 
+
 //        Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun complete() {

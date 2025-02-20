@@ -32,10 +32,7 @@ class SearchFragment : Fragment() {
         binding.btnGoToBag.setOnClickListener { navigateToSearchItemFragment("BAG", 5) }
         binding.btnGoToOther.setOnClickListener { navigateToSearchItemFragment("OTHER", 6) }
 
-        binding.categoryfilterbtn.setOnClickListener {
-            SharedPreferencesUtils.clearData(requireContext())
-            findNavController().navigate(R.id.searchCategoryFragment)
-        }
+        binding.categoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.subcategoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.colorfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }

@@ -69,7 +69,7 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
         }
     }
 
-    private fun createButtons(layout: FlexboxLayout, options: List<String>, onClick: (String) -> Unit) {
+    private fun createButtons(layout: FlexboxLayout, options: List<String>, onClick: (String?) -> Unit) {
         layout.removeAllViews()
         options.forEach { option ->
             val button = TextView(requireContext()).apply {
@@ -78,10 +78,29 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(40, 10, 40, 10)
                 background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+
+                var isSelected = false  // 버튼이 선택되었는지 여부를 확인하기 위한 변수
+
                 setOnClickListener {
-                    layout.children.forEach { it.background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background) }
-                    background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
-                    onClick(option)
+                    if (isSelected) {
+                        // ✅ 이미 선택된 버튼을 다시 클릭하면 선택 해제 및 SharedPreferences 초기화
+                        layout.children.forEach { it.background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray) }
+                        filterViewModel.clearSharedPreferences(requireContext())  // SharedPreferences 초기화
+                        filterViewModel.selectedCategory = null
+                        filterViewModel.kindId = null
+                        isSelected = false
+                        onClick(null)  // 선택 해제 시 null 전달
+                    } else {
+                        // ✅ 새로운 버튼 클릭 시 SharedPreferences 초기화 후 새로운 정보 저장
+                        layout.children.forEach { it.background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray) }
+                        filterViewModel.clearSharedPreferences(requireContext())  // SharedPreferences 초기화
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                        filterViewModel.selectedCategory = option
+                        filterViewModel.kindId = getKindId(option)
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        isSelected = true
+                        onClick(option)
+                    }
                 }
             }
             layout.addView(button, FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT).apply {
@@ -89,6 +108,7 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
             })
         }
     }
+
 
     private fun getKindId(category: String?): Int? {
         return when (category) {
@@ -119,6 +139,7 @@ class SearchCategoryFragment : Fragment(R.layout.fragment_search_category) {
         }
 
 //        Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun complete() {

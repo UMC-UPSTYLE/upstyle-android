@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -12,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.SharedPreferencesUtils.getCategoryId
+import com.umc.upstyle.SharedPreferencesUtils.getKindId
 import com.umc.upstyle.databinding.FragmentSearchFitSizeBinding
 import com.umc.upstyle.databinding.FragmentSearchSubcategoryBinding
 import com.umc.upstyle.utils.CategoryUtil
@@ -35,42 +37,58 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
         setupSubcategoryOptions(filterViewModel.selectedCategory ?: "")
 
         if (filterViewModel.selectedCategory == "SHOES" || filterViewModel.selectedCategory == "OTHER") {
-            binding.subcategoryTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
-            binding.subcategoryTextView.isClickable = false
-            binding.subcategoryTextView.isEnabled = false
-        } else {
-            binding.subcategoryTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.login_yellow))
-            binding.subcategoryTextView.isClickable = true
-            binding.subcategoryTextView.isEnabled = true
+            binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
+            binding.fitsizeTextView.isClickable = false
+            binding.fitsizeTextView.isEnabled = false
         }
+//        else {
+//            binding.subcategoryTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.login_yellow))
+//            binding.subcategoryTextView.isClickable = true
+//            binding.subcategoryTextView.isEnabled = true
+//        }
 
         binding.compOffButton.setOnClickListener { complete() }
         binding.categoryTextView.setOnClickListener { navigateToNextFragment("CATEGORY") }
-        binding.subcategoryTextView.setOnClickListener { navigateToNextFragment("SUBCATEGORY") }
+        binding.fitsizeTextView.setOnClickListener { navigateToNextFragment("FITSIZE") }
         binding.colorTextView.setOnClickListener { navigateToNextFragment("COLOR") }
     }
+
 
     private fun setupSubcategoryOptions(category: String) {
         val options = getCategoryOptions(category)
         createButtons(binding.optionsLayout, options) { selectedOption ->
-            filterViewModel.selectedSubCategory = selectedOption
-            filterViewModel.categoryId = getCategoryId(selectedOption)
-            filterViewModel.saveToSharedPreferences(requireContext())
-            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+            if (selectedOption == null) {
+                // ✅ 선택 해제 시 ViewModel 초기화
+                filterViewModel.selectedSubCategory = null
+                filterViewModel.categoryId = null
+                filterViewModel.saveToSharedPreferences(requireContext())
+            } else {
+                // ✅ 선택 시 ViewModel에 저장
+                filterViewModel.selectedSubCategory = selectedOption
+                filterViewModel.categoryId = getCategoryId(selectedOption)
+                filterViewModel.saveToSharedPreferences(requireContext())
+            }
         }
 
         filterViewModel.selectedSubCategory?.let { selectedSubCategory ->
             binding.optionsLayout.children.forEach { view ->
                 val button = view as TextView
                 button.background = if (button.text == selectedSubCategory) {
+                    button.tag = true
                     ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
                 } else {
+                    button.tag = false
                     ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
                 }
             }
-            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
         }
+
+        // ✅ 완료 버튼 항상 활성화
+        binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+        binding.compOffButton.isEnabled = true
     }
+
+
 
     private fun getCategoryOptions(category: String): List<String> {
         return when (category) {
@@ -84,8 +102,10 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
         }
     }
 
-    private fun createButtons(layout: FlexboxLayout, options: List<String>, onClick: (String) -> Unit) {
+    private fun createButtons(layout: FlexboxLayout, options: List<String>, onClick: (String?) -> Unit) {
         layout.removeAllViews()
+        var selectedButton: TextView? = null  // 현재 선택된 버튼을 저장
+
         options.forEach { option ->
             val button = TextView(requireContext()).apply {
                 text = option
@@ -93,17 +113,40 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(40, 10, 40, 10)
                 background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+
                 setOnClickListener {
-                    layout.children.forEach { it.background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background) }
-                    background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
-                    onClick(option)
+                    if (this == selectedButton) {
+                        // ✅ 현재 버튼이 이미 선택되어 있으면 초기화 및 SharedPreferences 삭제
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                        filterViewModel.selectedSubCategory = null
+                        filterViewModel.categoryId = -1
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        selectedButton = null
+                        onClick(null)
+                    } else {
+                        // ✅ 다른 버튼이 선택되면 모든 버튼 초기화 및 새로운 버튼 선택
+                        layout.children.forEach { view ->
+                            (view as TextView).background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                        }
+                        filterViewModel.selectedSubCategory = null
+                        filterViewModel.categoryId = null
+                        // ✅ 새로운 버튼 선택 및 SharedPreferences에 저장
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                        filterViewModel.selectedSubCategory = option
+                        filterViewModel.categoryId = getCategoryId(option)
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        selectedButton = this
+                        onClick(option)
+                    }
                 }
             }
+
             layout.addView(button, FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT).apply {
                 setMargins(16, 16, 16, 16)
             })
         }
     }
+
 
     private fun getCategoryId(subcategory: String?): Int? {
         val categoryIds: Pair<Int, Int>? = subcategory?.let { CategoryUtil.getCategoryIds(it) }
@@ -120,7 +163,9 @@ class SearchSubcategoryFragment : Fragment(R.layout.fragment_search_subcategory)
             "COLOR" -> findNavController().navigate(R.id.searchColorFragment)
         }
 
+
 //        Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun complete() {
