@@ -40,6 +40,7 @@ class RequestDetailFragment : Fragment() {
 
     private var requestId: Int = 0
     private var userId: Int = 0
+    private var username: String = "익명"
     private var commentCount: Int = 0
     private lateinit var requestService: RequestService
     private val args: RequestDetailFragmentArgs by navArgs()
@@ -91,8 +92,9 @@ class RequestDetailFragment : Fragment() {
         binding.btnPlus.setOnClickListener {
             val bundle = Bundle().apply {
                 putInt("USER_ID", userId)
+                putString("USER_NAME", username)
             }
-            val action = RequestDetailFragmentDirections.actionRequestDetailFragmentToResponseFragment(userId)
+            val action = RequestDetailFragmentDirections.actionRequestDetailFragmentToResponseFragment(userId, username)
             findNavController().navigate(action)
 
         }
@@ -128,6 +130,8 @@ class RequestDetailFragment : Fragment() {
                             updateUI(apiResponse.result)
 
                             userId = apiResponse.result.user.id
+                            username = apiResponse.result.user.nickname
+
                             // 🚨 Null 체크 추가
                             val responseList = apiResponse.result.codiResPreviewList ?: emptyList()
 

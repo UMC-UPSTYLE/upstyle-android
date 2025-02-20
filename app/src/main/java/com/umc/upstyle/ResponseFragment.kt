@@ -1,12 +1,15 @@
 package com.umc.upstyle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.model.ClosetResponse
 import com.umc.upstyle.data.model.ClothIdResponse
@@ -26,6 +29,7 @@ class ResponseFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val responseViewModel: ResponseViewModel by activityViewModels()
+    val args: ResponseFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -49,15 +53,22 @@ class ResponseFragment : Fragment() {
             }
         }
 
-        val userId = arguments?.getInt("USER_ID") ?:2
+//        val userId = arguments?.getInt("USER_ID") ?:2
+//        val username = arguments?.getString("USER_NAME") ?: "익명"
+        val userId = args.userId
+        val username = args.username
+        Log.d("ResponseFragment", "받아온 user_id: $userId")
+        Log.d("ResponseFragment", "받아온 user_name: $username")
+
+        binding.tvUsername.text = username
 
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getUserCloset(userId).enqueue(object : Callback<ClosetResponse> {
+        apiService.getOtherCloset(userId).enqueue(object : Callback<ClosetResponse> {
             override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
                 if (response.isSuccessful) {
                     val userName = response.body()?.result?.userName
-                    binding.tvUsername.text = "${userName}"
+//                    binding.tvUsername.text = "${userName}"
 
                 } else {
                     binding.tvUsername.text = "오류"
@@ -76,33 +87,37 @@ class ResponseFragment : Fragment() {
             findNavController().navigateUp() // 이전 Fragment로 이동
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
         binding.btnGoOuter.setOnClickListener {
-            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "OUTER")
+            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "OUTER", userId = userId)
             findNavController().navigate(action)
         }
 
         binding.btnGoTop.setOnClickListener {
-            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "TOP")
+            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "TOP", userId = userId)
             findNavController().navigate(action)
         }
 
         binding.btnGoBottom.setOnClickListener {
-            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "BOTTOM")
+            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "BOTTOM", userId = userId)
             findNavController().navigate(action)
         }
 
         binding.btnGoShoes.setOnClickListener {
-            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "SHOES")
+            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "SHOES", userId = userId)
             findNavController().navigate(action)
         }
 
         binding.btnGoBag.setOnClickListener {
-            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "BAG")
+            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "BAG", userId = userId)
             findNavController().navigate(action)
         }
 
         binding.btnGoOther.setOnClickListener {
-            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "OTHER")
+            val action = ResponseFragmentDirections.actionResponseFragmentToLoadItemFragment(category = "OTHER", userId = userId)
             findNavController().navigate(action)
         }
 

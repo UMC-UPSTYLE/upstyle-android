@@ -370,7 +370,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
     // LoadItemFragment로 이동
     private fun navigateToLoadItemFragment(category: String) {
-        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category)
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category = category, userId = -1)
         findNavController().navigate(action)
     }
 

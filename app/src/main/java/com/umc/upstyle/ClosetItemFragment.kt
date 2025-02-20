@@ -101,7 +101,7 @@ class ClosetItemFragment : Fragment() {
     private fun fetchClosetItems() {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getClosetByCategory(userId = 1, categoryId = categoryId)
+        apiService.getClosetByCategory(userId = null, categoryId = categoryId)
             .enqueue(object : Callback<ClosetCategoryResponse> {
                 override fun onResponse(
                     call: Call<ClosetCategoryResponse>,

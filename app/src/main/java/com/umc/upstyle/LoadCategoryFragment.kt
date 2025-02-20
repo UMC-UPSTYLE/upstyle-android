@@ -93,32 +93,32 @@ class LoadCategoryFragment : Fragment() {
         }
 
         binding.btnGoOuter.setOnClickListener {
-            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "OUTER")
+            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "OUTER", userId = -1)
             findNavController().navigate(action)
         }
 
         binding.btnGoTop.setOnClickListener {
-            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "TOP")
+            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "TOP", userId = -1)
             findNavController().navigate(action)
         }
 
         binding.btnGoBottom.setOnClickListener {
-            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "BOTTOM")
+            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "BOTTOM", userId = -1)
             findNavController().navigate(action)
         }
 
         binding.btnGoShoes.setOnClickListener {
-            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "SHOES")
+            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "SHOES", userId = -1)
             findNavController().navigate(action)
         }
 
         binding.btnGoBag.setOnClickListener {
-            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "BAG")
+            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "BAG", userId = -1)
             findNavController().navigate(action)
         }
 
         binding.btnGoOther.setOnClickListener {
-            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "OTHER")
+            val action = LoadCategoryFragmentDirections.actionLoadCategoryFragmentToLoadItemFragment(category = "OTHER", userId = -1)
             findNavController().navigate(action)
         }
 

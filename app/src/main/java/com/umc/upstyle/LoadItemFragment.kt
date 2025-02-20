@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.model.ClosetCategoryResponse
@@ -25,14 +26,23 @@ class LoadItemFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var category: String? = null
+    private var userId: Int? = null
     private var categoryId: Int? = null
     private var selectedItem: Item_load? = null
     private lateinit var adapter: RecyclerAdapter_Load
+    val args: LoadItemFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val args = LoadItemFragmentArgs.fromBundle(requireArguments())
+//        val args = LoadItemFragmentArgs.fromBundle(requireArguments())
         category = args.category
+        if (userId == -1) {
+            // userId가 null인 것처럼 처리
+            userId = null
+        } else {
+            // 유효한 userId 처리
+            userId = args.userId
+        }
 
         // category 값을 기반으로 categoryId 매핑
         categoryId = when (category) {
@@ -108,7 +118,7 @@ class LoadItemFragment : Fragment() {
         private fun fetchClosetItems() {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getClosetByCategory(userId = 1, categoryId = categoryId)
+        apiService.getClosetByCategory(userId = userId, categoryId = categoryId)
             .enqueue(object : Callback<ClosetCategoryResponse> {
                 override fun onResponse(
                     call: Call<ClosetCategoryResponse>,

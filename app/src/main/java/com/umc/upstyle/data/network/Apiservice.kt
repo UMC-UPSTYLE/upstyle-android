@@ -18,16 +18,22 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    // 특정 사용자 옷장 조회 API
+    // 본인 옷장 조회 API
     @GET("closets/")
-    fun getUserCloset(
-        @Query("userId") userId: Int
+    fun getMyCloset(
+        @Query("userId") userId: Int?= null
+    ): Call<ClosetResponse>
+
+    // 특정 사용자 옷장 조회 API
+    @GET("closets/{userId}")
+    fun getOtherCloset(
+        @Path("userId") userId: Int?= null
     ): Call<ClosetResponse>
 
     // 옷장 카테고리별 조회 API
     @GET("closets/categories")
     fun getClosetByCategory(
-        @Query("userId") userId: Int,
+        @Query("userId") userId: Int? = null,
         @Query("kindId") kindId: Int? = null,
         @Query("categoryId") categoryId: Int? = null,
         @Query("colorId") colorId: List<Int>? = null,
@@ -39,14 +45,14 @@ interface ApiService {
     // 옷장 카테고리별 조회 API
     @GET("closets/categories")
     fun getClosetByFilter(
-        @Query("userId") userId: Int,
+        @Query("userId") userId: Int?= null,
         @Query("kindId") categoryId: Int? = null,
         @Query("colorId") colorId: List<Int>
     ): Call<ClosetCategoryResponse>
 
 
     @GET("closet/{userId}/{categoryId}")
-    fun getClosetByCategory(
+    fun getClosetByCategoryPath(
         @Path("userId") userId: Int,
         @Path("categoryId") categoryId: Int
     ): Call<ClosetCategoryResponse>

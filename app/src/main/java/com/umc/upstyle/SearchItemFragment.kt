@@ -90,12 +90,10 @@ class SearchItemFragment : Fragment() {
 
         // RecyclerView 설정
 
-        val userId = 1
-
         Log.d("SearchItemFragment", "Fetching items for kindId: $kindId")
 
         // ✅ Safe Args로 받은 kindId를 그대로 사용
-        fetchItemsFromCloset(userId, kindId)
+        fetchItemsFromCloset(kindId)
     }
 
 
@@ -125,12 +123,12 @@ class SearchItemFragment : Fragment() {
         }
     }
 
-    private fun fetchItemsFromCloset(userId: Int, kindId: Int?) {
+    private fun fetchItemsFromCloset(kindId: Int?) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
         Log.d("API_REQUEST", "Fetching items for kindId: $kindId")
 
-        apiService.getClosetByCategory(userId, kindId).enqueue(object : retrofit2.Callback<ClosetCategoryResponse> {
+        apiService.getClosetByCategory(null, kindId).enqueue(object : retrofit2.Callback<ClosetCategoryResponse> {
             override fun onResponse(call: Call<ClosetCategoryResponse>, response: retrofit2.Response<ClosetCategoryResponse>) {
                 Log.d("API_RESPONSE", "Response Code: ${response.code()}")
 
