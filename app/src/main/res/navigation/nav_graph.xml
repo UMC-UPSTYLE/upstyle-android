@@ -120,6 +120,9 @@
             app:argType="string"
             android:defaultValue="DEFAULT"
             app:nullable="true"/>
+        <argument
+            android:name="userId"
+            app:argType="integer"/>
 
         <action
             android:id="@+id/action_loadItemFragment_to_TodayOotdFragment"
@@ -574,6 +577,9 @@
                 android:name="category"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
+            <argument
+                android:name="userId"
+                app:argType="integer" />
 
         </action>
         <action
@@ -601,6 +607,9 @@
         <argument
             android:name="userId"
             app:argType="integer"/>
+        <argument
+            android:name="username"
+            app:argType="string"/>
         <action
             android:id="@+id/action_responseFragment_to_loadItemFragment"
             app:destination="@id/loadItemFragment">
@@ -608,6 +617,10 @@
                 android:name="category"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
+            <argument
+                android:name="userId"
+                app:argType="integer"
+                android:defaultValue="0" />
         </action>
     </fragment>
 

@@ -96,8 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/top_text_container"
             android:layout_marginTop="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
 
 
             <GridLayout
@@ -118,11 +118,22 @@
                     android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:padding="11dp"
                     android:layout_marginEnd ="6dp"
                     android:layout_marginBottom="6dp"
-
                     android:background="@drawable/bg_go_to_closet_selector">
+
+                    <!-- ImageView의 크기를 match_parent로 설정하지만 padding을 감안하여 적절하게 배치 -->
+                    <ImageView
+                        android:id="@+id/ivOuter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:clipToOutline="true"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/bg_go_to_closet_selector"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -131,16 +142,17 @@
                         android:textFontWeight="900"
                         android:textSize="20sp"
                         android:textColor="@color/black"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        />
+                        android:layout_marginTop="11dp"
+                        android:layout_marginStart="11dp"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent" />
 
                     <!-- 화살표 아이콘 -->
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:layout_margin="11dp"
                         android:src="@drawable/arrow_in_black_circle"
-
                         app2:layout_constraintBottom_toBottomOf="parent"
                         app2:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -156,10 +168,21 @@
                     android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:padding="11dp"
                     android:layout_marginStart="6dp"
                     android:layout_marginBottom ="6dp"
                     android:background="@drawable/bg_go_to_closet_selector">
+
+                    <ImageView
+                        android:id="@+id/ivTop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/bg_go_to_closet_selector"/>
 
                     <!-- 상단 텍스트 -->
                     <TextView
@@ -167,16 +190,20 @@
                         android:layout_height="wrap_content"
                         android:text="TOP"
                         android:textFontWeight="900"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginStart="11dp"
                         android:textSize="20sp"
                         android:textColor="@color/black"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
                         />
 
                     <!-- 화살표 아이콘 -->
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:layout_marginEnd="11dp"
+                        android:layout_marginBottom="11dp"
                         android:src="@drawable/arrow_in_black_circle"
                         app2:layout_constraintBottom_toBottomOf="parent"
                         app2:layout_constraintEnd_toEndOf="parent"
@@ -193,11 +220,22 @@
                     android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:padding="11dp"
                     android:layout_marginEnd ="6dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/bg_go_to_closet_selector">
+
+                    <ImageView
+                        android:id="@+id/ivBottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/bg_go_to_closet_selector"/>
 
                     <!-- 상단 텍스트 -->
                     <TextView
@@ -206,9 +244,11 @@
                         android:text="BOTTOM"
                         android:textFontWeight="900"
                         android:textSize="20sp"
+                        android:layout_marginStart="11dp"
+                        android:layout_marginTop="11dp"
                         android:textColor="@color/black"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
                         />
 
                     <!-- 화살표 아이콘 -->
@@ -219,6 +259,7 @@
                         app2:layout_constraintBottom_toBottomOf="parent"
                         app2:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_margin="11dp"
                         app:layout_constraintEnd_toEndOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <!-- 네 번째 -->
@@ -230,11 +271,22 @@
                     android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:padding="11dp"
                     android:layout_marginStart="6dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/bg_go_to_closet_selector">
+
+                    <ImageView
+                        android:id="@+id/ivShoes"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/bg_go_to_closet_selector"/>
 
                     <!-- 상단 텍스트 -->
                     <TextView
@@ -243,15 +295,17 @@
                         android:text="SHOES"
                         android:textFontWeight="900"
                         android:textSize="20sp"
+                        android:layout_margin="11dp"
                         android:textColor="@color/black"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
                         />
 
                     <!-- 화살표 아이콘 -->
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:layout_margin="11dp"
                         android:src="@drawable/arrow_in_black_circle"
                         app2:layout_constraintBottom_toBottomOf="parent"
                         app2:layout_constraintEnd_toEndOf="parent"
@@ -267,10 +321,21 @@
                     android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:padding="11dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd ="6dp"
                     android:background="@drawable/bg_go_to_closet_selector">
+
+                    <ImageView
+                        android:id="@+id/ivBag"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/bg_go_to_closet_selector"/>
 
                     <!-- 상단 텍스트 -->
                     <TextView
@@ -278,16 +343,18 @@
                         android:layout_height="wrap_content"
                         android:text="BAG"
                         android:textFontWeight="900"
+                        android:layout_margin="11dp"
                         android:textSize="20sp"
                         android:textColor="@color/black"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
                         />
 
                     <!-- 화살표 아이콘 -->
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:layout_margin="11dp"
                         android:src="@drawable/arrow_in_black_circle"
                         app2:layout_constraintBottom_toBottomOf="parent"
                         app2:layout_constraintEnd_toEndOf="parent"
@@ -303,10 +370,21 @@
                     android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:padding="11dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginStart="6dp"
                     android:background="@drawable/bg_go_to_closet_selector">
+
+                    <ImageView
+                        android:id="@+id/ivOther"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/bg_go_to_closet_selector"/>
 
                     <!-- 상단 텍스트 -->
                     <TextView
@@ -316,15 +394,17 @@
                         android:text="OTHER"
                         android:textFontWeight="900"
                         android:textSize="20sp"
+                        android:layout_margin="11dp"
                         android:textColor="@color/black"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
                         />
 
                     <!-- 화살표 아이콘 -->
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:layout_margin="11dp"
                         android:src="@drawable/arrow_in_black_circle"
                         app2:layout_constraintBottom_toBottomOf="parent"
                         app2:layout_constraintEnd_toEndOf="parent"

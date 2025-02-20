@@ -17,6 +17,7 @@ class VoteFragment : Fragment() {
     private var _binding: FragmentVoteBinding? = null
     private val binding get() = _binding!!
     private var listener: VoteFragmentListener? = null
+    private lateinit var adapter: PostAdapter
 
     // ChatFragment에서 리스너 설정
     fun setVoteFragmentListener(listener: VoteFragmentListener) {
@@ -34,29 +35,31 @@ class VoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 서버에서 데이터 가져오기
-        PostRepository.fetchPosts { postList ->
-            val adapter = PostAdapter(postList) { post ->
-                listener?.onVoteSelected(post.id, post.title, post.totalResponseCount)
-                Log.d("Retrofit", "id 전달 성공!")
-            }
-
-            binding.voteRecyclerView.adapter = adapter
-            binding.voteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = PostAdapter(emptyList()) { post ->
+            listener?.onVoteSelected(post.id, post.title, post.totalResponseCount)
+            Log.d("Retrofit", "id 전달 성공!")
         }
+
+        binding.voteRecyclerView.adapter = adapter
+        binding.voteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        fetchData()
     }
 
     override fun onResume() {
         super.onResume()
+        fetchData() // 데이터를 다시 불러오지만 Adapter는 새로 만들지 않음
+    }
 
+    private fun fetchData() {
         PostRepository.fetchPosts { postList ->
-            binding.voteRecyclerView.adapter = PostAdapter(postList) { post ->
+            adapter = PostAdapter(postList) { post ->
                 listener?.onVoteSelected(post.id, post.title, post.totalResponseCount)
                 Log.d("Retrofit", "id 전달 성공!")
             }
+            binding.voteRecyclerView.adapter = adapter  // RecyclerView에 설정
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

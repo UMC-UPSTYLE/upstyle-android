@@ -145,8 +145,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:clipToPadding="false"
             android:paddingBottom="56dp"
-            android:layout_marginTop="12dp"
-            android:padding="12dp" />
+            android:layout_marginTop="12dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

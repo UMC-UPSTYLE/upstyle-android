@@ -3,6 +3,7 @@ package com.umc.upstyle
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,7 @@ class ClosetItemFragment : Fragment() {
 
     private var categoryId: Int? = null  // API에서 사용할 categoryId
     private var category: String? = null
-    private var userId: Int = 1 // 기본 userId 값 (필요 시 수정)
+    private var userId: Int = -1 // 기본 userId 값 (필요 시 수정)
 
     private lateinit var viewModel: ClosetViewModel
 
@@ -101,18 +102,20 @@ class ClosetItemFragment : Fragment() {
     private fun fetchClosetItems() {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getClosetByCategory(userId = 1, categoryId = categoryId)
+        apiService.getClosetByCategory(kindId = categoryId)
             .enqueue(object : Callback<ClosetCategoryResponse> {
                 override fun onResponse(
                     call: Call<ClosetCategoryResponse>,
                     response: Response<ClosetCategoryResponse>
                 ) {
+                    Log.d("ClosetItemFragment", "API 호출: ${categoryId}")
                     if (response.isSuccessful && response.body()?.isSuccess == true) {
                         val items = response.body()?.result?.clothPreviewList ?: emptyList()
                         setupRecyclerView(items)
+                        Log.d("ClosetItemFragment", "API 호출 결과: ${items.size}개")
                     } else {
                         binding.titleText.text = "데이터 불러오기 실패"
-
+                        Log.e("ClosetItemFragment", "내 옷장 카테고리별 아이템 API 호출 실패")
 
                     }
                 }

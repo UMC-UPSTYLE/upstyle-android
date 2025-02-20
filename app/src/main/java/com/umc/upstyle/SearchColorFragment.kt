@@ -170,6 +170,9 @@ class SearchColorFragment : Fragment(R.layout.fragment_search_color) {
             "FITSIZE" -> findNavController().navigate(R.id.searchFitSizeFragment)
         }
 
+
+//        Toast.makeText(requireContext(), "${filterViewModel.selectedCategory} ${filterViewModel.selectedSubCategory} ${filterViewModel.selectedFitSize} ${filterViewModel.selectedColor}", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun complete() {

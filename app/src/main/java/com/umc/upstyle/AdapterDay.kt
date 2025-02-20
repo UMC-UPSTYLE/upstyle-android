@@ -65,8 +65,7 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
 
         // 클릭 리스너 설정
         holder.binding.itemDayLayout.setOnClickListener {
-            Toast.makeText(holder.binding.root.context, "${dayList[position]}", Toast.LENGTH_SHORT)
-                .show()
+//            Toast.makeText(holder.binding.root.context, "${dayList[position]}", Toast.LENGTH_SHORT).show()
             val context = holder.binding.root.context
             val ootdId = getOOTDIdByDate(dateKey)
             val ootdImage = getOOTDImageByDate(dateKey)

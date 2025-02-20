@@ -238,8 +238,8 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
         }
 
         // 테스트용
-        Toast.makeText(requireContext(), "선택된 컬러: $filteredColor", Toast.LENGTH_SHORT).show()
-        Toast.makeText(requireContext(), "category: $category", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), "선택된 컬러: $filteredColor", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), "category: $category", Toast.LENGTH_SHORT).show()
 
         // ClosetResultFragment로 이동하며 데이터 전달
         findNavController().navigate(R.id.closetResultFragment, bundle)

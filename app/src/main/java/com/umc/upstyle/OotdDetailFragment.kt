@@ -88,17 +88,17 @@ class OotdDetailFragment : Fragment() {
         )
 
         if (ootd.clothList.isNotEmpty()) {
-            for (i in ootd.clothList.indices) {
-                if (i < textViewList.size) {
-                    val cloth = ootd.clothList[i]
-                    textViewList[i].text =
-                        "${cloth.kindName} ${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+            // clothList를 순회하며 clothKindId에 따라 TextView 업데이트
+            for (cloth in ootd.clothList) {
+                when (cloth.kindId) {
+                    1 -> binding.outerText.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}" // OUTER (1)
+                    2 -> binding.topText.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                    3 -> binding.bottomText.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                    4 -> binding.shoesText.text = "${cloth.categoryName} ${cloth.colorName}"
+                    5 -> binding.bagText.text = "${cloth.categoryName} ${cloth.fitName} ${cloth.colorName}"
+                    6 -> binding.otherText.text = "${cloth.categoryName} ${cloth.colorName}"
                 }
             }
-        }
-
-        for (i in ootd.clothList.size until textViewList.size) {
-            textViewList[i].text = "옷에 대한 정보가 없습니다"
         }
     }
 

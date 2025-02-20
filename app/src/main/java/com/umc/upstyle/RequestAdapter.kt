@@ -21,7 +21,7 @@ class RequestAdapter(
 
         fun bind(request: Request) {
             tvTitle.text = request.title
-            tvCount.text = "${request.commentCount}명 투표"
+            tvCount.text = "${request.commentCount}"
 
             btnBox.setOnClickListener { // 네모 상자를 눌러야 이벤트 발생
                 onRequestClick(request)
