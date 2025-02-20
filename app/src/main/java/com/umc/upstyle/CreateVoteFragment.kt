@@ -295,6 +295,8 @@ class CreateVoteFragment : Fragment() {
             optionList = voteItems
         )
 
+        Log.d("CreateVoteFragment", "전달한 imageUrl: ${voteRequest.imageUrl}")
+
         val voteService = RetrofitClient.createService(VoteService::class.java)
         try {
             // 서버 요청 보내기
@@ -356,6 +358,7 @@ class CreateVoteFragment : Fragment() {
             if (currentPosition == -1) {
                 // position이 -1이면 binding.imgSelected에 사진 로드
                 binding.imgSelected.setImageURI(photoUri)
+                viewModel.imageUrl = photoUri.toString()
                 binding.imageContainer.visibility = View.VISIBLE
                 binding.imgSelected.visibility = View.VISIBLE
                 binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
@@ -380,6 +383,7 @@ class CreateVoteFragment : Fragment() {
                 if (currentPosition == -1) {
                     // position이 -1이면 binding.imgSelected에 사진 로드
                     binding.imgSelected.setImageURI(it)
+                    viewModel.imageUrl = it.toString()
                     binding.imageContainer.visibility = View.VISIBLE
                     binding.imgSelected.visibility = View.VISIBLE
                     binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시

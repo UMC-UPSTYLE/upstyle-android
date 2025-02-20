@@ -1,6 +1,7 @@
 package com.umc.upstyle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,9 +37,9 @@ class LoadItemFragment : Fragment() {
         super.onCreate(savedInstanceState)
 //        val args = LoadItemFragmentArgs.fromBundle(requireArguments())
         category = args.category
-        if (userId == -1) {
+        if (args.userId == -1) {
             // userId가 null인 것처럼 처리
-            userId = null
+            userId = -1
         } else {
             // 유효한 userId 처리
             userId = args.userId
@@ -115,10 +116,62 @@ class LoadItemFragment : Fragment() {
     }
 
 
-        private fun fetchClosetItems() {
-        val apiService = RetrofitClient.createService(ApiService::class.java)
+    private fun fetchClosetItems() {
+        if(userId == -1) {
+            getMyClosetCategory()
+        } else {
+            getotherClosetCategory()
+        }
+    }
 
-        apiService.getClosetByCategory(userId = userId, categoryId = categoryId)
+    private fun getMyClosetCategory() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+        Log.d("LoadItemFragment", "받아오는 옷장 정보")
+
+        apiService.getClosetByCategory(userId = userId, kindId = categoryId)
+            .enqueue(object : Callback<ClosetCategoryResponse> {
+                override fun onResponse(
+                    call: Call<ClosetCategoryResponse>,
+                    response: Response<ClosetCategoryResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        val serverItems = response.body()?.result?.clothPreviewList ?: emptyList()
+
+                        // ClothPreview → Item_load로 변환
+                        val serverItemLoads = serverItems.map {
+                            Item_load(
+                                description = listOfNotNull(it.categoryName, it.fitName, it.colorName).joinToString(" "),
+                                imageUrl = it.ootd?.imageUrl ?: "",
+                                id = it.id,
+                                kindId = it.kindId,
+                                categoryId = it.categoryId,
+                                fitId = it.fitId,
+                                colorId = it.colorId,
+                                addInfo = it.additionalInfo ?: ""
+                            )
+                        }
+
+
+
+                        // 서버 데이터와 로컬 데이터를 합쳐서 MutableList로 변환
+                        val combinedItems = (serverItemLoads).toMutableList()
+
+                        //MutableList<Item_load>로 어댑터에 전달
+                        adapter.updateData(combinedItems)
+                    } else {
+                        Toast.makeText(requireContext(), "데이터 불러오기 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun getotherClosetCategory() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+        apiService.getOtherClosetByCategory(userId = userId, kindId = categoryId)
             .enqueue(object : Callback<ClosetCategoryResponse> {
                 override fun onResponse(
                     call: Call<ClosetCategoryResponse>,

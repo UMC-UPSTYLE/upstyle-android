@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentClosetResultBinding
 import androidx.recyclerview.widget.GridLayoutManager
@@ -66,6 +67,11 @@ class ClosetResultFragment : Fragment() {
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
             findNavController().popBackStack(R.id.closetItemFragment, false)
+        }
+
+        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
         }
 
         // 컬러 필터링 filterButton

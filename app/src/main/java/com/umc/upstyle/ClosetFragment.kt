@@ -74,22 +74,22 @@ class ClosetFragment : Fragment() {
             }
         })
 
-        apiService.getMyCloset(null).enqueue(object : Callback<ClosetResponse> {
-            override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
-                if (response.isSuccessful) {
-                    val userName = response.body()?.result?.userName
-                    binding.tvUsername.text = "${userName}"
-
-                } else {
-                    binding.tvUsername.text = "오류"
-                }
-            }
-
-            override fun onFailure(call: Call<ClosetResponse>, t: Throwable) {
-                binding.tvUsername.text = "API 실패"
-
-            }
-        })
+//        apiService.getMyCloset(null).enqueue(object : Callback<ClosetResponse> {
+//            override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
+//                if (response.isSuccessful) {
+//                    val userName = response.body()?.result?.userName
+//                    binding.tvUsername.text = "${userName}"
+//
+//                } else {
+//                    binding.tvUsername.text = "오류"
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<ClosetResponse>, t: Throwable) {
+//                binding.tvUsername.text = "API 실패"
+//
+//            }
+//        })
 
         // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

@@ -24,16 +24,28 @@ interface ApiService {
         @Query("userId") userId: Int?= null
     ): Call<ClosetResponse>
 
-    // 특정 사용자 옷장 조회 API
+    // 다른 사용자 옷장 조회 API
     @GET("closets/{userId}")
     fun getOtherCloset(
         @Path("userId") userId: Int?= null
     ): Call<ClosetResponse>
 
-    // 옷장 카테고리별 조회 API
+    // 내 옷장 카테고리별 조회 API
     @GET("closets/categories")
     fun getClosetByCategory(
         @Query("userId") userId: Int? = null,
+        @Query("kindId") kindId: Int? = null,
+        @Query("categoryId") categoryId: Int? = null,
+        @Query("colorId") colorId: List<Int>? = null,
+        @Query("fitId") fitId: Int? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10
+    ): Call<ClosetCategoryResponse>
+
+    // 다른 사용자 옷장 카테고리별 조회 API
+    @GET("closets/{userId}/categories")
+    fun getOtherClosetByCategory(
+        @Path("userId") userId: Int?= null,
         @Query("kindId") kindId: Int? = null,
         @Query("categoryId") categoryId: Int? = null,
         @Query("colorId") colorId: List<Int>? = null,
