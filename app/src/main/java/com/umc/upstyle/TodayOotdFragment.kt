@@ -61,17 +61,31 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         }
 
 
-
         // 전달된 데이터 처리
         observeSelectedItem()
 
-        val dateKey = arguments?.getString("DATE")
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("MMdd", Locale.getDefault())
+        if (clothViewModel.date4.isNullOrEmpty()) {
+            val dateKey = arguments?.getString("DATE")
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("MMdd", Locale.getDefault())
 
-        val parsedDate = dateKey?.let { inputFormat.parse(it) } ?: Date() // String -> Date 변환
-        val ootdDate = outputFormat.format(parsedDate) // Date -> MMdd 형식의 String 변환
-        binding.date.text = ootdDate
+            val parsedDate = dateKey?.let { inputFormat.parse(it) } ?: Date() // String -> Date 변환
+            val ootdDate = outputFormat.format(parsedDate) // Date -> MMdd 형식의 String 변환
+
+            if (dateKey != null) {
+                clothViewModel.date4 = ootdDate
+                clothViewModel.date = dateKey
+            } else {
+                val currentDate = Date() // 현재 날짜
+                val formattedDate = outputFormat.format(currentDate) // 현재 날짜를 MMdd 형식으로 변환
+
+                clothViewModel.date = currentDate.toString()
+                clothViewModel.date4 = formattedDate
+            }
+        }
+
+
+        binding.date.text = clothViewModel.date4
 
 
         // 저장된 데이터 복원
@@ -85,11 +99,9 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         // 저장 버튼 이벤트
         binding.saveButton.setOnClickListener {
-            //val dateServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            val dateServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(parsedDate)
             val ootdRequest = OOTDRequest(
                 userId = 1,
-                date = dateServer,
+                date = clothViewModel.date,
                 imageUrls = mutableListOf(),  // 이미지 URL은 아래에서 추가
                 clothRequestDTOList = clothViewModel.clothList.value ?: emptyList()
             )

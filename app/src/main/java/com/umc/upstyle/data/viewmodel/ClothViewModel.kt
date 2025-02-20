@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.umc.upstyle.data.model.ClothRequestDTO
 
 class ClothViewModel : ViewModel() {
+    var date: String = ""
+    var date4: String = ""
 
     private val _imageUris = MutableLiveData<List<String>>(emptyList())
     val imageUris: LiveData<List<String>> = _imageUris
