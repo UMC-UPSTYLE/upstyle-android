@@ -24,6 +24,11 @@ class FilterViewModel : ViewModel() {
 
     }
 
+    fun clearSharedPreferences(context: Context) {
+        val sharedPreferences = context.getSharedPreferences("FilterPreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
+    }
+
     fun saveToSharedPreferences(context: Context) {
         SharedPreferencesUtils.saveData(context, kindId, categoryId, fitId, colorId)
     }

@@ -42,10 +42,7 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.categoryfilterbtn.setOnClickListener {
-            SharedPreferencesUtils.clearData(requireContext())
-            findNavController().navigate(R.id.searchCategoryFragment)
-        }
+        binding.categoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.subcategoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchSubcategoryFragment) }
         binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchFitSizeFragment) }
         binding.colorfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchColorFragment) }
@@ -81,19 +78,19 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
         val defaultColor = ContextCompat.getColor(requireContext(), R.color.gray)
 
         binding.categoryfilterbtn.backgroundTintList = ColorStateList.valueOf(
-            if (!filterViewModel.selectedCategory.isNullOrEmpty()) yellowColor else defaultColor
+            if (filterViewModel.kindId != null) yellowColor else defaultColor
         )
 
         binding.subcategoryfilterbtn.backgroundTintList = ColorStateList.valueOf(
-            if (!filterViewModel.selectedSubCategory.isNullOrEmpty()) yellowColor else defaultColor
+            if (filterViewModel.categoryId != null) yellowColor else defaultColor
         )
 
         binding.fitsizefilterbtn.backgroundTintList = ColorStateList.valueOf(
-            if (!filterViewModel.selectedFitSize.isNullOrEmpty()) yellowColor else defaultColor
+            if (filterViewModel.fitId != null) yellowColor else defaultColor
         )
 
         binding.colorfilterbtn.backgroundTintList = ColorStateList.valueOf(
-            if (!filterViewModel.selectedColor.isNullOrEmpty()) yellowColor else defaultColor
+            if (filterViewModel.colorId != null) yellowColor else defaultColor
         )
     }
 
@@ -126,7 +123,7 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
                         response.body()?.let { clothesResponse ->
                             filteredItems = clothesResponse.result.clothPreviewList?.mapNotNull { clothPreview ->
                                 val description = listOfNotNull(
-                                    clothPreview.kindName?.takeIf { it.isNotBlank() },
+//                                    clothPreview.kindName?.takeIf { it.isNotBlank() },
                                     clothPreview.categoryName?.takeIf { it.isNotBlank() },
                                     clothPreview.fitName?.takeIf { it.isNotBlank() },
                                     clothPreview.colorName?.takeIf { it.isNotBlank() }

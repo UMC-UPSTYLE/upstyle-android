@@ -11,6 +11,7 @@ import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
+import com.umc.upstyle.SharedPreferencesUtils.getCategoryId
 import com.umc.upstyle.databinding.FragmentSearchColorBinding
 
 class SearchColorFragment : Fragment(R.layout.fragment_search_color) {
@@ -38,16 +39,17 @@ class SearchColorFragment : Fragment(R.layout.fragment_search_color) {
         // ✅ 색상 옵션 생성
         setupColorOptions()
 
-        // ✅ SHOES 또는 OTHER 선택 시 fitsizeTextView를 비활성화 (회색 처리)
+        // ✅ SHOES 또는 OTHER 선택 시 colorTextView 비활성화 (회색 처리)
         if (filterViewModel.selectedCategory == "SHOES" || filterViewModel.selectedCategory == "OTHER") {
             binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
             binding.fitsizeTextView.isClickable = false
             binding.fitsizeTextView.isEnabled = false
-        } else {
-            binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.login_yellow))
-            binding.fitsizeTextView.isClickable = true
-            binding.fitsizeTextView.isEnabled = true
         }
+//        else {
+//            binding.fitsizeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.login_yellow))
+//            binding.fitsizeTextView.isClickable = true
+//            binding.fitsizeTextView.isEnabled = true
+//        }
 
         // ✅ 완료 및 네비게이션 버튼 클릭 시
         binding.compOffButton.setOnClickListener { complete() }
@@ -70,10 +72,17 @@ class SearchColorFragment : Fragment(R.layout.fragment_search_color) {
         )
 
         createButtons(binding.optionsLayout, colors) { selectedOption ->
-            filterViewModel.selectedColor = selectedOption
-            filterViewModel.colorId = getColorId(selectedOption) // ✅ 색상 ID를 숫자로 저장
-            filterViewModel.saveToSharedPreferences(requireContext()) // ✅ 바로 SharedPreferences에 저장
-            binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+            if (selectedOption == null) {
+                // ✅ 선택 해제 시 ViewModel 초기화
+                filterViewModel.selectedColor = null
+                filterViewModel.colorId = null
+                filterViewModel.saveToSharedPreferences(requireContext())
+            } else {
+                // ✅ 선택 시 ViewModel에 저장
+                filterViewModel.selectedColor = selectedOption
+                filterViewModel.colorId = getColorId(selectedOption)
+                filterViewModel.saveToSharedPreferences(requireContext())
+            }
         }
 
         // ✅ 이전에 선택한 색상이 있으면 버튼 상태 유지
@@ -81,17 +90,21 @@ class SearchColorFragment : Fragment(R.layout.fragment_search_color) {
             binding.optionsLayout.children.forEach { view ->
                 val button = view as TextView
                 button.background = if (button.text == selectedColor) {
+                    button.tag = true
                     ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
                 } else {
+                    button.tag = false
                     ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
                 }
             }
             binding.compOffButton.setBackgroundResource(R.drawable.comp_on)
+            binding.compOffButton.isEnabled = true
         }
     }
 
     private fun createButtons(layout: FlexboxLayout, options: List<Pair<String, Int>>, onClick: (String) -> Unit) {
         layout.removeAllViews()
+        var selectedButton: TextView? = null
 
         options.forEach { option ->
             val button = TextView(requireContext()).apply {
@@ -100,10 +113,31 @@ class SearchColorFragment : Fragment(R.layout.fragment_search_color) {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(40, 10, 40, 10)
                 background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+
                 setOnClickListener {
-                    layout.children.forEach { it.background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background) }
-                    background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
-                    onClick(option.first)
+                    if (this == selectedButton) {
+                        // ✅ 현재 버튼이 이미 선택되어 있으면 초기화 및 SharedPreferences 삭제
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                        filterViewModel.selectedColor = null
+                        filterViewModel.colorId = -1
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        selectedButton = null
+                        onClick(null.toString())
+                    } else {
+                        // ✅ 다른 버튼이 선택되면 모든 버튼 초기화 및 새로운 버튼 선택
+                        layout.children.forEach { view ->
+                            (view as TextView).background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_gray)
+                        }
+                        filterViewModel.selectedColor = null
+                        filterViewModel.colorId = null
+                        // ✅ 새로운 버튼 선택 및 SharedPreferences에 저장
+                        background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_pressed)
+                        filterViewModel.selectedColor = option.first
+                        filterViewModel.colorId = getColorId(option.first)
+                        filterViewModel.saveToSharedPreferences(requireContext())
+                        selectedButton = this
+                        onClick(option.first)
+                    }
                 }
             }
             layout.addView(button, FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT).apply {
