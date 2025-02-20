@@ -415,6 +415,9 @@
         <action
             android:id="@+id/action_searchFilterFragment_to_searchFilterOotdFragment"
             app:destination="@id/searchFilterOotdFragment" />
+        <action
+            android:id="@+id/action_searchFilterFragment_to_bookmarkOotdFragment"
+            app:destination="@id/bookmarkOotdFragment" />
     </fragment>
 
     <fragment

@@ -16,11 +16,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.umc.upstyle.data.model.ClosetCategoryResponse
+import com.umc.upstyle.data.model.ClothesCategoryResponse
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentSearchFilterBinding
 import retrofit2.Call
+import retrofit2.Response
 
 class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
 
@@ -29,10 +30,7 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
 
     private val filterViewModel: FilterViewModel by activityViewModels()
 
-    private var category: String? = null
-
     private var filteredItems: List<Item_search> = emptyList()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -46,7 +44,8 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
 
         binding.categoryfilterbtn.setOnClickListener {
             SharedPreferencesUtils.clearData(requireContext())
-            findNavController().navigate(R.id.searchCategoryFragment) }
+            findNavController().navigate(R.id.searchCategoryFragment)
+        }
         binding.subcategoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchSubcategoryFragment) }
         binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchFitSizeFragment) }
         binding.colorfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchColorFragment) }
@@ -57,12 +56,15 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
         val kindId = preferences.getInt("kindId", -1).takeIf { it != -1 }
         val categoryId = preferences.getInt("categoryId", -1).takeIf { it != -1 }
         val fitId = preferences.getInt("fitId", -1).takeIf { it != -1 }
-        val colorId = preferences.getString("colorId", null)?.split(",")?.mapNotNull { it.toIntOrNull() }
+        val colorId = preferences.getInt("colorId", -1).takeIf { it != -1 }?.let { listOf(it) }
         loadItemsFromApi(userId, kindId, categoryId, fitId, colorId)
+
+
+        loadItemsFromApi(userId, kindId, categoryId, fitId, colorId)
+
 
         updateFilterButtonState()
 
-        // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack(R.id.searchFragment, false)
         }
@@ -74,10 +76,9 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
         updateFilterButtonState()
     }
 
-    // 각 필터 버튼 색상 변경
     private fun updateFilterButtonState() {
         val yellowColor = ContextCompat.getColor(requireContext(), R.color.login_yellow)
-        val defaultColor = ContextCompat.getColor(requireContext(), R.color.gray) // 기본 색상
+        val defaultColor = ContextCompat.getColor(requireContext(), R.color.gray)
 
         binding.categoryfilterbtn.backgroundTintList = ColorStateList.valueOf(
             if (!filterViewModel.selectedCategory.isNullOrEmpty()) yellowColor else defaultColor
@@ -98,13 +99,7 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
 
     private fun setupRecyclerView(items: List<Item_search>) {
         binding.tvResultCount.text = items.size.toString()
-
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-
-        if (items.isEmpty()) {
-            Log.w("RecyclerView", "No items to display!") // ✅ 로그 추가
-        }
-
         binding.recyclerView.adapter = RecyclerAdapter_Search(items) { selectedItem ->
             navigateToSearchFilterOotdFragment(selectedItem)
         }
@@ -121,90 +116,65 @@ class SearchFilterFragment : Fragment(R.layout.fragment_search_filter) {
 
         Log.d("API_REQUEST", "Fetching items for kindId: $kindId")
 
-        apiService.getClosetByCategory(userId, kindId, categoryId, colorId, fitId).enqueue(object : retrofit2.Callback<ClosetCategoryResponse> {
-            override fun onResponse(call: Call<ClosetCategoryResponse>, response: retrofit2.Response<ClosetCategoryResponse>) {
-                Log.d("API_RESPONSE", "Response Code: ${response.code()}")
+        apiService.getClothesByCategory(kindId, categoryId, colorId, fitId)
+            .enqueue(object : retrofit2.Callback<ClothesCategoryResponse> {
+                override fun onResponse(
+                    call: Call<ClothesCategoryResponse>,
+                    response: Response<ClothesCategoryResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { clothesResponse ->
+                            filteredItems = clothesResponse.result.clothPreviewList?.mapNotNull { clothPreview ->
+                                val description = listOfNotNull(
+                                    clothPreview.kindName?.takeIf { it.isNotBlank() },
+                                    clothPreview.categoryName?.takeIf { it.isNotBlank() },
+                                    clothPreview.fitName?.takeIf { it.isNotBlank() },
+                                    clothPreview.colorName?.takeIf { it.isNotBlank() }
+                                ).joinToString(" ")
 
-                if (response.isSuccessful) {
-                    response.body()?.let { closetResponse ->
-                        Log.d("API_RESPONSE", "Closet Response: ${closetResponse.result.clothPreviewList}")
-
-                        val filteredItems = closetResponse.result.clothPreviewList.mapNotNull { clothPreview ->
-                            // null 또는 "null" 문자열 제거
-                            val kindName = clothPreview.kindName?.takeIf { it.isNotBlank() && it.lowercase() != "null" }
-                            val categoryName = clothPreview.categoryName?.takeIf { it.lowercase() != "null" }
-                            val fitName = clothPreview.fitName?.takeIf { it.lowercase() != "null" }
-                            val colorName = clothPreview.colorName?.takeIf { it.lowercase() != "null" }
-
-                            // 유효한 값만 리스트에 추가
-                            val description = listOfNotNull(kindName, categoryName, fitName, colorName).joinToString(" ")
-
-                            val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
-
-                            if (categoryName == null) {
-                                Log.w("FILTER", "Skipping item with null categoryName")
-                                return@mapNotNull null
-                            }
+                                Item_search(
+                                    description = description,
+                                    imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg",
+                                    categoryId = clothPreview.categoryId,
+                                    fitId = clothPreview.fitId,
+                                    colorId = clothPreview.colorId,
+                                    ootdId = clothPreview.ootd?.id
+                                )
+                            } ?: emptyList()
 
 
-                            // ✅ categoryId, fitId, colorId 추가
-                            Item_search(
-                                description = description,
-                                imageUrl = imageUrl,
-                                categoryId = clothPreview.categoryId,
-                                fitId = clothPreview.fitId,
-                                colorId = clothPreview.colorId
-                            )
-                        }
+                            Log.d("FILTERED_ITEMS", "필터링된 아이템 개수: ${filteredItems.size}")
 
-                        Log.d("FILTERED_ITEMS", "필터링된 아이템 개수: ${filteredItems.size}")
-
-                        setupRecyclerView(filteredItems)
-                    } ?: run {
-                        Log.e("API_ERROR", "Response Body is Null")
+                            setupRecyclerView(filteredItems)
+                        } ?: Log.e("API_ERROR", "Response Body is Null")
+                    } else {
+                        Log.e("API_ERROR", "Error: ${response.errorBody()?.string()}")
                     }
-                } else {
-                    Log.e("API_ERROR", "Error: ${response.errorBody()?.string()}")
                 }
-            }
 
-            override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
-                Log.e("API_ERROR", "Failure: ${t.message}")
-            }
-        })
+                override fun onFailure(call: Call<ClothesCategoryResponse>, t: Throwable) {
+                    Log.e("API_ERROR", "Failure: ${t.message}")
+                }
+            })
     }
 
     private fun navigateToSearchFilterOotdFragment(selectedItem: Item_search) {
         val bundle = Bundle().apply {
             putInt("kindId", -1)
+            selectedItem.ootdId?.let { putInt("ootd_id", it) }
             putString("imageUrl", selectedItem.imageUrl)
             putInt("categoryId", selectedItem.categoryId ?: -1)
             putInt("fitId", selectedItem.fitId ?: -1)
-            putInt("colorId", selectedItem.colorId ?: -1)
+//            putIntegerArrayList("colorId", ArrayList(selectedItem.colorId?.let { listOf(it) } ?: emptyList()))
         }
 
-        Log.d("Navigation", "Navigating with bundle: $bundle")
-
-        try {
-            findNavController().navigate(R.id.searchFilterOotdFragment, bundle)
-        } catch (e: Exception) {
-            Log.e("Navigation Error", "Navigation failed: ${e.message}")
-        }
+        Log.d("SearchFilter", "전달하는 ootdId: ${selectedItem.ootdId}")
+        findNavController().navigate(R.id.action_searchFilterFragment_to_bookmarkOotdFragment, bundle)
+        Log.d("SearchFilter", "이동 성공인지 체크")
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        fun newInstance(category: String): SearchFilterFragment {
-            val fragment = SearchFilterFragment()
-            val args = Bundle()
-            args.putString("CATEGORY", category)
-            fragment.arguments = args
-            return fragment
-        }
     }
 }
