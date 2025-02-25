@@ -103,6 +103,10 @@ class PostDetailFragment : Fragment() {
             .load(voteDetail.imageUrl)
             .into(binding.ivImage)
 
+        if(voteDetail.imageUrl=="") {
+            binding.ivImage.visibility = View.GONE
+        }
+
         voteDetail.optionList?.let { options ->
             val voteOptions = options.map { option ->
                 VoteOption(option.id, option.clothId, option.imageUrl, option.name, option.responseCount)

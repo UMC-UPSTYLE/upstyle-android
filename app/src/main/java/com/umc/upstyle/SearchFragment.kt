@@ -49,7 +49,7 @@ class SearchFragment : Fragment() {
         binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
         binding.colorfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
 
-        setBack()
+//        setBack()
 
         // 뒤로 가기 버튼 클릭 시 navigateUp() 실행
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

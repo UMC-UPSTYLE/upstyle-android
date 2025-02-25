@@ -405,7 +405,7 @@ class CreateVoteFragment : Fragment() {
             onTakePhoto = { takePhoto(position) },
             onChoosePhoto = { selectImageFromGallery(position) },
             onLoadItem = {
-                val action = CreateVoteFragmentDirections.actionCreateVoteFragmentToLoadCategoryFragment(position, viewModel.username)
+                val action = CreateVoteFragmentDirections.actionCreateVoteFragmentToLoadCategoryFragment(position, viewModel.username, -1)
                 findNavController().navigate(action) },
             onCancel = { /* 취소 버튼 동작 */ }
         )

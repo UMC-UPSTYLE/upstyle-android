@@ -439,6 +439,10 @@
                 android:name="username"
                 app:argType="string"
                 android:defaultValue="익명"/>
+            <argument
+                android:name="userId"
+                app:argType="integer"
+                android:defaultValue="-1"/>
         </action>
     </fragment>
 
