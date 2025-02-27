@@ -1,10 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="main_color_1">#FFFFF5B1</color> <!-- 피그마 기준 글자 사용 컬러 노랑-->
+    <color name="main_color_2">#FFFFFFFF</color>
+
+    <color name="sub_color_1">#FFFFD27E</color> <!-- 더 진한 yellow -->
+    <color name="sub_color_2">#FF403431</color> <!-- 하단바 brown?? -->
+
+    <color name="background_black">#FF111111</color>
+
+    <!-- 로그인&체형 정보 페이지 컬러들 -->
+    <color name="login_gray">#FFEFEFEF</color> <!-- 로그인 화면&체형 정보 입력 페이지 칸에 사용되는 회색 -->
+    <color name="login_text_gray">#FFB0B0B0</color> <!-- 로그인 화면 글자에 사용되는 회색 -->
+    <color name="login_yellow">#FFFFF5B1</color> <!-- 시작하기 버튼 색상 -->
+    <color name="google_login_normal">#FF909090</color> <!-- 임시 컬러임 수정 필요 -->
+
+    <color name ="pic_select_yellow">#FFFFF9D4</color>
+    <color name="circle_gray">#FFB3B3B3</color> <!-- 분류 카테고리 핏 사이즈 컬러 선택 회색 타원 -->
+
+
+    <!-- 카테고리 컬러들 -->
     <color name="black">#FF000000</color>
+    <color name="silver">#FFC0C0C0</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FF808080</color>
+    <color name="red">#FFFF0000</color>
+    <color name="burgundy">#FF75212E</color>
+    <color name="pink">#FFF8119F</color>
+    <color name="orange">#FFF7441E</color>
+    <color name="ivory">#FFFEFFED</color>
+    <color name="oatmeal">#FFE8E3D6</color>
+    <color name="yellow">#FFFFFF00</color>
+    <color name="green">#FF008000</color>
+    <color name="khaki">#FFBDB76B</color>
+    <color name="mint">#FF82D9D0</color>
+    <color name="skyblue">#FF87CEEB</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="navy">#FF000080</color>
+    <color name="purple">#FF800080</color>
+    <color name="brown">#FFA52A2A</color>
+    <color name="camel">#FFC19A6B</color>
+    <color name="beige">#FFE8DCCA</color>
+    <color name="light_denim">#FF97CBD9</color> <!-- 연청 -->
+    <color name="denim">#FF02457A</color> <!-- 중청 -->
+    <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
+    <color name="othercolor">#FFFFFFFF</color>
+    <color name="selectYellow">#FFFFF5B1</color>
+    <color name="lightgray">#FFD9D9D9</color>
+    <color name="darkYellow">#70FFF5B1</color>
+
 </resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">20sp</item> <!-- 글자 크기 -->
+        <item name="fontFamily">@font/pretendard_medium</item>
+        <item name="android:textStyle">bold</item> <!-- 글자 굵기 -->
+    </style>
+
+    <style name="RoundedBorderConstraintLayout">
+        <item name="android:background">@drawable/bg_white_line_999</item>
+        <item name="android:layout_width">74dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+    <style name="RoundedBorderInsideText">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#FFF7F7F7</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
+
+    <style name="RoundedBorderOutsideText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#FFF7F7F7</item>
+    </style>
+
+    <style name="RoundCornerBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/RoundCornerModalStyle</item>
+    </style>
+
+    <style name="RoundCornerModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_gray</item>
+    </style>
+
+</resources>

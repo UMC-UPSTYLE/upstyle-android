@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/categoryFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/arrow_left"
+        android:background="@null"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp" />
+
+
+    <!-- 옷 종류 텍스트 -->
+    <TextView
+        android:id="@+id/myProfileTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="51dp"
+        android:layout_marginTop="32dp"
+        android:text="내 프로필"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textFontWeight="800"
+        android:textColor="@color/login_yellow"
+        android:fontFamily="@font/pretendard_medium" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="106dp">
+
+        <!-- 로그인 방식 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="로그인 방식"
+            android:textSize="9sp"
+            android:layout_marginStart="24dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="카카오 연동"
+            android:textSize="15sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <View
+            android:layout_width="420dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="17dp"
+            android:background="@color/main_color_1" />
+
+        <!-- 이메일 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="이메일"
+            android:textSize="9sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/userEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="15sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <View
+            android:layout_width="420dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="17dp"
+            android:background="@color/main_color_1" />
+
+        <!-- 닉네임 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="닉네임"
+            android:textSize="9sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <!-- 닉네임 입력 필드와 확인 아이콘 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+
+            <!-- 닉네임 표시 (초기에는 TextView, 수정 시 EditText) -->
+            <TextView
+                android:id="@+id/nicknameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/pretendard_medium"
+                android:textFontWeight="700"
+                android:visibility="visible"/>
+
+            <EditText
+                android:id="@+id/nicknameEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="한글, 영문자, 숫자 가능 (최대 8자), 중복 불가"
+                android:textColorHint="#B0B0B0"
+                android:inputType="text"
+                android:textColor="@color/white"
+                android:fontFamily="@font/pretendard_medium"
+                android:textSize="15sp"
+                android:textFontWeight="700"
+                android:visibility="gone"/>
+
+            <!-- 닉네임 수정 버튼 (연필 아이콘) -->
+            <ImageView
+                android:id="@+id/editNicknameButton"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/ic_edit_pencil"
+                android:contentDescription="닉네임 수정 버튼"/>
+
+            <!-- 닉네임 확인 이미지 (입력할 때 나타남) -->
+            <ImageView
+                android:id="@+id/namechkimg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_namechk_gray"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:text=""
+            android:textColor="#FF0000"
+            android:fontFamily="@font/pretendard_medium"
+            android:visibility="visible"/>
+
+
+        <!-- 닉네임 적합도 이미지 -->
+        <View
+            android:layout_width="420dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/main_color_1" />
+
+        <!-- 체형정보 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="체형정보"
+            android:textSize="9sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/userBodyinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="15sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <View
+            android:layout_width="420dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="17dp"
+            android:background="@color/main_color_1" />
+
+        <!-- 성별 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="성별"
+            android:textSize="9sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/userGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="15sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/pretendard_medium"
+            android:textFontWeight="700"
+            tools:ignore="MissingConstraints" />
+
+        <View
+            android:layout_width="420dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="17dp"
+            android:background="@color/main_color_1" />
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
+

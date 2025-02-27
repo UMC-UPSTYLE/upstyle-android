@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/bookMarkFragment"
+        android:icon="@drawable/bookmark_black"
+        android:title="Bookmark" />
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/search_black"
+        android:title="Search"
+        app:itemIconSize="60dp" />
+    <item
+        android:id="@+id/mainFragment"
+        android:icon="@drawable/home_black"
+        android:title="Home" />
+    <item
+        android:id="@+id/chatFragment"
+        android:icon="@drawable/chat_black"
+        android:title="Chat" />
+    <item
+        android:id="@+id/accountFragment"
+        android:icon="@drawable/account_black"
+        android:title="Account" />
+</menu>

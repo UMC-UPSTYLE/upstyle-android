@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bodyinfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_black"
+        tools:context=".BodyinfoActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp">
+
+            <TextView
+                android:id="@+id/tv_bodyinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="체형 정보를 입력해주세요."
+                android:layout_marginTop="111dp"
+                android:layout_marginStart="9dp"
+                android:textColor="@color/login_gray"
+                android:textFontWeight="800"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_bodyinfo_height"
+                style="@style/CustomTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_bodyinfo"
+                tools:ignore="MissingConstraints">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_bodyinfo_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="키를 입력해주세요."
+                        android:paddingStart="27dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_bodyinfo_end_fixed_text1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_gravity="end|center_vertical"
+                        android:paddingEnd="30dp"
+                        android:text="(cm)"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                </FrameLayout>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_bodyinfo_weight"
+                style="@style/CustomTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/til_bodyinfo_height"
+                android:layout_marginTop="23dp"
+                tools:ignore="MissingConstraints">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_bodyinfo_weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="몸무게를 입력해주세요."
+                    android:textSize="12sp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingStart="27dp"/>
+
+                <TextView
+                    android:id="@+id/tv_login_end_fixed_text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:paddingEnd="30dp"
+                    android:text="(kg)"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                </FrameLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/tv_bodyinfo_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="성별"
+                android:textColor="@color/login_gray"
+                android:textFontWeight="800"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_bodyinfo_weight"
+                android:layout_marginTop="51dp"
+                android:layout_marginStart="9dp"
+                tools:ignore="MissingConstraints"/>
+
+            <LinearLayout
+                android:id="@+id/bodyinfo_genderselect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_bodyinfo_gender"
+                android:layout_marginTop="17sp"
+                android:orientation="horizontal"
+                tools:ignore="MissingConstraints">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_bodyinfo_male"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/button_background_gender_unchecked"
+                    android:layout_marginEnd="12dp"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="18dp"
+                    android:layout_gravity="start|center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="남"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_bodyinfo_female"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/button_background_gender_unchecked"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="18dp"
+                    android:layout_gravity="start|center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="여"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bt_bodyinfo_start"
+                android:clickable="false"
+                android:focusable="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/button_background_login_selector">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="14.5dp"
+                    android:paddingBottom="14.5dp"
+                    android:text="시작하기"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textFontWeight="800"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

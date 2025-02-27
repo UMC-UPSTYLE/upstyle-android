@@ -1,0 +1,436 @@
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/todayOotdFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/background_black"
+                tools:ignore="MissingConstraints">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="24dp">
+
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:alpha="1"
+                        android:background="@null"
+                        android:padding="0dp"
+                        android:rotation="0"
+                        android:src="@drawable/arrow_left"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:textSize="20sp"
+                        app:layout_constraintStart_toEndOf="@id/backButton"
+                        android:textColor="@color/login_yellow" />
+
+                    <ImageButton
+                        android:id="@+id/save_button"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:src="@drawable/save_button"
+                        android:background="@null"
+                        android:layout_marginEnd="12dp"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/photo_upload_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="366dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="43dp"
+                    android:background="@drawable/round_pic_upload"
+                    android:backgroundTintMode="src_over"
+                    android:clipToOutline="true"
+                    android:elevation="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginStart="9dp"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:id="@+id/photoImageView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/upload_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="사진 등록"
+                        android:textColor="@color/login_yellow" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="11dp"
+                    android:layout_marginBottom="30dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:id="@+id/outerButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/round_button2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp"
+                            android:layout_marginStart="9dp"
+                            android:layout_marginEnd="8dp">
+
+                            <!-- 기본 텍스트 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="OUTER"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <!-- 추가 텍스트 -->
+                            <TextView
+                                android:id="@+id/outerText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Icon"
+                                android:src="@drawable/mdi_pencil" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/topButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical"
+                        android:layout_marginStart="9dp"
+                        android:layout_marginEnd="8dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/round_button2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp">
+
+                            <!-- 기본 텍스트 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="TOP"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <!-- 추가 텍스트 -->
+                            <TextView
+                                android:id="@+id/topText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Icon"
+                                android:src="@drawable/mdi_pencil" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/bottomButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical"
+                        android:layout_marginStart="9dp"
+                        android:layout_marginEnd="8dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/round_button2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp">
+
+                            <!-- 기본 텍스트 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="BOTTOM"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <!-- 추가 텍스트 -->
+                            <TextView
+                                android:id="@+id/bottomText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Icon"
+                                android:src="@drawable/mdi_pencil" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/shoesButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical"
+                        android:layout_marginStart="9dp"
+                        android:layout_marginEnd="8dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/round_button2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp">
+
+                            <!-- 기본 텍스트 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="SHOES"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <!-- 추가 텍스트 -->
+                            <TextView
+                                android:id="@+id/shoesText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Icon"
+                                android:src="@drawable/mdi_pencil" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/bagButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical"
+                        android:layout_marginStart="9dp"
+                        android:layout_marginEnd="8dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/round_button2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp">
+
+                            <!-- 기본 텍스트 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="BAG"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <!-- 추가 텍스트 -->
+                            <TextView
+                                android:id="@+id/bagText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Icon"
+                                android:src="@drawable/mdi_pencil" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/otherButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical"
+                        android:layout_marginStart="9dp"
+                        android:layout_marginEnd="8dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/round_button2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp">
+
+                            <!-- 기본 텍스트 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="OTHER"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <!-- 추가 텍스트 -->
+                            <TextView
+                                android:id="@+id/otherText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Icon"
+                                android:src="@drawable/mdi_pencil" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Overlay Progress -->
+    <FrameLayout
+        android:id="@+id/overlayProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/overlayProgressBar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/main_color_1"/>
+
+        <TextView
+            android:id="@+id/tvOverlayProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0%"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"/>
+    </FrameLayout>
+</FrameLayout>

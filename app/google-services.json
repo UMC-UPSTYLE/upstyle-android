@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "453107858381",
+    "project_id": "com-umc-upstyle-ec3f7",
+    "storage_bucket": "com-umc-upstyle-ec3f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453107858381:android:2cc7b6f10c4eeed54f6284",
+        "android_client_info": {
+          "package_name": "com.umc.upstyle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFbsP3RDBk-mM7bjimBgb0PMIb2gvRR1o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

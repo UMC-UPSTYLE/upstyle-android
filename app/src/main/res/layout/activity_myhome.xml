@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/mainFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1C1C1C"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+    <!-- 스크롤을 위한 ScrollView -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 상단 텍스트 "강빈님" -->
+            <TextView
+                android:id="@+id/topUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingTop="27dp"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/roboto_medium"/>
+
+
+            <!-- 사용자 정보 섹션 (A) -->
+            <LinearLayout
+                android:id="@+id/closetSection"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:background="@drawable/round_background"
+                android:padding="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp">
+
+
+                <TextView
+                    android:id="@+id/wardrobeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text=""
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_weight="1"/>
+
+
+                <ImageView
+                    android:id="@+id/wardrobeButton"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="end"
+                    android:contentDescription="Closet icon"
+                    android:src="@drawable/closet_yellow" />
+            </LinearLayout>
+
+            <!-- 이 달의 OOTD 캘린더 섹션 -->
+            <LinearLayout
+                android:id="@+id/calendarSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/round_background"
+                android:padding="12dp"
+                android:clipToOutline="true"
+                android:elevation="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp">
+
+                <!-- 텍스트뷰를 가로로 배치 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/calendarTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="12dp"
+                        android:paddingTop="3dp"
+                        android:text="이 달의 OOTD"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/calendar_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="0000년 00월"
+                        android:textColor="#000000"
+                        android:paddingEnd="15dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/calendar_custom"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingConstraints" />
+
+
+            </LinearLayout>
+
+
+            <!-- 오늘의 OOTD 섹션 버튼으로 변경 -->
+        <LinearLayout
+            android:id="@+id/todayOOTDSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/round_background"
+            android:padding="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/todayOOTDText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="오늘의 OOTD"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:fontFamily="@font/roboto_medium"/>
+
+            <ImageView
+                android:id="@+id/arrowNextImage"
+
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/arrow_next"
+                android:contentDescription="Next arrow"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/colorFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- 뒤로가기 버튼 -->
+    <!-- 뒤로가기 버튼 -->
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/arrow_left"
+        android:background="@null"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp" />
+
+
+
+    <!-- 옷 종류 텍스트 -->
+    <TextView
+        android:id="@+id/mainTitleTextView"
+        android:layout_width="68dp"
+        android:layout_height="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="66dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="32dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/login_yellow"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="top"  />
+
+    <!-- 입력할 속성을 알려주는 텍스트 -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="34dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="135dp"
+        android:text="컬러를 설명해주세요!"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:fontFamily="@font/pretendard_medium"
+        android:lineSpacingExtra="3sp"
+        android:translationY="-1.28sp"
+        android:gravity="top"/>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/optionsLayout"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="189dp"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start"/>
+
+    <ImageButton
+        android:id="@+id/nextButton"
+        android:layout_width="65dp"
+        android:layout_height="28dp"
+        android:background="@drawable/next_off"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp" />
+
+</RelativeLayout>

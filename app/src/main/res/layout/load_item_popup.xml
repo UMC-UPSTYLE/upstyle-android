@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="18.5dp"
+    android:layout_marginEnd="18.5dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_popup">
+
+    <!-- 팝업 메시지 -->
+    <TextView
+        android:id="@+id/tv_popup_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="지난 착장의 제품이름을 불러올 수 있어요."
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:gravity="start"
+        android:textStyle="bold"
+        android:layout_marginTop="33dp"
+        android:layout_marginBottom="20dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="0dp"/>
+
+    <View
+        android:id="@+id/topDivider"
+        android:layout_width="420dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#4D000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mainTitleTextView" />
+
+    <!-- 버튼 레이아웃 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <!-- 첫 번째 버튼 -->
+        <Button
+            android:id="@+id/btn_create_new"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="0dp"
+            android:text="아니요.\n새로 생성할게요."
+            android:background="@android:color/transparent"
+            android:backgroundTint="@color/pic_select_yellow"
+            android:fontFamily="@font/pretendard_medium"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:padding="0dp"/>
+
+        <View
+            android:id="@+id/middleDivider"
+            android:layout_width="1dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="0dp"
+            android:background="#4D000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mainTitleTextView" />
+
+
+        <!-- 두 번째 버튼 -->
+        <Button
+            android:id="@+id/btn_load_previous"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/pic_select_yellow"
+            android:background="@android:color/transparent"
+            android:text="네.\n불러올게요."
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="0dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:padding="0dp"/>
+    </LinearLayout>
+
+</LinearLayout>

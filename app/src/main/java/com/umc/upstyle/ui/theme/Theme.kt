@@ -1,4 +1,4 @@
-package com.umc.upstyle.ui.theme
+/*package com.umc.upstyle.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -55,4 +55,4 @@ fun UPSTYLETheme(
         typography = Typography,
         content = content
     )
-}
+}*/

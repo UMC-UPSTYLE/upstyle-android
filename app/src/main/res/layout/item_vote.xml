@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="13dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:background="@android:color/transparent">
+
+    <!-- 투표 아이템 이미지 -->
+    <FrameLayout
+        android:id="@+id/layout_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/iv_vote_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToOutline="true"
+            android:background="@drawable/bg_gray_15"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/ic_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_picture"
+            android:visibility="visible"/>
+    </FrameLayout>
+
+
+    <View
+        android:id="@+id/bar_first"
+        app:layout_constraintTop_toBottomOf="@id/layout_frame"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bar_first">    <!-- 항목 입력 -->
+
+        <EditText
+            android:id="@+id/et_vote_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textColor="@color/white"
+            android:hint="항목 입력"
+            android:maxLength="12"
+            android:textColorHint="@color/white"
+            android:textSize="12sp"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_pencil"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:src="@drawable/ic_pencil"
+        app:layout_constraintStart_toEndOf="@id/et_vote_item_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/bar_second"
+        app:layout_constraintTop_toBottomOf="@id/layout_tv"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

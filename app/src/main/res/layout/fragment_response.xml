@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/closetFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
+    android:background="#000000"
+    app:ignore="NamespaceTypo">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000">
+
+        <!-- 뒤로가기 버튼 -->
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/arrow_left"
+            android:contentDescription="뒤로가기" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="29dp"
+            android:layout_marginEnd="13dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:background="@drawable/bg_circle_white">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="등록"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textFontWeight="700"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 상단 텍스트 -->
+        <LinearLayout
+            android:id="@+id/top_text_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/backButton"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <!-- "강빈 님의" 텍스트 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="사용자"
+                    android:textColor="#FFFFFF"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:text="님의"
+                    android:textColor="#FFFFFF"
+                    android:textSize="26sp" />
+
+            </LinearLayout>
+            <!-- "옷장" 텍스트 및 이미지 -->
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="옷장"
+                    android:textColor="#FFFFFF"
+                    android:textSize="34sp" />
+
+                <ImageView
+                    android:id="@+id/img_closet_yellow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="9dp"
+                    android:contentDescription="옷장 이미지"
+                    android:src="@drawable/closet_yellow" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/top_text_container"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp">
+
+
+            <GridLayout
+                android:id="@+id/grid_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:orientation="horizontal"
+                android:paddingTop="30dp"
+                app:ignore="MissingConstraints">
+
+                <!-- OUTER -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_go_outer"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:padding="11dp"
+                    android:layout_marginEnd ="6dp"
+                    android:layout_marginBottom="6dp"
+
+                    android:background="@drawable/bg_go_to_closet_selector">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OUTER"
+                        android:textFontWeight="900"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <!-- 화살표 아이콘 -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/arrow_in_black_circle"
+
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- 두 번째 박스 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_go_top"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:padding="11dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom ="6dp"
+                    android:background="@drawable/bg_go_to_closet_selector">
+
+                    <!-- 상단 텍스트 -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOP"
+                        android:textFontWeight="900"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <!-- 화살표 아이콘 -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/arrow_in_black_circle"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- 세 번째 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_go_bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:padding="11dp"
+                    android:layout_marginEnd ="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/bg_go_to_closet_selector">
+
+                    <!-- 상단 텍스트 -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BOTTOM"
+                        android:textFontWeight="900"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <!-- 화살표 아이콘 -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/arrow_in_black_circle"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- 네 번째 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_go_shoes"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:padding="11dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/bg_go_to_closet_selector">
+
+                    <!-- 상단 텍스트 -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SHOES"
+                        android:textFontWeight="900"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <!-- 화살표 아이콘 -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/arrow_in_black_circle"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- 다섯 번째 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_go_bag"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:padding="11dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd ="6dp"
+                    android:background="@drawable/bg_go_to_closet_selector">
+
+                    <!-- 상단 텍스트 -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BAG"
+                        android:textFontWeight="900"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <!-- 화살표 아이콘 -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/arrow_in_black_circle"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- 여섯 번째 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_go_other"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:padding="11dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_go_to_closet_selector">
+
+                    <!-- 상단 텍스트 -->
+                    <TextView
+                        android:id="@+id/tv_outer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OTHER"
+                        android:textFontWeight="900"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <!-- 화살표 아이콘 -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/arrow_in_black_circle"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </GridLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- GridLayout for 옷장 아이템 -->
+    </RelativeLayout>
+</ScrollView>

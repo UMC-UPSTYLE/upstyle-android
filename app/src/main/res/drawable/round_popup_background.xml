@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 배경색 -->
+    <solid android:color="#FFF9D4" />
+
+    <!-- 둥근 모서리 -->
+    <corners android:radius="16dp" />
+
+    <!-- 그림자 대신 레이아웃에서 elevation 속성을 사용할 것을 권장 -->
+</shape>
